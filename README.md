@@ -123,15 +123,3 @@ Smart-Electric-Vehicle-Toll-Station-Management/
 ```
 
 ---
-
-## 📜 Giấy phép
-
-Dự án được phân phối theo giấy phép **MIT**. Xem file [LICENSE](./LICENSE) để biết thêm chi tiết.
-
----
-
-<div align="center">
-
-Made with ❤️ by **DLT0**
-
-</div>
