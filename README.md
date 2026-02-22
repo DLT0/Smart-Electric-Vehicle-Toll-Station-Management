@@ -1,7 +1,7 @@
-## Smart-Electric-Vehicle-Toll-Station-Management
+# Smart-Electric-Vehicle-Toll-Station-Management
 Chương trình quản lý việc cho thuê các trụ sạc trong một bãi xe. Cho phép thêm mới trụ sạc, theo dõi trạng thái (trống/đang sạc) và tính toán số tiền khách phải trả khi kết thúc lượt sạc dựa trên loại trụ.
 
-# Các chức năng chính
+## Các chức năng chính
 
 1.	Thêm mới trụ sạc: Cho phép người quản lý thêm một trụ mới vào hệ thống.
   o	Chọn loại: Trạm Chuẩn hoặc Trạm Siêu Tốc.
