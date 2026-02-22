@@ -29,8 +29,7 @@ Hệ thống quản lý trạm sạc xe điện thông minh — theo dõi trạn
 |---|---|
 | Ngôn ngữ | Java |
 | Paradigm | Lập trình hướng đối tượng (OOP) |
-| Lưu trữ | File `.txt` / `.json` |
-| IDE khuyên dùng | IntelliJ IDEA / Eclipse |
+| Lưu trữ | ? |
 
 ---
 
@@ -64,54 +63,5 @@ Hệ thống quản lý trạm sạc xe điện thông minh — theo dõi trạn
 | 11 | **Thống kê hiệu suất** | Tính tổng điện năng (kWh) đã phục vụ trên toàn hệ thống, hỗ trợ đánh giá hiệu suất từng trạm |
 | 12 | **Lưu trữ dữ liệu** | Đọc/ghi danh sách trụ sạc ra file `.txt` hoặc `.json`, đảm bảo dữ liệu không bị mất khi tắt chương trình |
 
----
-
-## 🚀 Hướng dẫn cài đặt & chạy
-
-### Yêu cầu hệ thống
-- **Java JDK** phiên bản 11 trở lên
-- **Git** (để clone dự án)
-
-### Các bước thực hiện
-
-**1. Clone repository**
-```bash
-git clone https://github.com/DLT0/Smart-Electric-Vehicle-Toll-Station-Management.git
-cd Smart-Electric-Vehicle-Toll-Station-Management
-```
-
-**2. Biên dịch chương trình**
-```bash
-javac src/Main.java -d out/
-```
-
-**3. Chạy ứng dụng**
-```bash
-java -cp out/ Main
-```
-
----
-
-## 📁 Cấu trúc dự án
-
-```
-Smart-Electric-Vehicle-Toll-Station-Management/
-├── src/
-│   └── Main.java          # Điểm khởi đầu chương trình
-├── LICENSE                # Giấy phép MIT
-└── README.md              # Tài liệu hướng dẫn
-```
-
----
-
-## 📜 Giấy phép
-
-Dự án được phân phối theo giấy phép **MIT**. Xem file [LICENSE](./LICENSE) để biết thêm chi tiết.
-
----
-
-<div align="center">
-
-Made with ❤️ by **DLT0**
 
 </div>
