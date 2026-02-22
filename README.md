@@ -2,7 +2,8 @@
 
 <div align="center">
 
-![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
+![Java](https://img.shields.io/badge/Java_17-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
+![Maven](https://img.shields.io/badge/Maven-C71A36?style=for-the-badge&logo=apache-maven&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Status-In%20Development-blue?style=for-the-badge)
 
@@ -27,9 +28,13 @@ Hệ thống quản lý trạm sạc xe điện thông minh — theo dõi trạn
 
 | Thành phần | Chi tiết |
 |---|---|
-| Ngôn ngữ | Java |
+| Ngôn ngữ | Java 17 |
+| Build Tool | Maven |
 | Paradigm | Lập trình hướng đối tượng (OOP) |
-| Lưu trữ | ? |
+| JSON | Gson 2.11.0 |
+| Logging | SLF4J + Logback |
+| Testing | JUnit 5 |
+| Lưu trữ | File `.txt` / `.json` |
 
 ---
 
@@ -63,5 +68,70 @@ Hệ thống quản lý trạm sạc xe điện thông minh — theo dõi trạn
 | 11 | **Thống kê hiệu suất** | Tính tổng điện năng (kWh) đã phục vụ trên toàn hệ thống, hỗ trợ đánh giá hiệu suất từng trạm |
 | 12 | **Lưu trữ dữ liệu** | Đọc/ghi danh sách trụ sạc ra file `.txt` hoặc `.json`, đảm bảo dữ liệu không bị mất khi tắt chương trình |
 
+---
+
+## 🚀 Hướng dẫn cài đặt & chạy
+
+### Yêu cầu hệ thống
+- **Java JDK** phiên bản 17 trở lên
+- **Maven** phiên bản 3.8+ (hoặc cài qua [Scoop](https://scoop.sh): `scoop install maven`)
+- **Git**
+
+### Các bước thực hiện
+
+**1. Clone repository**
+```bash
+git clone https://github.com/DLT0/Smart-Electric-Vehicle-Toll-Station-Management.git
+cd Smart-Electric-Vehicle-Toll-Station-Management
+```
+
+**2. Build dự án**
+```bash
+mvn clean compile
+```
+
+**3. Chạy tests**
+```bash
+mvn test
+```
+
+**4. Đóng gói & chạy ứng dụng**
+```bash
+mvn clean package -DskipTests
+java -jar target/smart-ev-toll-station-1.0.0-SNAPSHOT.jar
+```
+
+---
+
+## 📁 Cấu trúc dự án
+
+```
+Smart-Electric-Vehicle-Toll-Station-Management/
+├── pom.xml                                    # Cấu hình Maven (dependencies, plugins)
+├── src/
+│   ├── main/
+│   │   ├── java/com/evstation/
+│   │   │   └── Main.java                      # Điểm khởi đầu chương trình
+│   │   └── resources/
+│   │       └── logback.xml                    # Cấu hình logging (SLF4J + Logback)
+│   └── test/
+│       └── java/com/evstation/
+│           └── MainTest.java                  # Unit tests (JUnit 5)
+├── .gitignore                                 # Danh sách file/thư mục Git bỏ qua
+├── LICENSE                                    # Giấy phép MIT
+└── README.md                                  # Tài liệu hướng dẫn
+```
+
+---
+
+## 📜 Giấy phép
+
+Dự án được phân phối theo giấy phép **MIT**. Xem file [LICENSE](./LICENSE) để biết thêm chi tiết.
+
+---
+
+<div align="center">
+
+Made with ❤️ by **DLT0**
 
 </div>
