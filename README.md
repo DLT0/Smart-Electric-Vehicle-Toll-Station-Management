@@ -29,8 +29,7 @@ Hệ thống quản lý trạm sạc xe điện thông minh — theo dõi trạn
 |---|---|
 | Ngôn ngữ | Java |
 | Paradigm | Lập trình hướng đối tượng (OOP) |
-| Lưu trữ | File `.txt` / `.json` |
-| IDE khuyên dùng | IntelliJ IDEA / Eclipse |
+| Lưu trữ | ? |
 
 ---
 
