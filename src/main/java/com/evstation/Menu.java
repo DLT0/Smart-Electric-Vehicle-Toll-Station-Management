@@ -31,15 +31,15 @@ public class Menu {
     // =========================================================
     public static void XuatMenu() {
         System.out.printf("Nhap %d de %s%n", MenuCT.Thoat.ordinal(), "Thoat Chuong Trinh");
-        System.out.printf("Nhap %d de %s%n", MenuCT.ThemTruSac.ordinal(), MenuCT.ThemTruSac.name());
-        System.out.printf("Nhap %d de %s%n", MenuCT.XemDanhSach.ordinal(), MenuCT.XemDanhSach.name());
-        System.out.printf("Nhap %d de %s%n", MenuCT.CapNhatTrangThai.ordinal(), MenuCT.CapNhatTrangThai.name());
-        System.out.printf("Nhap %d de %s%n", MenuCT.XoaTruSac.ordinal(), MenuCT.XoaTruSac.name());
-        System.out.printf("Nhap %d de %s%n", MenuCT.TimKiem.ordinal(), MenuCT.TimKiem.name());
+        System.out.printf("Nhap %d de %s%n", MenuCT.ThemTruSac.ordinal(), "Them tru sac moi");
+        System.out.printf("Nhap %d de %s%n", MenuCT.XemDanhSach.ordinal(), "Xem danh sach tru sac");
+        System.out.printf("Nhap %d de %s%n", MenuCT.CapNhatTrangThai.ordinal(), "Cap nhat trang thai");
+        System.out.printf("Nhap %d de %s%n", MenuCT.XoaTruSac.ordinal(), "Xoa tru sac");
+        System.out.printf("Nhap %d de %s%n", MenuCT.TimKiem.ordinal(), "Tim kiem theo ID");
     }
 
     // =========================================================
-    // ChonMenu: đọc và kiểm tra lựa chọn hợp lệ, trả về enum
+    // ChonMenu: doc va kiem tra lua chon hop le, tra ve enum
     // =========================================================
     public MenuCT ChonMenu() {
         int min = MenuCT.Thoat.ordinal();
@@ -53,7 +53,7 @@ public class Menu {
                 if (min <= chon && chon <= max)
                     break;
             } catch (NumberFormatException e) {
-                // Bỏ qua, lặp lại
+                // Bo qua, lap lai
             }
         } while (true);
 
@@ -61,7 +61,7 @@ public class Menu {
     }
 
     // =========================================================
-    // XuLyMenu: xử lý từng lựa chọn bằng switch-case trên enum
+    // XuLyMenu: xu ly tung lua chon bang switch-case tren enum
     // =========================================================
     public void XuLyMenu(MenuCT chon) {
         switch (chon) {
@@ -89,13 +89,13 @@ public class Menu {
     }
 
     // =========================================================
-    // ChayChuongTrinh: vòng lặp chính của chương trình
+    // ChayChuongTrinh: vong lap chinh cua chuong trinh
     // =========================================================
     public void ChayChuongTrinh() {
         MenuCT chon;
 
         do {
-            // Xóa màn hình
+            // Xoa man hinh
             System.out.print("\033[H\033[2J");
             System.out.flush();
 
@@ -107,7 +107,7 @@ public class Menu {
 
             XuLyMenu(chon);
 
-            // Dừng chờ người dùng xem kết quả (tương đương Console.ReadKey())
+            // Dung cho nguoi dung xem ket qua
             System.out.print("\nNhan Enter de tiep tuc...");
             scanner.nextLine();
 

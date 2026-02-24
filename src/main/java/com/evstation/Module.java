@@ -4,28 +4,28 @@ import java.util.Scanner;
 
 public class Module {
 
-    // Chức năng 1: Thêm trụ sạc mới
+    // Chuc nang 1: Them tru sac moi
     public void themTruSac(Scanner scanner) {
-        System.out.println("→ [Chức năng 1] Thêm trụ sạc mới - chưa cài đặt.");
+        System.out.println("-> [Chuc nang 1] Them tru sac moi - chua cai dat.");
     }
 
-    // Chức năng 2: Xem danh sách trụ sạc
+    // Chuc nang 2: Xem danh sach tru sac
     public void xemDanhSach() {
-        System.out.println("→ [Chức năng 2] Xem danh sách - chưa cài đặt.");
+        System.out.println("-> [Chuc nang 2] Xem danh sach - chua cai dat.");
     }
 
-    // Chức năng 3: Cập nhật trạng thái
+    // Chuc nang 3: Cap nhat trang thai
     public void capNhatTrangThai(Scanner scanner) {
-        System.out.println("→ [Chức năng 3] Cập nhật trạng thái - chưa cài đặt.");
+        System.out.println("-> [Chuc nang 3] Cap nhat trang thai - chua cai dat.");
     }
 
-    // Chức năng 4: Xoá trụ sạc
+    // Chuc nang 4: Xoa tru sac
     public void xoaTruSac(Scanner scanner) {
-        System.out.println("→ [Chức năng 4] Xoá trụ sạc - chưa cài đặt.");
+        System.out.println("-> [Chuc nang 4] Xoa tru sac - chua cai dat.");
     }
 
-    // Chức năng 5: Tìm kiếm theo ID
+    // Chuc nang 5: Tim kiem theo ID
     public void timKiem(Scanner scanner) {
-        System.out.println("→ [Chức năng 5] Tìm kiếm - chưa cài đặt.");
+        System.out.println("-> [Chuc nang 5] Tim kiem - chua cai dat.");
     }
 }
