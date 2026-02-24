@@ -30,12 +30,18 @@ public class Menu {
     // XuatMenu: in danh sách các lựa chọn ra màn hình
     // =========================================================
     public static void XuatMenu() {
-        System.out.printf("Nhap %d de %s%n", MenuCT.Thoat.ordinal(), "Thoat Chuong Trinh");
-        System.out.printf("Nhap %d de %s%n", MenuCT.ThemTruSac.ordinal(), "Them tru sac moi");
-        System.out.printf("Nhap %d de %s%n", MenuCT.XemDanhSach.ordinal(), "Xem danh sach tru sac");
-        System.out.printf("Nhap %d de %s%n", MenuCT.CapNhatTrangThai.ordinal(), "Cap nhat trang thai");
-        System.out.printf("Nhap %d de %s%n", MenuCT.XoaTruSac.ordinal(), "Xoa tru sac");
-        System.out.printf("Nhap %d de %s%n", MenuCT.TimKiem.ordinal(), "Tim kiem theo ID");
+        System.out.println("=================================================");
+        System.out.println("|       SMART EV TOLL STATION MANAGEMENT        |");
+        System.out.println("=================================================");
+        System.out.println("| Phim | Chuc nang                              |");
+        System.out.println("-------------------------------------------------");
+        System.out.printf("|   %d  | %-38s |%n", MenuCT.Thoat.ordinal(), "Thoat Chuong Trinh");
+        System.out.printf("|   %d  | %-38s |%n", MenuCT.ThemTruSac.ordinal(), "Them tru sac moi");
+        System.out.printf("|   %d  | %-38s |%n", MenuCT.XemDanhSach.ordinal(), "Xem danh sach tru sac");
+        System.out.printf("|   %d  | %-38s |%n", MenuCT.CapNhatTrangThai.ordinal(), "Cap nhat trang thai");
+        System.out.printf("|   %d  | %-38s |%n", MenuCT.XoaTruSac.ordinal(), "Xoa tru sac");
+        System.out.printf("|   %d  | %-38s |%n", MenuCT.TimKiem.ordinal(), "Tim kiem theo ID");
+        System.out.println("=================================================");
     }
 
     // =========================================================
