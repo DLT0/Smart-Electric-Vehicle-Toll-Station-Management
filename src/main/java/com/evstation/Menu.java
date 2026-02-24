@@ -95,7 +95,7 @@ public class Menu {
         MenuCT chon;
 
         do {
-            // Xóa màn hình (tương đương Console.Clear() trong C#)
+            // Xóa màn hình
             System.out.print("\033[H\033[2J");
             System.out.flush();
 
