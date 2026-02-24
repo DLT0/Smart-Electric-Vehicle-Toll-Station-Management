@@ -1,18 +1,13 @@
 package com.evstation;
 
-import java.util.Scanner;
+import java.util.*;
 
 public class Menu {
 
-    // =========================================================
-    // Enum: định nghĩa tất cả lựa chọn menu
-    // - Thoat PHẢI đứng ĐẦU (ordinal = 0)
-    // - Lựa chọn cuối PHẢI đứng CUỐI (dùng để kiểm tra giới hạn)
-    // =========================================================
     public enum MenuCT {
         Thoat,
         ThemTruSac,
-        XemDanhSach,
+        XuatDanhSach,
         CapNhatTrangThai,
         XoaTruSac,
         TimKiem
@@ -26,9 +21,6 @@ public class Menu {
         this.module = module;
     }
 
-    // =========================================================
-    // XuatMenu: in danh sách các lựa chọn ra màn hình
-    // =========================================================
     public static void XuatMenu() {
         System.out.println("=================================================");
         System.out.println("|       SMART EV TOLL STATION MANAGEMENT        |");
@@ -37,16 +29,13 @@ public class Menu {
         System.out.println("-------------------------------------------------");
         System.out.printf("|   %d  | %-38s |%n", MenuCT.Thoat.ordinal(), "Thoat Chuong Trinh");
         System.out.printf("|   %d  | %-38s |%n", MenuCT.ThemTruSac.ordinal(), "Them tru sac moi");
-        System.out.printf("|   %d  | %-38s |%n", MenuCT.XemDanhSach.ordinal(), "Xem danh sach tru sac");
+        System.out.printf("|   %d  | %-38s |%n", MenuCT.XuatDanhSach.ordinal(), "Xem danh sach tru sac");
         System.out.printf("|   %d  | %-38s |%n", MenuCT.CapNhatTrangThai.ordinal(), "Cap nhat trang thai");
         System.out.printf("|   %d  | %-38s |%n", MenuCT.XoaTruSac.ordinal(), "Xoa tru sac");
         System.out.printf("|   %d  | %-38s |%n", MenuCT.TimKiem.ordinal(), "Tim kiem theo ID");
         System.out.println("=================================================");
     }
 
-    // =========================================================
-    // ChonMenu: doc va kiem tra lua chon hop le, tra ve enum
-    // =========================================================
     public MenuCT ChonMenu() {
         int min = MenuCT.Thoat.ordinal();
         int max = MenuCT.values()[MenuCT.values().length - 1].ordinal();
@@ -66,9 +55,6 @@ public class Menu {
         return MenuCT.values()[chon];
     }
 
-    // =========================================================
-    // XuLyMenu: xu ly tung lua chon bang switch-case tren enum
-    // =========================================================
     public void XuLyMenu(MenuCT chon) {
         switch (chon) {
             case Thoat:
@@ -77,8 +63,8 @@ public class Menu {
             case ThemTruSac:
                 module.themTruSac(scanner);
                 break;
-            case XemDanhSach:
-                module.xemDanhSach();
+            case XuatDanhSach:
+                module.xuatDanhSach();
                 break;
             case CapNhatTrangThai:
                 module.capNhatTrangThai(scanner);
@@ -94,9 +80,6 @@ public class Menu {
         }
     }
 
-    // =========================================================
-    // ChayChuongTrinh: vong lap chinh cua chuong trinh
-    // =========================================================
     public void ChayChuongTrinh() {
         MenuCT chon;
 
