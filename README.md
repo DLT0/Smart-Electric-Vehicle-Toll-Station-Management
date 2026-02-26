@@ -1,10 +1,11 @@
-# ⚡ Smart Electric Vehicle Toll Station Management
+# ⚡ Hệ thống Quản lý Trạm sạc Xe điện – Tỉnh Lâm Đồng
 
 <div align="center">
 
 ![Java](https://img.shields.io/badge/Java_17-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
+![Province](https://img.shields.io/badge/Lâm_Đồng-EV_Hub-4CAF50?style=for-the-badge)
 
-Hệ thống quản lý trạm sạc xe điện thông minh — theo dõi trạng thái, kiểm soát tải và tính phí tự động.
+**Giải pháp quản lý hạ tầng sạc xe điện thông minh cho tỉnh Lâm Đồng**
 
 </div>
 
@@ -12,12 +13,14 @@ Hệ thống quản lý trạm sạc xe điện thông minh — theo dõi trạn
 
 ## 📖 Giới thiệu
 
-**Smart EV Toll Station Management** là ứng dụng quản lý dành cho các bãi xe/trạm sạc xe điện. Hệ thống cho phép:
+Khi làn sóng xe điện bắt đầu thâm nhập vào các tỉnh thành Việt Nam, **Lâm Đồng** nổi lên như một điểm đến chiến lược với lưu lượng du lịch và giao thông lớn — từ đô thị sầm uất **Đà Lạt**, trung tâm kinh tế **Bảo Lộc**, đến cửa ngõ sân bay **Liên Khương** (Đức Trọng) và các huyện vùng sâu như **Đam Rông**, **Đạ Huoai**.
 
-- Quản lý toàn bộ vòng đời của các trụ sạc (thêm, sửa, xoá)
-- Theo dõi trạng thái hoạt động theo thời gian thực
-- Kiểm soát tải điện để đảm bảo an toàn cho toàn trạm
-- Tính toán chi phí sạc và thống kê hiệu suất
+**Smart EV Station – Lâm Đồng** là ứng dụng được xây dựng chuyên biệt để quản lý toàn bộ mạng lưới trạm sạc trong tỉnh (theo đơn vị hành chính sau sáp nhập 2026). Hệ thống cung cấp:
+
+- 📍 **Vị trí địa lý có sẵn**: Người dùng chọn khu vực từ danh sách 9 đơn vị hành chính Lâm Đồng thay vì nhập tay.
+- 🔋 **Phân loại tự động**: Hệ thống tự xếp loại Sạc Chậm / Sạc Nhanh / Sạc Siêu Nhanh dựa trên công suất nhập vào.
+- 🏷️ **Đặt tên thông minh**: Tên trạm được tạo theo công thức `[Loại] + [Khu vực] + [STT]` (VD: *Tram Sac Nhanh Da Lat 2*).
+- 📊 **Quản lý toàn diện**: Thêm, xem danh sách, cập nhật trạng thái và tìm kiếm theo ID.
 
 ---
 
