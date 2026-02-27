@@ -1,7 +1,11 @@
 # ⚡ Hệ thống Quản lý Trạm sạc Xe điện – Tỉnh Lâm Đồng
+
 <div align="center">
+    
 ![Java](https://img.shields.io/badge/Java_17-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
+
 </div>
+
 ## 📖 Giới thiệu
 **Smart EV Station – Lâm Đồng** là ứng dụng được xây dựng chuyên biệt để quản lý toàn bộ mạng lưới trạm sạc trong tỉnh Lâm Đồng. Hệ thống cung cấp:
 
