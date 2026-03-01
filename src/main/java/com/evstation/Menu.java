@@ -6,11 +6,15 @@ public class Menu {
 
     public enum MenuCT {
         Thoat,
-        ThemTruSac,
+        Them1TruSac,
+        ThemDSTruSac,
+        TuDongNhapDSTruSac,
         XuatDanhSach,
         CapNhatTrangThai,
         XoaTruSac,
-        TimKiem
+        TimKiem,
+        ThongKeTruSacCanBaoTri,
+        XuatFile
     }
 
     private Scanner scanner;
@@ -27,12 +31,18 @@ public class Menu {
         System.out.println("=================================================");
         System.out.println("| Phim | Chuc nang                              |");
         System.out.println("-------------------------------------------------");
-        System.out.printf("|   %d  | %-38s |%n", MenuCT.Thoat.ordinal(), "Thoat Chuong Trinh");
-        System.out.printf("|   %d  | %-38s |%n", MenuCT.ThemTruSac.ordinal(), "Them tru sac moi");
-        System.out.printf("|   %d  | %-38s |%n", MenuCT.XuatDanhSach.ordinal(), "Xem danh sach tru sac");
-        System.out.printf("|   %d  | %-38s |%n", MenuCT.CapNhatTrangThai.ordinal(), "Cap nhat trang thai");
-        System.out.printf("|   %d  | %-38s |%n", MenuCT.XoaTruSac.ordinal(), "Xoa tru sac");
-        System.out.printf("|   %d  | %-38s |%n", MenuCT.TimKiem.ordinal(), "Tim kiem theo ID");
+        System.out.printf("|   %d  | %-38s |%n", MenuCT.Thoat.ordinal(), "Thoat Chuong Trinh.");
+        System.out.printf("|   %d  | %-38s |%n", MenuCT.Them1TruSac.ordinal(), "Them 1 tru sac moi.");
+        System.out.printf("|   %d  | %-38s |%n", MenuCT.ThemDSTruSac.ordinal(), "Them danh sach tru sac.");
+        System.out.printf("|   %d  | %-38s |%n", MenuCT.TuDongNhapDSTruSac.ordinal(),
+                "Tu dong nhap danh sach tru sac.");
+        System.out.printf("|   %d  | %-38s |%n", MenuCT.XuatDanhSach.ordinal(), "Xem danh sach tru sac.");
+        System.out.printf("|   %d  | %-38s |%n", MenuCT.CapNhatTrangThai.ordinal(), "Cap nhat trang thai.");
+        System.out.printf("|   %d  | %-38s |%n", MenuCT.XoaTruSac.ordinal(), "Xoa tru sac.");
+        System.out.printf("|   %d  | %-38s |%n", MenuCT.TimKiem.ordinal(), "Tim kiem theo ID.");
+        System.out.printf("|   %d  | %-38s |%n", MenuCT.ThongKeTruSacCanBaoTri.ordinal(),
+                "Thong ke danh sach tru sac can bao tri");
+        System.out.printf("|   %d  | %-38s |%n", MenuCT.XuatFile.ordinal(), "Xuat danh sach tru sac ra file Exel.");
         System.out.println("=================================================");
     }
 
@@ -60,8 +70,15 @@ public class Menu {
             case Thoat:
                 System.out.println("Thoat chuong trinh!");
                 break;
-            case ThemTruSac:
-                module.themTruSac(scanner);
+            case Them1TruSac:
+                module.them1TruSac(scanner);
+                break;
+            case ThemDSTruSac:
+                // module.themDSTruSac(scanner);
+                break;
+            case TuDongNhapDSTruSac:
+                module.khoiTaoDuLieuMau();
+                System.out.println("Da khoi tao du lieu mau!");
                 break;
             case XuatDanhSach:
                 module.xuatDanhSach();
