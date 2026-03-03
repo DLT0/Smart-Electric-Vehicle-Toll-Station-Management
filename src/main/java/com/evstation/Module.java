@@ -261,13 +261,75 @@ public class Module {
     // Chuc nang 4: Xoa tru sac
     // ----------------------------------------------------------
     public void xoaTruSac(Scanner scanner) {
-        System.out.println("-> [Chuc nang 4] Xoa tru sac.");
-    }
+        System.out.println("\n--- XOA TRU SAC ---");
 
+        if (danhSach.isEmpty()) {
+            System.out.println("=> Danh sach trong. Khong co tram nao de xoa.");
+            return;
+        }
+
+        System.out.print("Nhap ID tram can xoa: ");
+        String id = scanner.nextLine().trim();
+        if (id.isEmpty()) {
+            System.out.println("=> Loi: ID khong duoc de trong.");
+            return;
+        }
+
+        TramSac found = null;
+        for (TramSac t : danhSach) {
+            if (t.maTram.equalsIgnoreCase(id)) {
+                found = t;
+                break;
+            }
+        }
+
+        if (found == null) {
+            System.out.println("=> Khong tim thay tram co ID: " + id);
+            return;
+        }
+
+        System.out.println("Thong tin tram tim thay:");
+        found.hienThiChiTiet();
+
+        System.out.print("Xac nhan xoa tram nay? (Y/N): ");
+        String ans = scanner.nextLine().trim();
+        if (ans.equalsIgnoreCase("Y") || ans.equalsIgnoreCase("YES")) {
+            danhSach.remove(found);
+            System.out.println("=> Da xoa thanh cong tram ID: " + id);
+        } else {
+            System.out.println("=> Huy thao tac xoa.");
+        }
+    }
+     // nhap ID tram sac can xoa 
+       
     // ----------------------------------------------------------
     // Chuc nang 5: Tim kiem theo ID
     // ----------------------------------------------------------
     public void timKiem(Scanner scanner) {
-        System.out.println("-> [Chuc nang 5] Tim kiem.");
+        System.out.println("\n--- TIM KIEM TRAM THEO ID ---");
+
+        if (danhSach.isEmpty()) {
+            System.out.println("=> Danh sach trong. Khong co tram nao.");
+            return;
+        }
+
+        System.out.print("Nhap ID can tim: ");
+        String id = scanner.nextLine().trim();
+        if (id.isEmpty()) {
+            System.out.println("=> Loi: ID khong duoc de trong.");
+            return;
+        }
+
+        boolean foundAny = false;
+        for (TramSac t : danhSach) {
+            if (t.maTram.equalsIgnoreCase(id)) {
+                t.hienThiChiTiet();
+                foundAny = true;
+            }
+        }
+
+        if (!foundAny) {
+            System.out.println("=> Khong tim thay tram co ID: " + id);
+        }
     }
 }

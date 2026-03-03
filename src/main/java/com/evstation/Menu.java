@@ -61,19 +61,19 @@ public class Menu {
                 System.out.println("Thoat chuong trinh!");
                 break;
             case ThemTruSac:
-                module.themTruSac(scanner);
+                Module.themTruSac(scanner);
                 break;
             case XuatDanhSach:
-                module.xuatDanhSach();
+                Module.xuatDanhSach();
                 break;
             case CapNhatTrangThai:
-                module.capNhatTrangThai(scanner);
+                Module.capNhatTrangThai(scanner);
                 break;
             case XoaTruSac:
-                module.xoaTruSac(scanner);
+                Module.xoaTruSac(scanner);
                 break;
             case TimKiem:
-                module.timKiem(scanner);
+                Module.timKiem(scanner);
                 break;
             default:
                 break;
