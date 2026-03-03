@@ -261,7 +261,7 @@ public class Module {
     // Chuc nang 4: Xoa tru sac
     // ----------------------------------------------------------
     public void xoaTruSac(Scanner scanner) {
-        System.out.println("\n--- XOA TRU SAC ---");
+        System.out.println("\n--- XOA TRAm sac ---");
 
         if (danhSach.isEmpty()) {
             System.out.println("=> Danh sach trong. Khong co tram nao de xoa.");
@@ -291,7 +291,7 @@ public class Module {
         System.out.println("Thong tin tram tim thay:");
         found.hienThiChiTiet();
 
-        System.out.print("Xac nhan xoa tram nay? (Y/N): ");
+        System.out.print("Xac nhan xoa tram nay ? (Y/N): ");
         String ans = scanner.nextLine().trim();
         if (ans.equalsIgnoreCase("Y") || ans.equalsIgnoreCase("YES")) {
             danhSach.remove(found);
@@ -306,14 +306,14 @@ public class Module {
     // Chuc nang 5: Tim kiem theo ID
     // ----------------------------------------------------------
     public void timKiem(Scanner scanner) {
-        System.out.println("\n--- TIM KIEM TRAM THEO ID ---");
+        System.out.println("\n--- TIM KIEM TRAM THEO ID Tram SAC ---");
 
         if (danhSach.isEmpty()) {
             System.out.println("=> Danh sach trong. Khong co tram nao.");
             return;
         }
 
-        System.out.print("Nhap ID can tim: ");
+        System.out.print("Nhap ID tram can tim: ");
         String id = scanner.nextLine().trim();
         if (id.isEmpty()) {
             System.out.println("=> Loi: ID khong duoc de trong.");
