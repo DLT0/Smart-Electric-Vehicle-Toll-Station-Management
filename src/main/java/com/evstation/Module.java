@@ -255,7 +255,32 @@ public class Module {
     // ----------------------------------------------------------
     public void capNhatTrangThai(Scanner scanner) {
         System.out.println("-> [Chuc nang 3] Cap nhat trang thai.");
-    }
+             String maTram = sc.nextLine();
+        Optional<Tram> tramOpt = danhSachTram.stream()
+                .filter(t -> t.getMaTram().equalsIgnoreCase(maTram))
+                .findFirst();
+
+        if (tramOpt.isPresent()) {
+            Tram tram = tramOpt.get();
+            System.out.println("Trạm tìm thấy: " + tram);
+
+            System.out.print("Nhập trạng thái mới (Hoạt động/Trống): ");
+            String trangThaiMoi = sc.nextLine();
+
+            System.out.print("Xác nhận thay đổi? (y/n): ");
+            String confirm = sc.nextLine();
+
+            if (confirm.equalsIgnoreCase("y")) {
+                tram.setTrangThaiHoatDong(trangThaiMoi);
+                System.out.println("Cập nhật thành công!");
+            } else {
+                System.out.println("Hủy cập nhật!");
+            }
+        } else {
+            System.out.println("Không tìm thấy trạm với mã: " + maTram);
+        }
+    };
+   
 
     // ----------------------------------------------------------
     // Chuc nang 4: Xoa tru sac
