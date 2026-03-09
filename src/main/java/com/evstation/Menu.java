@@ -14,7 +14,7 @@ public class Menu {
     }
 
     private Scanner scanner;
-    private Module module;
+    public Module module;
 
     public Menu(Module module) {
         this.scanner = new Scanner(System.in);
@@ -61,19 +61,19 @@ public class Menu {
                 System.out.println("Thoat chuong trinh!");
                 break;
             case ThemTruSac:
-                Module.themTruSac(scanner);
+                module.themTruSac(scanner);
                 break;
             case XuatDanhSach:
-                Module.xuatDanhSach();
+                module.xuatDanhSach();
                 break;
             case CapNhatTrangThai:
-                Module.capNhatTrangThai(scanner);
+                module.capNhatTrangThai(scanner);
                 break;
             case XoaTruSac:
-                Module.xoaTruSac(scanner);
+                module.xoaTruSac(scanner);
                 break;
             case TimKiem:
-                Module.timKiem(scanner);
+                module.timKiem(scanner);
                 break;
             default:
                 break;
