@@ -66,16 +66,14 @@ abstract class TramSac {
     protected HuyenLamDong viTri; // Vi tri duoc chon tu Enum (type-safe, khong the nhap sai)
     protected boolean trangThai; // true = San sang | false = Dang su dung
     protected double congSuat; // Cong suat sac (don vi: kW)
-    protected int soCongSac; // So cong sac (so duong)
     protected double thoiGianHoatDong; // Tong so gio tich luy da van hanh (so duong)
     protected static final double GIA_MOI_KWH = 3850; // Don gia co dinh (VND/kWh)
     protected int sttHeThong; // STT khi them vao he thong (de sap xep fallback)
 
-    public TramSac(String maTram, HuyenLamDong viTri, double congSuat, int soCongSac, int sttHeThong) {
+    public TramSac(String maTram, HuyenLamDong viTri, double congSuat, int sttHeThong) {
         this.maTram = maTram;
         this.viTri = viTri; // Luu Enum, khong phai String
         this.congSuat = congSuat;
-        this.soCongSac = soCongSac;
         this.thoiGianHoatDong = 0.0; // Tu dong khoi tao la 0
         this.trangThai = true; // Mac dinh: San sang / Trong
         this.sttHeThong = sttHeThong;
@@ -92,17 +90,16 @@ abstract class TramSac {
 // LOP CON: TramSacCham (7kW - 11kW)
 // ============================================================
 class TramSacCham extends TramSac {
-    public TramSacCham(String maTram, HuyenLamDong viTri, double congSuat, int soCongSac, int stt, int sttHeThong) {
-        super(maTram, viTri, congSuat, soCongSac, sttHeThong);
-        // Lay ten hien thi tu Enum qua getTen()
+    public TramSacCham(String maTram, HuyenLamDong viTri, double congSuat, int stt, int sttHeThong) {
+        super(maTram, viTri, congSuat, sttHeThong);
         this.tenTram = "Tram Sac Cham " + viTri.getTen() + " " + stt;
     }
 
     @Override
     public void hienThiChiTiet() {
         String chiPhiStr = String.format("%,7.0f VND/h", tinhChiPhi(1));
-        System.out.printf("| %-18s | %-6s | %-30s | %5.1f kW | %3d | %10.1f h | %-14s | %-15s |%n",
-                "[Sac Cham]", maTram, tenTram, congSuat, soCongSac, thoiGianHoatDong,
+        System.out.printf("| %-18s | %-6s | %-30s | %5.1f kW | %10.1f h | %-14s | %-15s |%n",
+                "[Sac Cham]", maTram, tenTram, congSuat, thoiGianHoatDong,
                 trangThai ? "San sang" : "Dang sac", chiPhiStr);
     }
 }
@@ -111,16 +108,16 @@ class TramSacCham extends TramSac {
 // LOP CON: TramSacNhanh (12kW - 120kW)
 // ============================================================
 class TramSacNhanh extends TramSac {
-    public TramSacNhanh(String maTram, HuyenLamDong viTri, double congSuat, int soCongSac, int stt, int sttHeThong) {
-        super(maTram, viTri, congSuat, soCongSac, sttHeThong);
+    public TramSacNhanh(String maTram, HuyenLamDong viTri, double congSuat, int stt, int sttHeThong) {
+        super(maTram, viTri, congSuat, sttHeThong);
         this.tenTram = "Tram Sac Nhanh " + viTri.getTen() + " " + stt;
     }
 
     @Override
     public void hienThiChiTiet() {
         String chiPhiStr = String.format("%,7.0f VND/h", tinhChiPhi(1));
-        System.out.printf("| %-18s | %-6s | %-30s | %5.1f kW | %3d | %10.1f h | %-14s | %-15s |%n",
-                "[Sac Nhanh]", maTram, tenTram, congSuat, soCongSac, thoiGianHoatDong,
+        System.out.printf("| %-18s | %-6s | %-30s | %5.1f kW | %10.1f h | %-14s | %-15s |%n",
+                "[Sac Nhanh]", maTram, tenTram, congSuat, thoiGianHoatDong,
                 trangThai ? "San sang" : "Dang sac", chiPhiStr);
     }
 }
@@ -129,17 +126,16 @@ class TramSacNhanh extends TramSac {
 // LOP CON: TramSacSieuNhanh (121kW - 300kW)
 // ============================================================
 class TramSacSieuNhanh extends TramSac {
-    public TramSacSieuNhanh(String maTram, HuyenLamDong viTri, double congSuat, int soCongSac, int stt,
-            int sttHeThong) {
-        super(maTram, viTri, congSuat, soCongSac, sttHeThong);
+    public TramSacSieuNhanh(String maTram, HuyenLamDong viTri, double congSuat, int stt, int sttHeThong) {
+        super(maTram, viTri, congSuat, sttHeThong);
         this.tenTram = "Tram Sac Sieu Nhanh " + viTri.getTen() + " " + stt;
     }
 
     @Override
     public void hienThiChiTiet() {
         String chiPhiStr = String.format("%,7.0f VND/h", tinhChiPhi(1));
-        System.out.printf("| %-18s | %-6s | %-30s | %5.1f kW | %3d | %10.1f h | %-14s | %-15s |%n",
-                "[Sac Sieu Nhanh]", maTram, tenTram, congSuat, soCongSac, thoiGianHoatDong,
+        System.out.printf("| %-18s | %-6s | %-30s | %5.1f kW | %10.1f h | %-14s | %-15s |%n",
+                "[Sac Sieu Nhanh]", maTram, tenTram, congSuat, thoiGianHoatDong,
                 trangThai ? "San sang" : "Dang sac", chiPhiStr);
     }
 }
@@ -216,32 +212,18 @@ public class Module {
             }
         }
 
-        // B4: Nhap so cong sac
-        int soCong = 0;
-        while (soCong <= 0) {
-            System.out.print("Nhap so luong cong sac (soCong > 0): ");
-            try {
-                soCong = Integer.parseInt(scanner.nextLine().trim());
-                if (soCong <= 0) {
-                    System.out.println("!!! So luong cong sac phai la so duong!");
-                }
-            } catch (NumberFormatException e) {
-                System.out.println("!!! So luong cong sac phai la mot so!");
-            }
-        }
-
-        // B5: Tinh STT tai khu vuc do va them vao danh sach
+        // B4: Tinh STT tai khu vuc do va them vao danh sach
         int stt = countStationsAtLocation(khuVuc) + 1;
         int sttHeThong = danhSach.size() + 1;
 
         if (cs <= 11) {
-            danhSach.add(new TramSacCham(id, khuVuc, cs, soCong, stt, sttHeThong));
+            danhSach.add(new TramSacCham(id, khuVuc, cs, stt, sttHeThong));
             System.out.println("=> Phan loai: [Sac Cham] (7kW - 11kW)");
         } else if (cs <= 120) {
-            danhSach.add(new TramSacNhanh(id, khuVuc, cs, soCong, stt, sttHeThong));
+            danhSach.add(new TramSacNhanh(id, khuVuc, cs, stt, sttHeThong));
             System.out.println("=> Phan loai: [Sac Nhanh] (12kW - 120kW)");
         } else {
-            danhSach.add(new TramSacSieuNhanh(id, khuVuc, cs, soCong, stt, sttHeThong));
+            danhSach.add(new TramSacSieuNhanh(id, khuVuc, cs, stt, sttHeThong));
             System.out.println("=> Phan loai: [Sac Sieu Nhanh] (121kW - 300kW)");
         }
 
@@ -278,13 +260,13 @@ public class Module {
         // Xoa danh sach cu truoc khi nap lai de tranh trung lap
         danhSach.clear();
 
-        // Them cac tram sac mau (them soCongSac va thoiGianHoatDong)
-        danhSach.add(new TramSacCham("T001", HuyenLamDong.DA_LAT, 7.2, 2, 1, 1));
-        danhSach.add(new TramSacCham("T002", HuyenLamDong.DA_LAT, 11, 4, 2, 2));
-        danhSach.add(new TramSacNhanh("T003", HuyenLamDong.DUC_TRONG, 30, 2, 1, 3));
-        danhSach.add(new TramSacNhanh("T004", HuyenLamDong.BAO_LOC, 60, 4, 1, 4));
-        danhSach.add(new TramSacSieuNhanh("T005", HuyenLamDong.DI_LINH, 150, 6, 1, 5));
-        danhSach.add(new TramSacSieuNhanh("T006", HuyenLamDong.DA_LAT, 250, 8, 3, 6));
+        // Them cac tram sac mau
+        danhSach.add(new TramSacCham("T001", HuyenLamDong.DA_LAT, 7.2, 1, 1));
+        danhSach.add(new TramSacCham("T002", HuyenLamDong.DA_LAT, 11, 2, 2));
+        danhSach.add(new TramSacNhanh("T003", HuyenLamDong.DUC_TRONG, 30, 1, 3));
+        danhSach.add(new TramSacNhanh("T004", HuyenLamDong.BAO_LOC, 60, 1, 4));
+        danhSach.add(new TramSacSieuNhanh("T005", HuyenLamDong.DI_LINH, 150, 1, 5));
+        danhSach.add(new TramSacSieuNhanh("T006", HuyenLamDong.DA_LAT, 250, 3, 6));
 
         // Gia lap thoi gian hoat dong cho mot so tram
         danhSach.get(0).thoiGianHoatDong = 120.5;
@@ -326,18 +308,18 @@ public class Module {
             return Integer.compare(a.sttHeThong, b.sttHeThong);
         });
 
-        System.out.println("\n" + "=".repeat(75) + " DANH SACH TRAM SAC " + "=".repeat(75));
+        System.out.println("\n" + "=".repeat(65) + " DANH SACH TRAM SAC " + "=".repeat(65));
         System.out.println(
-                "+--------------------+--------+--------------------------------+-----------+-----+------------+----------------+-----------------+");
-        System.out.printf("| %-18s | %-6s | %-30s | %-9s | %-3s | %-10s | %-14s | %-15s |%n",
-                "Loai", "ID", "Ten Tram", "Cong Suat", "Por", "Vanh han", "Trang Thai", "Gia niem yet");
+                "+--------------------+--------+--------------------------------+-----------+------------+----------------+-----------------+");
+        System.out.printf("| %-18s | %-6s | %-30s | %-9s | %-10s | %-14s | %-15s |%n",
+                "Loai", "ID", "Ten Tram", "Cong Suat", "Van hanh", "Trang Thai", "Gia niem yet");
         System.out.println(
-                "+--------------------+--------+--------------------------------+-----------+-----+------------+----------------+-----------------+");
+                "+--------------------+--------+--------------------------------+-----------+------------+----------------+-----------------+");
         for (TramSac t : sortedList) {
             t.hienThiChiTiet();
         }
         System.out.println(
-                "+--------------------+--------+--------------------------------+-----------+-----+------------+----------------+-----------------+");
+                "+--------------------+--------+--------------------------------+-----------+------------+----------------+-----------------+");
     }
 
     // ----------------------------------------------------------

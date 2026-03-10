@@ -63,7 +63,6 @@ Smart-Electric-Vehicle-Toll-Station-Management/
 | `viTri` | `HuyenLamDong` | Vị trí (Enum – type-safe) |
 | `trangThai` | `boolean` | `true` = Sẵn sàng, `false` = Đang sạc |
 | `congSuat` | `double` | Công suất (kW) – bắt buộc > 0 |
-| `soCongSac` | `int` | Số cổng sạc – bắt buộc > 0 |
 | `thoiGianHoatDong` | `double` | Tổng giờ vận hành tích lũy (mặc định = 0) |
 
 ### Phân loại công suất

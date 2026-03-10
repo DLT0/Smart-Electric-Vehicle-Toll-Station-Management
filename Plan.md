@@ -34,7 +34,7 @@ Dựa trên sơ đồ logic nâng cao, chúng ta sẽ triển khai cấu trúc k
 Đây là phần quan trọng để chương trình vận hành ổn định và chuyên nghiệp:
 - **Kiểm tra tính duy nhất (Uniqueness)**: Trước khi thêm mới một trụ, hệ thống phải duyệt qua danh sách hiện tại để đảm bảo `maTram` chưa tồn tại.
 - **Ràng buộc dữ liệu**: 
-    - Công suất, thời gian hoạt động, số cổng sạc phải là số dương.
+    - Công suất, thời gian hoạt động phải là số dương.
     - Tên trạm và mã trạm không được để trống (null hoặc empty).
 - **Xử lý ngoại lệ**: Sử dụng `try-catch` để xử lý khi người dùng nhập chữ vào ô nhập số.
 
