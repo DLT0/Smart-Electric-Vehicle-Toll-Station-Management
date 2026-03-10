@@ -310,85 +310,140 @@ public class Module {
     // Chuc nang 5: Cap nhat trang thai
     // ----------------------------------------------------------
     public void capNhatTrangThai(Scanner scanner) {
-        // Đã Phân Công Việc Cho Thành
-        /*
-         * System.out.println("\n--- CAP NHAT TRANG THAI TRAM SAC ---");
-         * 
-         * // 1. Nhap ma tram
-         * System.out.print("Nhap ID tram can cap nhat: ");
-         * String id = scanner.nextLine().trim();
-         * 
-         * TramSac found = null;
-         * for (TramSac t : danhSach) {
-         * if (t.maTram.equalsIgnoreCase(id)) {
-         * found = t;
-         * break;
-         * }
-         * }
-         * 
-         * if (found == null) {
-         * System.out.println("=> Khong tim thay tram voi ID '" + id + "'");
-         * return;
-         * }
-         * 
-         * // Hien thi trang thai hien tai
-         * System.out.print("Trang thai hien tai: ");
-         * found.hienThiChiTiet();
-         * 
-         * // 2. Chon trang thai moi
-         * System.out.println("\nChon trang thai moi:");
-         * System.out.println("1. San sang (Trong)");
-         * System.out.println("2. Dang sac (Hoat dong)");
-         * System.out.print("Nhap lua chon (1-2): ");
-         * 
-         * int chon;
-         * try {
-         * chon = Integer.parseInt(scanner.nextLine().trim());
-         * } catch (NumberFormatException e) {
-         * System.out.println("=> Phai nhap so 1 hoac 2!");
-         * return;
-         * }
-         * 
-         * boolean newStatus;
-         * if (chon == 1) {
-         * newStatus = true;
-         * } else if (chon == 2) {
-         * newStatus = false;
-         * } else {
-         * System.out.println("=> Lua chon khong hop le!");
-         * return;
-         * }
-         * 
-         * // 3. Xac nhan
-         * System.out.print("Xac nhan thay doi? (y/n): ");
-         * String confirm = scanner.nextLine().trim().toLowerCase();
-         * 
-         * if (confirm.equals("y")) {
-         * found.trangThai = newStatus;
-         * // 4. Xuat thong bao
-         * System.out.println("=> Cap nhat trang thai " + newStatus + " thanh cong!");
-         * // 5. Xuat danh sach moi
-         * xuatDanhSach();
-         * } else {
-         * System.out.println("=> Da huy thao tac.");
-         * }
-         */
+        System.out.println("\n--- CAP NHAT TRANG THAI TRAM SAC ---");
+
+        // 1. Nhap ma tram
+        System.out.print("Nhap ID tram can cap nhat: ");
+        String id = scanner.nextLine().trim();
+
+        TramSac found = null;
+        for (TramSac t : danhSach) {
+            if (t.maTram.equalsIgnoreCase(id)) {
+                found = t;
+                break;
+            }
+        }
+
+        if (found == null) {
+            System.out.println("==> Khong tim thay tram voi ID '" + id + "'");
+            return;
+        }
+
+        // Hien thi trang thai hien tai
+        System.out.println("Trang thai hien tai:");
+        found.hienThiChiTiet();
+
+        // 2. Chon trang thai moi
+        System.out.println("\nChon trang thai moi:");
+        System.out.println("1. San sang (Trong)");
+        System.out.println("2. Dang sac (Hoat dong)");
+        System.out.print("Nhap lua chon (1-2): ");
+
+        int chon;
+        try {
+            chon = Integer.parseInt(scanner.nextLine().trim());
+        } catch (NumberFormatException e) {
+            System.out.println("==> Phai nhap so 1 hoac 2!");
+            return;
+        }
+
+        boolean newStatus;
+        if (chon == 1) {
+            newStatus = true;
+        } else if (chon == 2) {
+            newStatus = false;
+        } else {
+            System.out.println("==> Lua chon khong hop le!");
+            return;
+        }
+
+        // 3. Xac nhan
+        System.out.print("Xac nhan thay doi? (y/n): ");
+        String confirm = scanner.nextLine().trim().toLowerCase();
+
+        if (confirm.equals("y")) {
+            found.trangThai = newStatus;
+            System.out.println("==> Cap nhat trang thai thanh cong!");
+            xuatDanhSach();
+        } else {
+            System.out.println("==> Da huy thao tac.");
+        }
     }
 
     // ----------------------------------------------------------
     // Chuc nang 6: Xoa tru sac (chua trien khai)
     // ----------------------------------------------------------
     public void xoaTruSac(Scanner scanner) {
-        System.out.println("-> [Chuc nang 6] Xoa tru sac.");
-        // Da Phan Cong Viec Cho Minh
+        System.out.println("\n--- XOA TRAM SAC ---");
+
+        if (danhSach.isEmpty()) {
+            System.out.println("=> Danh sach trong. Khong co tram nao de xoa.");
+            return;
+        }
+
+        System.out.print("Nhap ID tram can xoa: ");
+        String id = scanner.nextLine().trim();
+        if (id.isEmpty()) {
+            System.out.println("=> Loi: ID khong duoc de trong.");
+            return;
+        }
+
+        TramSac found = null;
+        for (TramSac t : danhSach) {
+            if (t.maTram.equalsIgnoreCase(id)) {
+                found = t;
+                break;
+            }
+        }
+
+        if (found == null) {
+            System.out.println("=> Khong tim thay tram co ID: " + id);
+            return;
+        }
+
+        System.out.println("Thong tin tram tim thay:");
+        found.hienThiChiTiet();
+
+        System.out.print("Xac nhan xoa tram nay ? (Y/N): ");
+        String ans = scanner.nextLine().trim();
+        if (ans.equalsIgnoreCase("Y") || ans.equalsIgnoreCase("YES")) {
+            danhSach.remove(found);
+            System.out.println("=> Da xoa thanh cong tram ID: " + id);
+        } else {
+            System.out.println("=> Huy thao tac xoa.");
+        }
     }
+    // nhap ID tram sac can xoa
 
     // ----------------------------------------------------------
     // Chuc nang 7: Tim kiem theo ID (chua trien khai)
     // ----------------------------------------------------------
     public void timKiem(Scanner scanner) {
-        System.out.println("-> [Chuc nang 7] Tim kiem.");
-        // Da Phan Cong Viec Cho Minh
+        System.out.println("\n--- TIM KIEM TRAM THEO ID TRAM SAC ---");
+
+        if (danhSach.isEmpty()) {
+            System.out.println("==> Danh sach trong. Khong co tram nao.");
+            return;
+        }
+
+        System.out.print("Nhap ID tram can tim: ");
+        String id = scanner.nextLine().trim();
+        if (id.isEmpty()) {
+            System.out.println("==> Loi: ID khong duoc de trong.");
+            return;
+        }
+
+        boolean foundAny = false;
+        for (TramSac t : danhSach) {
+            if (t.maTram.equalsIgnoreCase(id)) {
+                t.hienThiChiTiet();
+                foundAny = true;
+            }
+        }
+
+        if (!foundAny) {
+            System.out.println("==> Khong tim thay tram co ID: " + id);
+        }
     }
 
     // ----------------------------------------------------------
