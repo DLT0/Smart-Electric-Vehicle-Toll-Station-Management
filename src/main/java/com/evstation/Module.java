@@ -167,14 +167,17 @@ public class Module {
             return;
         }
         // Kiem tra ID trung lap trong danh sach
-        /*
-         * for (TramSac t : danhSach) {
-         * if (t.maTram.equalsIgnoreCase(id)) {
-         * System.out.println("=> ID '" + id + "' da ton tai trong he thong!");
-         * return;
-         * }
-         * }
-         */
+        // ==> LỘC: Tối ưu hóa phần kiểm tra tính độc nhất như sau:
+        // + Tự động đề xuất id nếu người dùng k nhập (đảm bảo sau này có thể sử dụng
+        // SQL và dùng cho cả UI/UX)
+        // + Nếu người dùng nhập trùng, thông báo và yêu cầu nhập lại
+
+        for (TramSac t : danhSach) {
+            if (t.maTram.equalsIgnoreCase(id)) {
+                System.out.println("=> ID '" + id + "' da ton tai trong he thong!");
+                return;
+            }
+        }
         // B2: Chon khu vuc tu Enum (khong nhap tay, chi chon so)
         System.out.println("\nChon khu vuc trong tinh Lam Dong:");
         HuyenLamDong.hienThiDanhSach();
@@ -183,13 +186,13 @@ public class Module {
         try {
             soChon = Integer.parseInt(scanner.nextLine().trim());
         } catch (NumberFormatException e) {
-            System.out.println("=> Loi: Phai nhap mot so nguyen!");
+            System.out.println("!!! Phai nhap mot so nguyen!");
             return;
         }
         // layTheoSoThuTu tra ve null neu so khong hop le
         HuyenLamDong khuVuc = HuyenLamDong.layTheoSoThuTu(soChon);
         if (khuVuc == null) {
-            System.out.println("=> Loi: So thu tu khong hop le!");
+            System.out.println("!!! So thu tu khong hop le!");
             return;
         }
         System.out.println("=> Da chon: " + khuVuc.getTen());
@@ -200,11 +203,11 @@ public class Module {
         try {
             cs = Double.parseDouble(scanner.nextLine().trim());
         } catch (NumberFormatException e) {
-            System.out.println("=> Loi: Cong suat phai la mot so!");
+            System.out.println("!!! Cong suat phai la mot so!");
             return;
         }
         if (cs < 7 || cs > 300) {
-            System.out.println("=> Loi: Cong suat phai tu 7 den 300 kW!");
+            System.out.println("!!! Cong suat phai tu 7 den 300 kW!");
             return;
         }
 
@@ -238,9 +241,16 @@ public class Module {
     }
 
     // ----------------------------------------------------------
-    // Chuc nang 2: Them danh sach tru sac (chua trien khai)
+    // Chuc nang 2: Them danh sach tru sac
     // ----------------------------------------------------------
-    // public void themDSTruSac(Scanner scanner) { ... }
+    public void themDSTruSac(Scanner scanner) {
+        System.out.println("\n--- THEM DANH SACH TRAM SAC ---");
+        System.out.print("Nhap so luong tram sac can them: ");
+        int n = Integer.parseInt(scanner.nextLine().trim());
+        for (int i = 0; i < n; i++) {
+            them1TruSac(scanner);
+        }
+    }
 
     // ----------------------------------------------------------
     // Chuc nang 3: Tu dong nap du lieu mau vao he thong
@@ -325,7 +335,7 @@ public class Module {
         }
 
         if (found == null) {
-            System.out.println("==> Khong tim thay tram voi ID '" + id + "'");
+            System.out.println("!!! Khong tim thay tram voi ID '" + id + "'");
             return;
         }
 
@@ -343,7 +353,7 @@ public class Module {
         try {
             chon = Integer.parseInt(scanner.nextLine().trim());
         } catch (NumberFormatException e) {
-            System.out.println("==> Phai nhap so 1 hoac 2!");
+            System.out.println("!!! Phai nhap so 1 hoac 2!");
             return;
         }
 
@@ -353,7 +363,7 @@ public class Module {
         } else if (chon == 2) {
             newStatus = false;
         } else {
-            System.out.println("==> Lua chon khong hop le!");
+            System.out.println("!!! Lua chon khong hop le!");
             return;
         }
 
@@ -371,20 +381,20 @@ public class Module {
     }
 
     // ----------------------------------------------------------
-    // Chuc nang 6: Xoa tru sac (chua trien khai)
+    // Chuc nang 6: Xoa tru sac
     // ----------------------------------------------------------
     public void xoaTruSac(Scanner scanner) {
         System.out.println("\n--- XOA TRAM SAC ---");
 
         if (danhSach.isEmpty()) {
-            System.out.println("=> Danh sach trong. Khong co tram nao de xoa.");
+            System.out.println("!!! Danh sach trong. Khong co tram nao de xoa.");
             return;
         }
 
         System.out.print("Nhap ID tram can xoa: ");
         String id = scanner.nextLine().trim();
         if (id.isEmpty()) {
-            System.out.println("=> Loi: ID khong duoc de trong.");
+            System.out.println("!!! ID khong duoc de trong.");
             return;
         }
 
@@ -397,7 +407,7 @@ public class Module {
         }
 
         if (found == null) {
-            System.out.println("=> Khong tim thay tram co ID: " + id);
+            System.out.println("!!! Khong tim thay tram co ID: " + id);
             return;
         }
 
@@ -416,20 +426,20 @@ public class Module {
     // nhap ID tram sac can xoa
 
     // ----------------------------------------------------------
-    // Chuc nang 7: Tim kiem theo ID (chua trien khai)
+    // Chuc nang 7: Tim kiem theo ID
     // ----------------------------------------------------------
     public void timKiem(Scanner scanner) {
         System.out.println("\n--- TIM KIEM TRAM THEO ID TRAM SAC ---");
 
         if (danhSach.isEmpty()) {
-            System.out.println("==> Danh sach trong. Khong co tram nao.");
+            System.out.println("!!! Danh sach trong. Khong co tram nao.");
             return;
         }
 
         System.out.print("Nhap ID tram can tim: ");
         String id = scanner.nextLine().trim();
         if (id.isEmpty()) {
-            System.out.println("==> Loi: ID khong duoc de trong.");
+            System.out.println("!!! ID khong duoc de trong.");
             return;
         }
 
@@ -442,14 +452,40 @@ public class Module {
         }
 
         if (!foundAny) {
-            System.out.println("==> Khong tim thay tram co ID: " + id);
+            System.out.println("!!! Khong tim thay tram co ID: " + id);
         }
     }
 
     // ----------------------------------------------------------
-    // Chuc nang 8: Thong ke tru sac can bao tri (chua trien khai)
+    // Chuc nang 8: Thong ke he thong tru sac
     // ----------------------------------------------------------
-    // public void thongKeTruSacCanBaoTri() { ... }
+    /*
+     * MỤC TIÊU: Cung cấp báo cáo tổng quan và chi tiết về hiệu suất vận hành.
+     * 
+     * 1. Quy trình thực hiện:
+     * - Hiển thị Menu phụ: Cho phép chọn loại thống kê (Theo khu vực, Trạng thái,
+     * hoặc Độ ưu tiên bảo trì).
+     * - Xử lý dữ liệu: Lọc danh sách và sắp xếp (sort) theo tiêu chí người dùng đã
+     * chọn.
+     * - Hiển thị kết quả: Xuất bảng dữ liệu chi tiết kèm các chỉ số quan trọng.
+     * 
+     * 2. Các yêu cầu kỹ thuật:
+     * - Quản lý vận hành: (Cần thêm) Thuộc tính gio_da_dung và han_bao_tri (mặc
+     * định 400h) trong class TramSac.
+     * - Logic bảo trì: Hàm kiểm tra tỷ lệ độ hao mòn (gio_da_dung / han_bao_tri).
+     * Nếu > 90% thì báo động bảo trì.
+     * - Báo cáo tổng hợp (Summary): Cuối bảng phải có phần kết luận:
+     * + Tổng số trụ sạc, số trụ đang bận (Busy) vs. Rảnh (Ready).
+     * + Số lượng trụ cần bảo trì gấp hoặc đang bị hỏng.
+     * + Khu vực có tần suất sử dụng cao nhất.
+     * 3. Nâng cao:
+     * - Tìm hiểu thêm chức năng xóa các trạm sạc có số giờ sử dụng > han_bao_tri
+     * - Tìm hiểu các viết hàm private, cụ thể là hàm tự động cập nhật giờ sử dụng
+     * sau khi kết thúc quá trình sử dụng.
+     */
+    public void thongKeTruSac(Scanner scanner) {
+        System.out.println("-> [Chuc nang 8] Thong ke.");
+    }
 
     // ----------------------------------------------------------
     // Chuc nang 9: Xuat danh sach ra file Excel (chua trien khai)
