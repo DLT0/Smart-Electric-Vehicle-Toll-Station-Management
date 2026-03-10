@@ -27,7 +27,7 @@ public class Menu {
 
     public static void XuatMenu() {
         System.out.println("=================================================");
-        System.out.println("|       SMART EV TOLL STATION MANAGEMENT        |");
+        System.out.println("|      QUAN LY TRAM SAC XE DIEN THONG MINH      |");
         System.out.println("=================================================");
         System.out.println("| Phim | Chuc nang                              |");
         System.out.println("-------------------------------------------------");
@@ -74,7 +74,7 @@ public class Menu {
                 module.them1TruSac(scanner);
                 break;
             case ThemDSTruSac:
-                // module.themDSTruSac(scanner);
+                module.themDSTruSac(scanner);
                 break;
             case TuDongNhapDSTruSac:
                 module.khoiTaoDuLieuMau();
