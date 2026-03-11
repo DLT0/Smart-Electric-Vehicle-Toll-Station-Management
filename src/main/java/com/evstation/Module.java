@@ -61,26 +61,108 @@ enum HuyenLamDong {
 // LOP TRUU TUONG: TramSac
 // ============================================================
 abstract class TramSac {
-    protected String maTram; // Ma dinh danh duy nhat cho tram sac
-    protected String tenTram; // Ten = Loai + ViTri + STT (VD: Tram Sac Nhanh Thanh pho Da Lat 1)
-    protected HuyenLamDong viTri; // Vi tri duoc chon tu Enum (type-safe, khong the nhap sai)
-    protected boolean trangThai; // true = San sang | false = Dang su dung
-    protected double congSuat; // Cong suat sac (don vi: kW)
-    protected double thoiGianHoatDong; // Tong so gio tich luy da van hanh (so duong)
+    // * Khai bao cac truong du lieu (the private) - Rang buoc du lieu
+    private String _maTram; // Ma dinh danh duy nhat cho tram sac
+    private String _tenTram; // Ten = Loai + ViTri + STT
+    private HuyenLamDong _viTri; // Vi tri duoc chon tu Enum (type-safe)
+    private boolean _trangThai; // true = San sang | false = Dang su dung
+    private double _congSuat; // Cong suat sac (don vi: kW), phai > 0
+    private double _thoiGianHoatDong; // Tong so gio tich luy da van hanh, phai >= 0
     protected static final double GIA_MOI_KWH = 3850; // Don gia co dinh (VND/kWh)
-    protected int sttHeThong; // STT khi them vao he thong (de sap xep fallback)
+    private int _sttHeThong; // STT khi them vao he thong (de sap xep fallback)
 
+    // * Dong goi thuoc tinh (the public) - Getter & Setter
+
+    // #region [TODO] Ham tu dong sinh maTram - se trien khai sau
+    // Phuong thuc (con ham) tao lop: phat sinh ma tram tu dong
+    // Vi du: "SC" + viTri.name() + "-" + sttHeThong -> "SC-DALAT-001"
+    // o day du lieu lon den phan thuong vao an lap
+    // #endregion
+
+    // maTram: READ-ONLY - chi co getter, khong cho phep cap nhat tu ben ngoai
+    public String getMaTram() {
+        return _maTram;
+    }
+
+    // setMaTram la private: chi constructor trong noi bo duoc goi
+    private void setMaTram(String value) {
+        if (value == null || value.trim().isEmpty())
+            value = "UNKNOWN"; // Rang buoc: ma tram khong duoc de trong
+        _maTram = value.trim();
+    }
+
+    public String getTenTram() {
+        return _tenTram;
+    }
+
+    public void setTenTram(String value) {
+        if (value == null || value.trim().isEmpty())
+            value = "Chua dat ten";
+        _tenTram = value.trim();
+    }
+
+    public HuyenLamDong getViTri() {
+        return _viTri;
+    }
+
+    public void setViTri(HuyenLamDong value) {
+        if (value == null)
+            return; // Rang buoc: vi tri khong duoc null
+        _viTri = value;
+    }
+
+    public boolean getTrangThai() {
+        return _trangThai;
+    }
+
+    public void setTrangThai(boolean value) {
+        _trangThai = value; // Boolean khong can rang buoc them
+    }
+
+    public double getCongSuat() {
+        return _congSuat;
+    }
+
+    public void setCongSuat(double value) {
+        if (value <= 0)
+            value = 0; // Rang buoc: cong suat phai la so duong
+        else if (value > 300)
+            value = 300; // Rang buoc: gioi han toi da 300kW
+        _congSuat = value;
+    }
+
+    public double getThoiGianHoatDong() {
+        return _thoiGianHoatDong;
+    }
+
+    public void setThoiGianHoatDong(double value) {
+        if (value < 0)
+            value = 0; // Rang buoc: thoi gian khong duoc am
+        _thoiGianHoatDong = value;
+    }
+
+    public int getSttHeThong() {
+        return _sttHeThong;
+    }
+
+    public void setSttHeThong(int value) {
+        if (value < 1)
+            value = 1;
+        _sttHeThong = value;
+    }
+
+    // Constructor: khoi tao thong qua cac setter de dam bao rang buoc du lieu
     public TramSac(String maTram, HuyenLamDong viTri, double congSuat, int sttHeThong) {
-        this.maTram = maTram;
-        this.viTri = viTri; // Luu Enum, khong phai String
-        this.congSuat = congSuat;
-        this.thoiGianHoatDong = 0.0; // Tu dong khoi tao la 0
-        this.trangThai = true; // Mac dinh: San sang / Trong
-        this.sttHeThong = sttHeThong;
+        setMaTram(maTram);
+        setViTri(viTri);
+        setCongSuat(congSuat);
+        setThoiGianHoatDong(0.0); // Tu dong khoi tao la 0
+        setTrangThai(true); // Mac dinh: San sang / Trong
+        setSttHeThong(sttHeThong);
     }
 
     public double tinhChiPhi(double soGio) {
-        return this.congSuat * GIA_MOI_KWH * soGio;
+        return this._congSuat * GIA_MOI_KWH * soGio;
     }
 
     public abstract void hienThiChiTiet();
@@ -92,15 +174,15 @@ abstract class TramSac {
 class TramSacCham extends TramSac {
     public TramSacCham(String maTram, HuyenLamDong viTri, double congSuat, int stt, int sttHeThong) {
         super(maTram, viTri, congSuat, sttHeThong);
-        this.tenTram = "Tram Sac Cham " + viTri.getTen() + " " + stt;
+        setTenTram("Tram Sac Cham " + viTri.getTen() + " " + stt);
     }
 
     @Override
     public void hienThiChiTiet() {
         String chiPhiStr = String.format("%,7.0f VND/h", tinhChiPhi(1));
         System.out.printf("| %-18s | %-6s | %-30s | %5.1f kW | %10.1f h | %-14s | %-15s |%n",
-                "[Sac Cham]", maTram, tenTram, congSuat, thoiGianHoatDong,
-                trangThai ? "San sang" : "Dang sac", chiPhiStr);
+                "[Sac Cham]", getMaTram(), getTenTram(), getCongSuat(), getThoiGianHoatDong(),
+                getTrangThai() ? "San sang" : "Dang sac", chiPhiStr);
     }
 }
 
@@ -110,15 +192,15 @@ class TramSacCham extends TramSac {
 class TramSacNhanh extends TramSac {
     public TramSacNhanh(String maTram, HuyenLamDong viTri, double congSuat, int stt, int sttHeThong) {
         super(maTram, viTri, congSuat, sttHeThong);
-        this.tenTram = "Tram Sac Nhanh " + viTri.getTen() + " " + stt;
+        setTenTram("Tram Sac Nhanh " + viTri.getTen() + " " + stt);
     }
 
     @Override
     public void hienThiChiTiet() {
         String chiPhiStr = String.format("%,7.0f VND/h", tinhChiPhi(1));
         System.out.printf("| %-18s | %-6s | %-30s | %5.1f kW | %10.1f h | %-14s | %-15s |%n",
-                "[Sac Nhanh]", maTram, tenTram, congSuat, thoiGianHoatDong,
-                trangThai ? "San sang" : "Dang sac", chiPhiStr);
+                "[Sac Nhanh]", getMaTram(), getTenTram(), getCongSuat(), getThoiGianHoatDong(),
+                getTrangThai() ? "San sang" : "Dang sac", chiPhiStr);
     }
 }
 
@@ -128,15 +210,15 @@ class TramSacNhanh extends TramSac {
 class TramSacSieuNhanh extends TramSac {
     public TramSacSieuNhanh(String maTram, HuyenLamDong viTri, double congSuat, int stt, int sttHeThong) {
         super(maTram, viTri, congSuat, sttHeThong);
-        this.tenTram = "Tram Sac Sieu Nhanh " + viTri.getTen() + " " + stt;
+        setTenTram("Tram Sac Sieu Nhanh " + viTri.getTen() + " " + stt);
     }
 
     @Override
     public void hienThiChiTiet() {
         String chiPhiStr = String.format("%,7.0f VND/h", tinhChiPhi(1));
         System.out.printf("| %-18s | %-6s | %-30s | %5.1f kW | %10.1f h | %-14s | %-15s |%n",
-                "[Sac Sieu Nhanh]", maTram, tenTram, congSuat, thoiGianHoatDong,
-                trangThai ? "San sang" : "Dang sac", chiPhiStr);
+                "[Sac Sieu Nhanh]", getMaTram(), getTenTram(), getCongSuat(), getThoiGianHoatDong(),
+                getTrangThai() ? "San sang" : "Dang sac", chiPhiStr);
     }
 }
 
@@ -168,7 +250,7 @@ public class Module {
             }
             boolean exists = false;
             for (TramSac t : danhSach) {
-                if (t.maTram.equalsIgnoreCase(id)) {
+                if (t.getMaTram().equalsIgnoreCase(id)) {
                     exists = true;
                     break;
                 }
@@ -227,7 +309,7 @@ public class Module {
             System.out.println("=> Phan loai: [Sac Sieu Nhanh] (121kW - 300kW)");
         }
 
-        System.out.println("=> Them thanh cong: " + danhSach.get(danhSach.size() - 1).tenTram);
+        System.out.println("=> Them thanh cong: " + danhSach.get(danhSach.size() - 1).getTenTram());
     }
 
     // Ham phu tro (dung cho Chuc nang 1): dem so tram cung khu vuc
@@ -235,7 +317,7 @@ public class Module {
         int count = 0;
         for (TramSac t : danhSach) {
             // So sanh Enum bang == la chinh xac va nhanh hon .equals() voi String
-            if (t.viTri == khuVuc)
+            if (t.getViTri() == khuVuc)
                 count++;
         }
         return count;
@@ -269,13 +351,13 @@ public class Module {
         danhSach.add(new TramSacSieuNhanh("T006", HuyenLamDong.DA_LAT, 250, 3, 6));
 
         // Gia lap thoi gian hoat dong cho mot so tram
-        danhSach.get(0).thoiGianHoatDong = 120.5;
-        danhSach.get(3).thoiGianHoatDong = 390.0; // Canh bao bao tri
-        danhSach.get(4).thoiGianHoatDong = 450.0; // Qua han bao tri
+        danhSach.get(0).setThoiGianHoatDong(120.5);
+        danhSach.get(3).setThoiGianHoatDong(390.0); // Canh bao bao tri
+        danhSach.get(4).setThoiGianHoatDong(450.0); // Qua han bao tri
 
         // Gia lap trang thai mot so tram de test sap xep
-        danhSach.get(2).trangThai = false; // T003 - Dang sac
-        danhSach.get(5).trangThai = false; // T006 - Dang sac
+        danhSach.get(2).setTrangThai(false); // T003 - Dang sac
+        danhSach.get(5).setTrangThai(false); // T006 - Dang sac
     }
 
     // ----------------------------------------------------------
@@ -297,15 +379,15 @@ public class Module {
         Collections.sort(sortedList, (a, b) -> {
             // true (San sang) > false (Dang hoat dong)
             // Boolean.compare(false, true) tra ve -1, nghia la false dung truoc
-            int res = Boolean.compare(a.trangThai, b.trangThai);
+            int res = Boolean.compare(a.getTrangThai(), b.getTrangThai());
             if (res != 0)
                 return res;
 
-            res = Integer.compare(a.viTri.ordinal(), b.viTri.ordinal());
+            res = Integer.compare(a.getViTri().ordinal(), b.getViTri().ordinal());
             if (res != 0)
                 return res;
 
-            return Integer.compare(a.sttHeThong, b.sttHeThong);
+            return Integer.compare(a.getSttHeThong(), b.getSttHeThong());
         });
 
         System.out.println("\n" + "=".repeat(65) + " DANH SACH TRAM SAC " + "=".repeat(65));
@@ -334,7 +416,7 @@ public class Module {
 
         TramSac found = null;
         for (TramSac t : danhSach) {
-            if (t.maTram.equalsIgnoreCase(id)) {
+            if (t.getMaTram().equalsIgnoreCase(id)) {
                 found = t;
                 break;
             }
@@ -377,7 +459,7 @@ public class Module {
                 }
                 System.out.print("Xac nhan thay doi trang thai? (y/n): ");
                 if (scanner.nextLine().trim().toLowerCase().equals("y")) {
-                    found.trangThai = newStatus;
+                    found.setTrangThai(newStatus);
                     System.out.println("==> Cap nhat trang thai thanh cong!");
                 }
             } catch (NumberFormatException e) {
@@ -394,7 +476,7 @@ public class Module {
                 }
                 System.out.print("Xac nhan thay doi thoi gian hoat dong? (y/n): ");
                 if (scanner.nextLine().trim().toLowerCase().equals("y")) {
-                    found.thoiGianHoatDong = moi;
+                    found.setThoiGianHoatDong(moi);
                     System.out.println("==> Cap nhat thoi gian thanh cong!");
                 }
             } catch (NumberFormatException e) {
@@ -428,7 +510,7 @@ public class Module {
 
         TramSac found = null;
         for (TramSac t : danhSach) {
-            if (t.maTram.equalsIgnoreCase(id)) {
+            if (t.getMaTram().equalsIgnoreCase(id)) {
                 found = t;
                 break;
             }
@@ -451,7 +533,6 @@ public class Module {
             System.out.println("=> Huy thao tac xoa.");
         }
     }
-    // nhap ID tram sac can xoa
 
     // ----------------------------------------------------------
     // Chuc nang 7: Tim kiem theo ID
@@ -473,7 +554,7 @@ public class Module {
 
         boolean foundAny = false;
         for (TramSac t : danhSach) {
-            if (t.maTram.equalsIgnoreCase(id)) {
+            if (t.getMaTram().equalsIgnoreCase(id)) {
                 t.hienThiChiTiet();
                 foundAny = true;
             }
