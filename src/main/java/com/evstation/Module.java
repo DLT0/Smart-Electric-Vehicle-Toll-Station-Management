@@ -73,21 +73,18 @@ abstract class TramSac {
 
     // * Dong goi thuoc tinh (the public) - Getter & Setter
 
-    // #region [TODO] Ham tu dong sinh maTram - se trien khai sau
-    // Phuong thuc (con ham) tao lop: phat sinh ma tram tu dong
-    // Vi du: "SC" + viTri.name() + "-" + sttHeThong -> "SC-DALAT-001"
-    // o day du lieu lon den phan thuong vao an lap
-    // #endregion
+    // * ID duoc sinh tu dong boi Module.sinhMaTram()
+    // Vi du dinh dang: "SC-DAL-001", "SC-BAO-003", ...
+    // setMaTram() chi duoc goi 1 lan tu constructor, sau do READ-ONLY
 
     // maTram: READ-ONLY - chi co getter, khong cho phep cap nhat tu ben ngoai
     public String getMaTram() {
         return _maTram;
     }
 
-    // setMaTram la private: chi constructor trong noi bo duoc goi
     private void setMaTram(String value) {
         if (value == null || value.trim().isEmpty())
-            value = "UNKNOWN"; // Rang buoc: ma tram khong duoc de trong
+            value = "UNKNOWN";
         _maTram = value.trim();
     }
 
@@ -151,9 +148,9 @@ abstract class TramSac {
         _sttHeThong = value;
     }
 
-    // Constructor: khoi tao thong qua cac setter de dam bao rang buoc du lieu
+    // Constructor: nhan maTram da duoc Module sinh san, cac truong con lai tu dong
     public TramSac(String maTram, HuyenLamDong viTri, double congSuat, int sttHeThong) {
-        setMaTram(maTram);
+        setMaTram(maTram); // maTram duoc Module.sinhMaTram() tao ra
         setViTri(viTri);
         setCongSuat(congSuat);
         setThoiGianHoatDong(0.0); // Tu dong khoi tao la 0
@@ -227,6 +224,37 @@ class TramSacSieuNhanh extends TramSac {
 // ============================================================
 public class Module {
     private List<TramSac> danhSach = new ArrayList<>();
+    // true = dang trong che do du lieu mock; false = nguoi dung da nhap du lieu
+    // that
+    // Khi nguoi dung them tram dau tien, flag nay tu dong dat lai va mock data bi
+    // xoa
+    private boolean isMockMode = true;
+
+    // #region NAMING_CONVENTION - Quy uoc dat ten cho maTram
+    // Dinh dang: [PREFIX]-[MA_KHU_VUC]-[STT]
+    //
+    // PREFIX xac dinh loai tram:
+    // SC = Sac Cham (7kW - 11kW)
+    // SN = Sac Nhanh (12kW - 120kW)
+    // SS = Sac Sieu Nhanh(121kW- 300kW)
+    //
+    // MA_KHU_VUC: 3 ky tu dau cua Enum HuyenLamDong (viet hoa, bo dau gach duoi)
+    // Vi du: DA_LAT -> DAL, DUC_TRONG -> DUC, BAO_LOC -> BAO
+    //
+    // STT: So thu tu tram cung LOAI tai cung KHU VUC (3 chu so, zero-padding)
+    //
+    // Vi du day du:
+    // SC-DAL-001 -> Sac Cham, Da Lat, thu 1
+    // SN-DUC-001 -> Sac Nhanh, Duc Trong,thu 1
+    // SS-DIL-001 -> Sac Sieu Nhanh, Di Linh, thu 1
+    // SC-DAL-002 -> Sac Cham, Da Lat, thu 2
+    private static final String PREFIX_CHAM = "SC"; // Sac Cham (7kW - 11kW)
+    private static final String PREFIX_NHANH = "SN"; // Sac Nhanh (12kW - 120kW)
+    private static final String PREFIX_SIEU_NHANH = "SS"; // Sac Sieu Nhanh (121kW - 300kW)
+    private static final String MA_TRAM_SEPARATOR = "-"; // Ky tu phan cach
+    private static final int MA_KHU_VUC_LENGTH = 3; // Do dai ma khu vuc (lay 3 ky tu dau)
+    private static final String MA_TRAM_STT_FORMAT = "%03d"; // Dinh dang STT: 3 chu so, zero-padding
+    // #endregion NAMING_CONVENTION
 
     // Constructor: tu dong nap du lieu mau khi khoi tao
     public Module() {
@@ -234,36 +262,33 @@ public class Module {
     }
 
     // ----------------------------------------------------------
+    // Ham phu tro: Tu dong sinh maTram dua theo quy uoc NAMING_CONVENTION
+    // prefix duoc chon tu dong dua vao congSuat de phan biet loai tram
+    // ----------------------------------------------------------
+    private String sinhMaTram(HuyenLamDong khuVuc, double congSuat) {
+        String prefix = (congSuat <= 11) ? PREFIX_CHAM
+                : (congSuat <= 120) ? PREFIX_NHANH
+                        : PREFIX_SIEU_NHANH;
+        String tenEnum = khuVuc.name().replace("_", ""); // "DA_LAT" -> "DALAT"
+        String maKhuVuc = tenEnum.substring(0, Math.min(MA_KHU_VUC_LENGTH, tenEnum.length())).toUpperCase();
+        int sttTaiKhuVuc = countStationsAtLocation(khuVuc) + 1;
+        String sttStr = String.format(MA_TRAM_STT_FORMAT, sttTaiKhuVuc);
+        return prefix + MA_TRAM_SEPARATOR + maKhuVuc + MA_TRAM_SEPARATOR + sttStr;
+    }
+
+    // ----------------------------------------------------------
     // Chuc nang 1: Them 1 tru sac moi
     // ----------------------------------------------------------
     public void them1TruSac(Scanner scanner) {
-        System.out.println("\n--- THEM TRU SAC MOI (LAM DONG) ---");
-
-        // B1: Nhap ma tram
-        String id;
-        while (true) {
-            System.out.print("Nhap ID tram: ");
-            id = scanner.nextLine().trim();
-            if (id.isEmpty()) {
-                System.out.println("!!! ID khong duoc de trong!");
-                continue;
-            }
-            boolean exists = false;
-            for (TramSac t : danhSach) {
-                if (t.getMaTram().equalsIgnoreCase(id)) {
-                    exists = true;
-                    break;
-                }
-            }
-            if (exists) {
-                System.out.println("!!! ID '" + id + "' da ton tai trong he thong! Vui long nhap ID khac.");
-                continue;
-            }
-            break;
+        // Lan dau tien nguoi dung them tram that -> xoa toan bo mock data
+        if (isMockMode) {
+            danhSach.clear();
+            isMockMode = false;
+            System.out.println("[He thong] Du lieu mau da duoc xoa. Bat dau nhap du lieu that.");
         }
 
-        // B2: Chon khu vuc tu Enum
-        System.out.println("\nChon khu vuc trong tinh Lam Dong:");
+        // B1: Chon khu vuc tu Enum
+        System.out.println("Chon khu vuc trong tinh Lam Dong:");
         HuyenLamDong.hienThiDanhSach();
         HuyenLamDong khuVuc = null;
         while (khuVuc == null) {
@@ -280,7 +305,7 @@ public class Module {
         }
         System.out.println("=> Da chon: " + khuVuc.getTen());
 
-        // B3: Nhap cong suat - nguong toi thieu dong bo voi setCongSuat() (min = 7kW)
+        // B2: Nhap cong suat - nguong toi thieu dong bo voi setCongSuat() (min = 7kW)
         double cs = 0;
         while (cs < 7) {
             System.out.print("\nNhap cong suat kW (7 <= cs <= 300): ");
@@ -290,17 +315,20 @@ public class Module {
                     System.out.println("!!! Cong suat toi thieu la 7kW!");
                 } else if (cs > 300) {
                     System.out.println("!!! Cong suat toi da la 300kW! (setter se tu dong gioi han)");
-                    cs = 300; // Cho phep nhap nhung thong bao de nguoi dung biet
+                    cs = 300;
                 }
             } catch (NumberFormatException e) {
                 System.out.println("!!! Cong suat phai la mot so!");
             }
         }
 
-        // B4: Tinh STT tai khu vuc do va them vao danh sach
-        int stt = countStationsAtLocation(khuVuc) + 1;
-        int sttHeThong = danhSach.size() + 1;
+        // B3: Sinh ID tu dong va tinh cac STT
+        String id = sinhMaTram(khuVuc, cs); // prefix phu thuoc loai sac
+        int stt = countStationsAtLocation(khuVuc) + 1; // STT tai khu vuc
+        int sttHeThong = danhSach.size() + 1; // STT toan he thong
+        System.out.println("=> ID tu dong sinh: " + id);
 
+        // B4: Phan loai va them vao danh sach
         if (cs <= 11) {
             danhSach.add(new TramSacCham(id, khuVuc, cs, stt, sttHeThong));
             System.out.println("=> Phan loai: [Sac Cham] (7kW - 11kW)");
@@ -330,7 +358,6 @@ public class Module {
     // Chuc nang 2: Them danh sach tru sac
     // ----------------------------------------------------------
     public void themDSTruSac(Scanner scanner) {
-        System.out.println("\n--- THEM DANH SACH TRAM SAC ---");
         int n = 0;
         while (n <= 0) {
             System.out.print("Nhap so luong tram sac can them (> 0): ");
@@ -354,13 +381,14 @@ public class Module {
         // Xoa danh sach cu truoc khi nap lai de tranh trung lap
         danhSach.clear();
 
-        // Them cac tram sac mau
-        danhSach.add(new TramSacCham("T001", HuyenLamDong.DA_LAT, 7.2, 1, 1));
-        danhSach.add(new TramSacCham("T002", HuyenLamDong.DA_LAT, 11, 2, 2));
-        danhSach.add(new TramSacNhanh("T003", HuyenLamDong.DUC_TRONG, 30, 1, 3));
-        danhSach.add(new TramSacNhanh("T004", HuyenLamDong.BAO_LOC, 60, 1, 4));
-        danhSach.add(new TramSacSieuNhanh("T005", HuyenLamDong.DI_LINH, 150, 1, 5));
-        danhSach.add(new TramSacSieuNhanh("T006", HuyenLamDong.DA_LAT, 250, 3, 6));
+        // Them cac tram sac mau - ID tu dong sinh qua sinhMaTram()
+        // Luu y: them lan luot de sinhMaTram() tinh STT chinh xac
+        themMau(HuyenLamDong.DA_LAT, 7.2); // => SC-DAL-001 - Sac Cham
+        themMau(HuyenLamDong.DA_LAT, 11); // => SC-DAL-002 - Sac Cham
+        themMau(HuyenLamDong.DUC_TRONG, 30); // => SN-DUC-001 - Sac Nhanh
+        themMau(HuyenLamDong.BAO_LOC, 60); // => SN-BAO-001 - Sac Nhanh
+        themMau(HuyenLamDong.DI_LINH, 150); // => SS-DIL-001 - Sac Sieu Nhanh
+        themMau(HuyenLamDong.DA_LAT, 250); // => SS-DAL-001 - Sac Sieu Nhanh
 
         // Gia lap thoi gian hoat dong cho mot so tram
         danhSach.get(0).setThoiGianHoatDong(120.5);
@@ -368,8 +396,22 @@ public class Module {
         danhSach.get(4).setThoiGianHoatDong(450.0); // Qua han bao tri
 
         // Gia lap trang thai mot so tram de test sap xep
-        danhSach.get(2).setTrangThai(false); // T003 - Dang sac
-        danhSach.get(5).setTrangThai(false); // T006 - Dang sac
+        danhSach.get(2).setTrangThai(false); // DUC_TRONG-001 - Dang sac
+        danhSach.get(5).setTrangThai(false); // DA_LAT-003 - Dang sac
+    }
+
+    // Ham phu tro noi bo: Them 1 tram mau vao danh sach (ID tu dong sinh)
+    private void themMau(HuyenLamDong khuVuc, double congSuat) {
+        String id = sinhMaTram(khuVuc, congSuat); // prefix theo loai sac
+        int stt = countStationsAtLocation(khuVuc) + 1;
+        int sttHeThong = danhSach.size() + 1;
+        if (congSuat <= 11) {
+            danhSach.add(new TramSacCham(id, khuVuc, congSuat, stt, sttHeThong));
+        } else if (congSuat <= 120) {
+            danhSach.add(new TramSacNhanh(id, khuVuc, congSuat, stt, sttHeThong));
+        } else {
+            danhSach.add(new TramSacSieuNhanh(id, khuVuc, congSuat, stt, sttHeThong));
+        }
     }
 
     // ----------------------------------------------------------
@@ -420,7 +462,6 @@ public class Module {
     // Chuc nang 5: Cap nhat trang thai
     // ----------------------------------------------------------
     public void capNhatTrangThai(Scanner scanner) {
-        System.out.println("\n--- CAP NHAT TRANG THAI TRAM SAC ---");
 
         // 1. Nhap ma tram
         System.out.print("Nhap ID tram can cap nhat: ");
@@ -503,7 +544,6 @@ public class Module {
     // Chuc nang 6: Xoa tru sac
     // ----------------------------------------------------------
     public void xoaTruSac(Scanner scanner) {
-        System.out.println("\n--- XOA TRAM SAC ---");
 
         if (danhSach.isEmpty()) {
             System.out.println("!!! Danh sach trong. Khong co tram nao de xoa.");
@@ -547,7 +587,6 @@ public class Module {
     // Chuc nang 7: Tim kiem theo ID
     // ----------------------------------------------------------
     public void timKiem(Scanner scanner) {
-        System.out.println("\n--- TIM KIEM TRAM THEO ID TRAM SAC ---");
 
         if (danhSach.isEmpty()) {
             System.out.println("!!! Danh sach trong. Khong co tram nao.");

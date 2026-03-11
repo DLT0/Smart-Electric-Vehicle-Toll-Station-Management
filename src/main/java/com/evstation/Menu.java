@@ -8,7 +8,6 @@ public class Menu {
         Thoat,
         Them1TruSac,
         ThemDSTruSac,
-        TuDongNhapDSTruSac,
         XuatDanhSach,
         CapNhatTrangThai,
         XoaTruSac,
@@ -34,8 +33,6 @@ public class Menu {
         System.out.printf("|   %d  | %-38s |%n", MenuCT.Thoat.ordinal(), "Thoat Chuong Trinh.");
         System.out.printf("|   %d  | %-38s |%n", MenuCT.Them1TruSac.ordinal(), "Them 1 tru sac moi.");
         System.out.printf("|   %d  | %-38s |%n", MenuCT.ThemDSTruSac.ordinal(), "Them danh sach tru sac.");
-        System.out.printf("|   %d  | %-38s |%n", MenuCT.TuDongNhapDSTruSac.ordinal(),
-                "Tu dong nhap danh sach tru sac.");
         System.out.printf("|   %d  | %-38s |%n", MenuCT.XuatDanhSach.ordinal(), "Xem danh sach tru sac.");
         System.out.printf("|   %d  | %-38s |%n", MenuCT.CapNhatTrangThai.ordinal(), "Cap nhat trang thai.");
         System.out.printf("|   %d  | %-38s |%n", MenuCT.XoaTruSac.ordinal(), "Xoa tru sac.");
@@ -71,25 +68,26 @@ public class Menu {
                 System.out.println("Thoat chuong trinh!");
                 break;
             case Them1TruSac:
+                System.out.println("\n--- THEM TRU SAC MOI (LAM DONG) ---");
                 module.them1TruSac(scanner);
                 break;
             case ThemDSTruSac:
+                System.out.println("\n--- THEM DANH SACH TRAM SAC ---");
                 module.themDSTruSac(scanner);
-                break;
-            case TuDongNhapDSTruSac:
-                module.khoiTaoDuLieuMau();
-                System.out.println("Da khoi tao du lieu mau!");
                 break;
             case XuatDanhSach:
                 module.xuatDanhSach();
                 break;
             case CapNhatTrangThai:
+                System.out.println("\n--- CAP NHAT TRANG THAI TRAM SAC ---");
                 module.capNhatTrangThai(scanner);
                 break;
             case XoaTruSac:
+                System.out.println("\n--- XOA TRAM SAC ---");
                 module.xoaTruSac(scanner);
                 break;
             case TimKiem:
+                System.out.println("\n--- TIM KIEM TRAM THEO ID TRAM SAC ---");
                 module.timKiem(scanner);
                 break;
             default:
