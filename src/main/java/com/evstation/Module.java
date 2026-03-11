@@ -178,7 +178,7 @@ class TramSacCham extends TramSac {
     public void hienThiChiTiet() {
         // Don gia co dinh: GIA_MOI_KWH (VND/kWh) - moi tram co cung don gia
         String donGiaStr = String.format("%,d VND/kWh", (long) GIA_MOI_KWH);
-        System.out.printf("| %-16s | %-10s | %-29s | %7.1f kW | %7.1f h | %-8s | %-13s |%n",
+        System.out.printf("| %-16s | %-10s | %-29s | %6.1f kW | %7.1f h | %-10s | %-13s |%n",
                 "[Sac Cham]", getMaTram(), getTenTram(), getCongSuat(), getThoiGianHoatDong(),
                 getTrangThai() ? "San sang" : "Dang sac", donGiaStr);
     }
@@ -196,7 +196,7 @@ class TramSacNhanh extends TramSac {
     @Override
     public void hienThiChiTiet() {
         String donGiaStr = String.format("%,d VND/kWh", (long) GIA_MOI_KWH);
-        System.out.printf("| %-16s | %-10s | %-29s | %7.1f kW | %7.1f h | %-8s | %-13s |%n",
+        System.out.printf("| %-16s | %-10s | %-29s | %6.1f kW | %7.1f h | %-10s | %-13s |%n",
                 "[Sac Nhanh]", getMaTram(), getTenTram(), getCongSuat(), getThoiGianHoatDong(),
                 getTrangThai() ? "San sang" : "Dang sac", donGiaStr);
     }
@@ -214,7 +214,7 @@ class TramSacSieuNhanh extends TramSac {
     @Override
     public void hienThiChiTiet() {
         String donGiaStr = String.format("%,d VND/kWh", (long) GIA_MOI_KWH);
-        System.out.printf("| %-16s | %-10s | %-29s | %7.1f kW | %7.1f h | %-8s | %-13s |%n",
+        System.out.printf("| %-16s | %-10s | %-29s | %6.1f kW | %7.1f h | %-10s | %-13s |%n",
                 "[Sac Sieu Nhanh]", getMaTram(), getTenTram(), getCongSuat(), getThoiGianHoatDong(),
                 getTrangThai() ? "San sang" : "Dang sac", donGiaStr);
     }
@@ -475,13 +475,14 @@ public class Module {
             return Integer.compare(a.getSttHeThong(), b.getSttHeThong());
         });
 
-        // SEP = 117 chars (khop voi data row format: | %-16s | %-10s | %-29s | %7.1f kW
-        // | %7.1f h | %-8s | %-13s |)
-        // Segments: 18 + 12 + 31 + 12 + 11 + 10 + 15 = 109 dashes + 8 plus = 117
-        final String SEP = "+------------------+------------+-------------------------------+------------+-----------+----------+---------------+";
-        System.out.println("\n" + "=".repeat(29) + " DANH SACH TRAM SAC " + "=".repeat(29));
+        // Data row = 118 chars: | %-16s | %-10s | %-29s | %6.1f kW | %7.1f h | %-10s |
+        // %-13s |
+        // "Trang Thai"=10 chars > "San sang"=8 -> field phai la %-10s
+        // Segments: 18+12+31+11+11+12+15 = 110 dashes + 8 plus = 118
+        final String SEP = "+------------------+------------+-------------------------------+-----------+-----------+------------+---------------+";
+        System.out.println("\n" + "=".repeat(30) + " DANH SACH TRAM SAC " + "=".repeat(30));
         System.out.println(SEP);
-        System.out.printf("| %-16s | %-10s | %-29s | %-10s | %-9s | %-8s | %-13s |%n",
+        System.out.printf("| %-16s | %-10s | %-29s | %-9s | %-9s | %-10s | %-13s |%n",
                 "Loai", "ID", "Ten Tram", "Cong Suat", "Van hanh", "Trang Thai", "Don gia");
         System.out.println(SEP);
         for (TramSac t : sortedList) {
