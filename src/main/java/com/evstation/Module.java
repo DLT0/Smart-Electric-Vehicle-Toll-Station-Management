@@ -195,10 +195,10 @@ class TramSacNhanh extends TramSac {
 
     @Override
     public void hienThiChiTiet() {
-        String chiPhiStr = String.format("%,d VND/h", (long) tinhChiPhi(1));
+        String donGiaStr = String.format("%,d VND/kWh", (long) GIA_MOI_KWH);
         System.out.printf("| %-16s | %-10s | %-29s | %7.1f kW | %7.1f h | %-8s | %-13s |%n",
                 "[Sac Nhanh]", getMaTram(), getTenTram(), getCongSuat(), getThoiGianHoatDong(),
-                getTrangThai() ? "San sang" : "Dang sac", chiPhiStr);
+                getTrangThai() ? "San sang" : "Dang sac", donGiaStr);
     }
 }
 
@@ -213,10 +213,10 @@ class TramSacSieuNhanh extends TramSac {
 
     @Override
     public void hienThiChiTiet() {
-        String chiPhiStr = String.format("%,d VND/h", (long) tinhChiPhi(1));
+        String donGiaStr = String.format("%,d VND/kWh", (long) GIA_MOI_KWH);
         System.out.printf("| %-16s | %-10s | %-29s | %7.1f kW | %7.1f h | %-8s | %-13s |%n",
                 "[Sac Sieu Nhanh]", getMaTram(), getTenTram(), getCongSuat(), getThoiGianHoatDong(),
-                getTrangThai() ? "San sang" : "Dang sac", chiPhiStr);
+                getTrangThai() ? "San sang" : "Dang sac", donGiaStr);
     }
 }
 
