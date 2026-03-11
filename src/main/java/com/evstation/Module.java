@@ -125,7 +125,7 @@ abstract class TramSac {
 
     public void setCongSuat(double value) {
         if (value <= 0)
-            value = 0; // Rang buoc: cong suat phai la so duong
+            value = 7; // Rang buoc: cong suat phai la so duong
         else if (value > 300)
             value = 300; // Rang buoc: gioi han toi da 300kW
         _congSuat = value;
@@ -280,14 +280,17 @@ public class Module {
         }
         System.out.println("=> Da chon: " + khuVuc.getTen());
 
-        // B3: Nhap cong suat
+        // B3: Nhap cong suat - nguong toi thieu dong bo voi setCongSuat() (min = 7kW)
         double cs = 0;
-        while (cs <= 0) {
-            System.out.print("\nNhap cong suat kW (cs > 0): ");
+        while (cs < 7) {
+            System.out.print("\nNhap cong suat kW (7 <= cs <= 300): ");
             try {
                 cs = Double.parseDouble(scanner.nextLine().trim());
-                if (cs <= 0) {
-                    System.out.println("!!! Cong suat phai la so duong!");
+                if (cs < 7) {
+                    System.out.println("!!! Cong suat toi thieu la 7kW!");
+                } else if (cs > 300) {
+                    System.out.println("!!! Cong suat toi da la 300kW! (setter se tu dong gioi han)");
+                    cs = 300; // Cho phep nhap nhung thong bao de nguoi dung biet
                 }
             } catch (NumberFormatException e) {
                 System.out.println("!!! Cong suat phai la mot so!");
@@ -328,8 +331,17 @@ public class Module {
     // ----------------------------------------------------------
     public void themDSTruSac(Scanner scanner) {
         System.out.println("\n--- THEM DANH SACH TRAM SAC ---");
-        System.out.print("Nhap so luong tram sac can them: ");
-        int n = Integer.parseInt(scanner.nextLine().trim());
+        int n = 0;
+        while (n <= 0) {
+            System.out.print("Nhap so luong tram sac can them (> 0): ");
+            try {
+                n = Integer.parseInt(scanner.nextLine().trim());
+                if (n <= 0)
+                    System.out.println("!!! So luong phai la so nguyen duong!");
+            } catch (NumberFormatException e) {
+                System.out.println("!!! Phai nhap mot so nguyen!");
+            }
+        }
         for (int i = 0; i < n; i++) {
             them1TruSac(scanner);
         }
@@ -467,13 +479,10 @@ public class Module {
                 return;
             }
         } else if (loai == 2) {
-            System.out.print("\nNhap thoi gian hoat dong moi (h): ");
+            System.out.print("\nNhap thoi gian hoat dong moi (h >= 0): ");
             try {
                 double moi = Double.parseDouble(scanner.nextLine().trim());
-                if (moi < 0) {
-                    System.out.println("!!! Thoi gian hoat dong khong duoc am!");
-                    return;
-                }
+                // Khong can kiem tra thu cong - setThoiGianHoatDong() tu xu ly gia tri am
                 System.out.print("Xac nhan thay doi thoi gian hoat dong? (y/n): ");
                 if (scanner.nextLine().trim().toLowerCase().equals("y")) {
                     found.setThoiGianHoatDong(moi);
@@ -597,7 +606,7 @@ public class Module {
     }
 
     // ----------------------------------------------------------
-    // Chuc nang 9: Xuat danh sach ra file Excel (chua trien khai)
+    // Chuc nang 9: Xuat danh sach ra file Excel (chua trien khai) @Loc
     // ----------------------------------------------------------
     // public void xuatFile() { ... }
 }
