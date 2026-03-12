@@ -2,7 +2,7 @@
 
 <div align="center">
     
-![Java](https://img.shields.io/badge/Java_17-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
+![Java](https://img.shields.io/badge/Java_21-007396?style=for-the-badge&logo=openjdk&logoColor=white)
 
 </div>
 
@@ -20,7 +20,7 @@
 
 | Thành phần | Chi tiết |
 |---|---|
-| Ngôn ngữ | Java 17 |
+| Ngôn ngữ | Java 21 |
 | Build Tool | Maven |
 | Paradigm | Lập trình hướng đối tượng (OOP) |
 
