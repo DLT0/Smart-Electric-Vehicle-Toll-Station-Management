@@ -1,55 +1,103 @@
-# ⚡ Hệ thống Quản lý Trạm sạc Xe điện – Tỉnh Lâm Đồng
+# ⚡ EVCore - Smart Electric Vehicle Management System
+> A robust Java package for managing electric vehicle charging infrastructure.
 
 <div align="center">
-    
-![Java](https://img.shields.io/badge/Java_21-007396?style=for-the-badge&logo=openjdk&logoColor=white)
+
+![Java](https://img.shields.io/badge/Java_21-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
+![Maven](https://img.shields.io/badge/Maven-C71A36?style=for-the-badge&logo=apache-maven&logoColor=white)
 
 </div>
 
-## 📖 Giới thiệu
-**Smart EV Station – Lâm Đồng** là ứng dụng được xây dựng chuyên biệt để quản lý toàn bộ mạng lưới trạm sạc trong tỉnh Lâm Đồng. Hệ thống cung cấp:
+---
 
-- 📍 **Vị trí địa lý có sẵn**: Người dùng chọn khu vực từ danh sách 9 đơn vị hành chính Lâm Đồng thay vì nhập tay.
-- 🔋 **Phân loại tự động**: Hệ thống tự xếp loại Sạc Chậm / Sạc Nhanh / Sạc Siêu Nhanh dựa trên công suất nhập vào.
-- 🏷️ **Đặt tên thông minh**: Tên trạm được tạo theo công thức `[Loại] + [Khu vực] + [STT]` (VD: *Tram Sac Nhanh Da Lat 2*).
-- 📊 **Quản lý toàn diện**: Thêm, xem danh sách, cập nhật trạng thái và tìm kiếm theo ID.
+## 📖 Tổng quan
+**EVCore** (Smart-EV-Toll-Station) là gói giải pháp backend xử lý nghiệp vụ quản lý trạm sạc xe điện. Được thiết kế theo chuẩn hướng đối tượng (OOP) và phát triển trên nền tảng **Java 21**, dự án này không chỉ là một ứng dụng Console mà còn là một **Core Engine** có khả năng tích hợp linh hoạt vào các hệ thống Web (Spring Boot) hoặc Desktop (JavaFX).
 
 ---
 
-## 🛠️ Công nghệ sử dụng
+## ✅ Chức năng hiện có
 
-| Thành phần | Chi tiết |
-|---|---|
-| Ngôn ngữ | Java 21 |
-| Build Tool | Maven |
-| Paradigm | Lập trình hướng đối tượng (OOP) |
+
+| # | Chức năng | Mô tả |
+|---|---|---|
+| 1 | **Thêm 1 trạm sạc** | Nhập ID, chọn khu vực (số thứ tự), nhập công suất & số cổng. Có vòng lặp kiểm tra ID trùng, dữ liệu sai kiểu sẽ nhắc nhập lại. |
+| 2 | **Thêm danh sách trạm** | Nhập số lượng rồi gọi lặp chức năng 1. |
+| 3 | **Xem danh sách** | Hiển thị bảng đầy đủ: Loại, ID, Tên, Công suất, Số cổng, Vận hành (h), Trạng thái, Chi phí. |
+| 4 | **Cập nhật trạm** | Cập nhật trạng thái sạc hoặc thời gian hoạt động của trạm theo ID. |
+| 5 | **Xóa trạm** | Tìm và xóa trạm theo ID, có xác nhận trước khi thực hiện. |
+| 6 | **Thống kê** | Thống kê danh sách trạm cần bảo trì. |
+| 7 | **Xuất File** | Xuất danh sách trạm ra file Exel. |
 
 ---
 
-## � Cấu trúc dự án
+## 🛠️ Tính năng Kỹ thuật & Nguyên lý Thiết kế
 
-Dự án được triển khai theo mô hình 3 file chính để tối giản quy trình học tập:
+| Tính năng | Mô tả | Chi tiết triển khai |
+|---|---|---|
+| **Phân loại tự động** | Tự động chọn Class con phù hợp | Chậm (<=11kW), Nhanh (<=120kW), Siêu nhanh (>120kW) |
+| **Định danh thông minh**| Quy ước ID duy nhất | Format: `[PREFIX]-[AREA]-[SERIAL]` (VD: `SN-DAL-001`) |
+| **Ràng buộc dữ liệu** | Data Validation cực kỳ nghiêm ngặt | Chống trùng ID, giới hạn công suất [7-300kW], type-safety |
+| **Quản lý vận hành** | Theo dõi trạng thái & thời gian | Tích hợp logic cảnh báo bảo trì dựa trên số giờ chạy (>400h) |
+| **Sắp xếp nâng cao**| Custom Comparator | Ưu tiên hiển thị trạm đang bận, sau đó sắp xếp theo vị trí |
 
+### 🛡️ Cơ chế Validation (Mẫu)
+`EVCore` đảm bảo dữ liệu luôn sạch từ tầng Model:
+```java
+public void setCongSuat(double value) {
+    if (value <= 0) value = 7; // Mặc định tối thiểu 7kW
+    else if (value > 300) value = 300; // Giới hạn hạ tầng tối đa
+    this._congSuat = value;
+}
 ```
-Smart-Electric-Vehicle-Toll-Station-Management/
-├── pom.xml                                    # Cấu hình Maven
-└── src/main/java/com/evstation/
-    ├── Main.java                              # Điểm khởi đầu (gọi Menu)
-    ├── Menu.java                              # Quản lý giao diện & lựa chọn (Enum-based)
-    └── Module.java                            # Chứa logic xử lý các chức năng
+
+---
+
+## 📁 Cấu trúc Thư mục
+```text
+src/main/java/com/evstation/
+├── Main.java          # Entry point (Console Application)
+├── Menu.java          # Giao diện điều hướng CLI
+└── Module.java        # Core Logic (The real Package)
+    ├── HuyenLamDong   # Enum-based Area Management
+    ├── TramSac        # Model Layer (Polymorphism & Abstract)
+    └── Module         # Service Layer (Business Logic & Repository)
 ```
 
 ---
 
-## 🚀 Hướng dẫn chạy chương trình
+## 🚀 Hướng dẫn cài đặt & chạy chương trình
 
-### 1. Build dự án
+### Yêu cầu hệ thống
+
+- **Java**: Microsoft OpenJDK 21+ (hoặc bất kỳ JDK 21 nào)
+- **Maven**: 3.9+
+- **OS**: Windows 10/11 (hoặc Linux/macOS)
+
+### 1. Clone dự án
 ```bash
+git clone <repository-url>
+cd Smart-Electric-Vehicle-Toll-Station-Management-main
+```
+
+### 2. Build dự án
+
+> ⚠️ **Lưu ý Windows:** Nếu `JAVA_HOME` hệ thống chưa trỏ đến JDK 21, hãy thiết lập trước khi build:
+
+```powershell
+# Thiết lập JAVA_HOME tạm thời cho phiên terminal hiện tại
+$env:JAVA_HOME = "C:\Program Files\Microsoft\jdk-21.0.10.7-hotspot"
+$env:PATH = "$env:JAVA_HOME\bin;$env:PATH"
+
+# Sau đó build
 mvn clean compile
 ```
 
-### 2. Chạy ứng dụng
-Mở file `Main.java` và chọn **Run** trong IDE, hoặc dùng lệnh:
-```bash
+### 3. Chạy ứng dụng
+
+Mở file `Main.java` và chọn **Run** trong IDE, hoặc:
+
+```powershell
 mvn exec:java -Dexec.mainClass="com.evstation.Main"
 ```
+
+---
