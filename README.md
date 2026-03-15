@@ -17,6 +17,7 @@
 
 ## ✅ Chức năng hiện có
 
+
 | # | Chức năng | Mô tả |
 |---|---|---|
 | 1 | **Thêm 1 trạm sạc** | Nhập ID, chọn khu vực (số thứ tự), nhập công suất & số cổng. Có vòng lặp kiểm tra ID trùng, dữ liệu sai kiểu sẽ nhắc nhập lại. |
@@ -26,6 +27,41 @@
 | 5 | **Xóa trạm** | Tìm và xóa trạm theo ID, có xác nhận trước khi thực hiện. |
 | 6 | **Thống kê** | Thống kê danh sách trạm cần bảo trì. |
 | 7 | **Xuất File** | Xuất danh sách trạm ra file Exel. |
+
+---
+
+## 🛠️ Tính năng Kỹ thuật & Nguyên lý Thiết kế
+
+| Tính năng | Mô tả | Chi tiết triển khai |
+|---|---|---|
+| **Phân loại tự động** | Tự động chọn Class con phù hợp | Chậm (<=11kW), Nhanh (<=120kW), Siêu nhanh (>120kW) |
+| **Định danh thông minh**| Quy ước ID duy nhất | Format: `[PREFIX]-[AREA]-[SERIAL]` (VD: `SN-DAL-001`) |
+| **Ràng buộc dữ liệu** | Data Validation cực kỳ nghiêm ngặt | Chống trùng ID, giới hạn công suất [7-300kW], type-safety |
+| **Quản lý vận hành** | Theo dõi trạng thái & thời gian | Tích hợp logic cảnh báo bảo trì dựa trên số giờ chạy (>400h) |
+| **Sắp xếp nâng cao**| Custom Comparator | Ưu tiên hiển thị trạm đang bận, sau đó sắp xếp theo vị trí |
+
+### 🛡️ Cơ chế Validation (Mẫu)
+`EVCore` đảm bảo dữ liệu luôn sạch từ tầng Model:
+```java
+public void setCongSuat(double value) {
+    if (value <= 0) value = 7; // Mặc định tối thiểu 7kW
+    else if (value > 300) value = 300; // Giới hạn hạ tầng tối đa
+    this._congSuat = value;
+}
+```
+
+---
+
+## 📁 Cấu trúc Thư mục
+```text
+src/main/java/com/evstation/
+├── Main.java          # Entry point (Console Application)
+├── Menu.java          # Giao diện điều hướng CLI
+└── Module.java        # Core Logic (The real Package)
+    ├── HuyenLamDong   # Enum-based Area Management
+    ├── TramSac        # Model Layer (Polymorphism & Abstract)
+    └── Module         # Service Layer (Business Logic & Repository)
+```
 
 ---
 
@@ -62,41 +98,6 @@ Mở file `Main.java` và chọn **Run** trong IDE, hoặc:
 
 ```powershell
 mvn exec:java -Dexec.mainClass="com.evstation.Main"
-```
-
----
-
-## 🛠️ Tính năng Kỹ thuật & Nguyên lý Thiết kế
-
-| Tính năng | Mô tả | Chi tiết triển khai |
-|---|---|---|
-| **Phân loại tự động** | Tự động chọn Class con phù hợp | Chậm (<=11kW), Nhanh (<=120kW), Siêu nhanh (>120kW) |
-| **Định danh thông minh**| Quy ước ID duy nhất | Format: `[PREFIX][AREA][SERIAL]` (VD: `SNDAL001`) |
-| **Ràng buộc dữ liệu** | Data Validation cực kỳ nghiêm ngặt | Chống trùng ID, giới hạn công suất [7-300kW], type-safety |
-| **Quản lý vận hành** | Theo dõi trạng thái & thời gian | Tích hợp logic cảnh báo bảo trì dựa trên số giờ chạy (>500h) |
-| **Sắp xếp nâng cao**| Custom Comparator | Ưu tiên hiển thị trạm đang bận, sau đó sắp xếp theo vị trí |
-
-### 🛡️ Cơ chế Validation (Mẫu)
-`EVCore` đảm bảo dữ liệu luôn sạch từ tầng Model:
-```java
-public void setCongSuat(double value) {
-    if (value <= 0) value = 7; // Mặc định tối thiểu 7kW
-    else if (value > 300) value = 300; // Giới hạn hạ tầng tối đa
-    this._congSuat = value;
-}
-```
-
----
-
-## 📁 Cấu trúc Thư mục
-```text
-src/main/java/com/evstation/
-├── Main.java          # Entry point (Console Application)
-├── Menu.java          # Giao diện điều hướng CLI
-└── Module.java        # Core Logic (The real Package)
-    ├── HuyenLamDong   # Enum-based Area Management
-    ├── TramSac        # Model Layer (Polymorphism & Abstract)
-    └── Module         # Service Layer (Business Logic & Repository)
 ```
 
 ---

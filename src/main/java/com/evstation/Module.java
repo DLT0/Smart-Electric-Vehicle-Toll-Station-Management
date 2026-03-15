@@ -17,6 +17,7 @@ enum HuyenLamDong {
     DAM_RONG("Dam Rong");
 
     private final String tenTiengViet;
+    int han_hoat_dong = 500;
 
     // Constructor cua Enum: chay 1 lan khi JVM load class nay
     HuyenLamDong(String ten) {
