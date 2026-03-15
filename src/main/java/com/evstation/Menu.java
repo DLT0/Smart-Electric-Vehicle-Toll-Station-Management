@@ -17,7 +17,7 @@ public class Menu {
     }
 
     private Scanner scanner;
-    private Module module;
+    public Module module;
 
     public Menu(Module module) {
         this.scanner = new Scanner(System.in);
