@@ -69,6 +69,8 @@ abstract class TramSac {
     private double _congSuat; // Cong suat sac (don vi: kW), phai > 0
     private double _thoiGianHoatDong; // Tong so gio tich luy da van hanh, phai >= 0
     protected static final double GIA_MOI_KWH = 3850; // Don gia co dinh (VND/kWh)
+    protected static final double HAN_BAO_TRI_MAC_DINH = 500.0; // Han bao tri mac dinh (h)
+    private double _hanBaoTri; // Han bao tri rieng cho tung tram
     private int _sttHeThong; // STT khi them vao he thong (de sap xep fallback)
 
     // * Dong goi thuoc tinh (the public) - Getter & Setter
@@ -148,6 +150,16 @@ abstract class TramSac {
         _sttHeThong = value;
     }
 
+    public double getHanBaoTri() {
+        return _hanBaoTri;
+    }
+
+    public void setHanBaoTri(double value) {
+        if (value <= 0)
+            value = HAN_BAO_TRI_MAC_DINH;
+        _hanBaoTri = value;
+    }
+
     // Constructor: nhan maTram da duoc Module sinh san, cac truong con lai tu dong
     public TramSac(String maTram, HuyenLamDong viTri, double congSuat, int sttHeThong) {
         setMaTram(maTram); // maTram duoc Module.sinhMaTram() tao ra
@@ -156,13 +168,20 @@ abstract class TramSac {
         setThoiGianHoatDong(0.0); // Tu dong khoi tao la 0
         setTrangThai(true); // Mac dinh: San sang / Trong
         setSttHeThong(sttHeThong);
+        setHanBaoTri(HAN_BAO_TRI_MAC_DINH); // Mac dinh lay 500h
     }
 
-    public double tinhChiPhi(double soGio) {
-        return this._congSuat * GIA_MOI_KWH * soGio;
+    public double tinhMucHaoMon() {
+        return (_thoiGianHoatDong / _hanBaoTri) * 100;
     }
 
-    public abstract void hienThiChiTiet();
+    protected abstract String getLoaiPrefix();
+
+    public void hienThiChiTiet() {
+        System.out.printf("| %-16s | %-10s | %-29s | %6.1f kW | %7.1f h | %-10s |%n",
+                getLoaiPrefix(), getMaTram(), getTenTram(), getCongSuat(), getThoiGianHoatDong(),
+                getTrangThai() ? "San sang" : "Dang sac");
+    }
 }
 
 // ============================================================
@@ -175,12 +194,8 @@ class TramSacCham extends TramSac {
     }
 
     @Override
-    public void hienThiChiTiet() {
-        // Don gia co dinh: GIA_MOI_KWH (VND/kWh) - moi tram co cung don gia
-        String donGiaStr = String.format("%,d VND/kWh", (long) GIA_MOI_KWH);
-        System.out.printf("| %-16s | %-10s | %-29s | %6.1f kW | %7.1f h | %-10s | %-13s |%n",
-                "[Sac Cham]", getMaTram(), getTenTram(), getCongSuat(), getThoiGianHoatDong(),
-                getTrangThai() ? "San sang" : "Dang sac", donGiaStr);
+    protected String getLoaiPrefix() {
+        return "[Sac Cham]";
     }
 }
 
@@ -194,11 +209,8 @@ class TramSacNhanh extends TramSac {
     }
 
     @Override
-    public void hienThiChiTiet() {
-        String donGiaStr = String.format("%,d VND/kWh", (long) GIA_MOI_KWH);
-        System.out.printf("| %-16s | %-10s | %-29s | %6.1f kW | %7.1f h | %-10s | %-13s |%n",
-                "[Sac Nhanh]", getMaTram(), getTenTram(), getCongSuat(), getThoiGianHoatDong(),
-                getTrangThai() ? "San sang" : "Dang sac", donGiaStr);
+    protected String getLoaiPrefix() {
+        return "[Sac Nhanh]";
     }
 }
 
@@ -212,11 +224,8 @@ class TramSacSieuNhanh extends TramSac {
     }
 
     @Override
-    public void hienThiChiTiet() {
-        String donGiaStr = String.format("%,d VND/kWh", (long) GIA_MOI_KWH);
-        System.out.printf("| %-16s | %-10s | %-29s | %6.1f kW | %7.1f h | %-10s | %-13s |%n",
-                "[Sac Sieu Nhanh]", getMaTram(), getTenTram(), getCongSuat(), getThoiGianHoatDong(),
-                getTrangThai() ? "San sang" : "Dang sac", donGiaStr);
+    protected String getLoaiPrefix() {
+        return "[Sac Sieu Nhanh]";
     }
 }
 
@@ -406,7 +415,7 @@ public class Module {
     }
 
     // ----------------------------------------------------------
-    // Chuc nang 3: Tu dong nap du lieu mau vao he thong
+    // Chuc nang san co: Tu dong nap du lieu mau vao he thong
     // ----------------------------------------------------------
     public void khoiTaoDuLieuMau() {
         // Xoa danh sach cu truoc khi nap lai de tranh trung lap
@@ -448,9 +457,34 @@ public class Module {
     // ----------------------------------------------------------
     // Chuc nang 4: Xem danh sach tru sac
     // ----------------------------------------------------------
+
+    // Ham bo tro 1: In duong gach ngang cho bang
+    private void inKeNgang() {
+        System.out.println(
+                "+------------------+------------+-------------------------------+-----------+-----------+------------+");
+    }
+
+    // Ham bo tro 2: In tieu de cac cot cua bang
+    private void inTieuDeBang() {
+        inKeNgang();
+        System.out.printf("| %-16s | %-10s | %-29s | %-9s | %-9s | %-10s |%n",
+                "Loai", "ID", "Ten Tram", "Cong Suat", "Van hanh", "Trang Thai");
+        inKeNgang();
+    }
+
+    // Kieu 1: Xuat thong tin chi tiet cua DUY NHAT 1 tram
+    public void xuatThongTin1Tram(TramSac t) {
+        if (t == null)
+            return;
+        inTieuDeBang();
+        t.hienThiChiTiet();
+        inKeNgang();
+    }
+
+    // Kieu 2: Xuat toan bao danh sach (co kem logic sap xep)
     public void xuatDanhSach() {
         if (danhSach.isEmpty()) {
-            System.out.println("Danh sach trong! Chua co tram sac nao duoc them.");
+            System.out.println("!!! Danh sach trong! Chua co tram sac nao duoc them.");
             return;
         }
 
@@ -462,8 +496,6 @@ public class Module {
         // 2. viTri: Theo thu tu Enum
         // 3. sttHeThong: Theo thu tu them vao
         Collections.sort(sortedList, (a, b) -> {
-            // true (San sang) > false (Dang hoat dong)
-            // Boolean.compare(false, true) tra ve -1, nghia la false dung truoc
             int res = Boolean.compare(a.getTrangThai(), b.getTrangThai());
             if (res != 0)
                 return res;
@@ -475,20 +507,12 @@ public class Module {
             return Integer.compare(a.getSttHeThong(), b.getSttHeThong());
         });
 
-        // Data row = 118 chars: | %-16s | %-10s | %-29s | %6.1f kW | %7.1f h | %-10s |
-        // %-13s |
-        // "Trang Thai"=10 chars > "San sang"=8 -> field phai la %-10s
-        // Segments: 18+12+31+11+11+12+15 = 110 dashes + 8 plus = 118
-        final String SEP = "+------------------+------------+-------------------------------+-----------+-----------+------------+---------------+";
-        System.out.println("\n" + "=".repeat(30) + " DANH SACH TRAM SAC " + "=".repeat(30));
-        System.out.println(SEP);
-        System.out.printf("| %-16s | %-10s | %-29s | %-9s | %-9s | %-10s | %-13s |%n",
-                "Loai", "ID", "Ten Tram", "Cong Suat", "Van hanh", "Trang Thai", "Don gia");
-        System.out.println(SEP);
+        System.out.println("\n" + "=".repeat(40) + " DANH SACH TRAM SAC " + "=".repeat(41));
+        inTieuDeBang();
         for (TramSac t : sortedList) {
             t.hienThiChiTiet();
         }
-        System.out.println(SEP);
+        inKeNgang();
     }
 
     // ----------------------------------------------------------
@@ -515,7 +539,7 @@ public class Module {
 
         // Hien thi trang thai hien tai
         System.out.println("Thong tin hien tai cua tram:");
-        found.hienThiChiTiet();
+        xuatThongTin1Tram(found);
 
         System.out.println("\nChon thong tin can cap nhat:");
         System.out.println("1. Trang thai (San sang/Dang sac)");
@@ -604,7 +628,7 @@ public class Module {
         }
 
         System.out.println("Thong tin tram tim thay:");
-        found.hienThiChiTiet();
+        xuatThongTin1Tram(found);
 
         System.out.print("Xac nhan xoa tram nay ? (Y/N): ");
         String ans = scanner.nextLine().trim();
@@ -636,7 +660,7 @@ public class Module {
         boolean foundAny = false;
         for (TramSac t : danhSach) {
             if (t.getMaTram().equalsIgnoreCase(id)) {
-                t.hienThiChiTiet();
+                xuatThongTin1Tram(t);
                 foundAny = true;
             }
         }
@@ -661,7 +685,7 @@ public class Module {
      * 
      * 2. Các yêu cầu kỹ thuật:
      * - Quản lý vận hành: (Cần thêm) Thuộc tính gio_da_dung và han_bao_tri (mặc
-     * định 400h) trong class TramSac.
+     * định 500h) trong class TramSac.
      * - Logic bảo trì: Hàm kiểm tra tỷ lệ độ hao mòn (gio_da_dung / han_bao_tri).
      * Nếu > 90% thì báo động bảo trì.
      * - Báo cáo tổng hợp (Summary): Cuối bảng phải có phần kết luận:
@@ -681,4 +705,12 @@ public class Module {
     // Chuc nang 9: Xuat danh sach ra file Excel (chua trien khai) @Loc
     // ----------------------------------------------------------
     // public void xuatFile() { ... }
+
+    // ----------------------------------------------------------
+    // Chuc nang 10: Tinh so tien du kien
+    // ----------------------------------------------------------
+    public void tinhChiPhiDuKien(Scanner scanner) {
+        System.out.println("-> [Chuc nang 10] T?.");
+
+    }
 }

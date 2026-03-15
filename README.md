@@ -71,9 +71,9 @@ mvn exec:java -Dexec.mainClass="com.evstation.Main"
 | Tính năng | Mô tả | Chi tiết triển khai |
 |---|---|---|
 | **Phân loại tự động** | Tự động chọn Class con phù hợp | Chậm (<=11kW), Nhanh (<=120kW), Siêu nhanh (>120kW) |
-| **Định danh thông minh**| Quy ước ID duy nhất | Format: `[PREFIX]-[AREA]-[SERIAL]` (VD: `SN-DAL-001`) |
+| **Định danh thông minh**| Quy ước ID duy nhất | Format: `[PREFIX][AREA][SERIAL]` (VD: `SNDAL001`) |
 | **Ràng buộc dữ liệu** | Data Validation cực kỳ nghiêm ngặt | Chống trùng ID, giới hạn công suất [7-300kW], type-safety |
-| **Quản lý vận hành** | Theo dõi trạng thái & thời gian | Tích hợp logic cảnh báo bảo trì dựa trên số giờ chạy (>400h) |
+| **Quản lý vận hành** | Theo dõi trạng thái & thời gian | Tích hợp logic cảnh báo bảo trì dựa trên số giờ chạy (>500h) |
 | **Sắp xếp nâng cao**| Custom Comparator | Ưu tiên hiển thị trạm đang bận, sau đó sắp xếp theo vị trí |
 
 ### 🛡️ Cơ chế Validation (Mẫu)

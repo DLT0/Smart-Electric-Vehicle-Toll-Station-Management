@@ -1,15 +1,163 @@
 <!DOCTYPE html>
-<html lang="en">
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Smart EV Station Management System</title>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Smart EV Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#10b77f",
+              "background-light": "#f6f8f7",
+              "background-dark": "#10221c",
+            },
+            fontFamily: {
+              "display": ["Inter", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
 </head>
-
-<body>
-  <h1>EV Station Management System</h1>
-  <p>Console app is currently running. Web UI is not yet implemented.</p>
-</body>
-
-</html>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen">
+<div class="layout-container flex flex-col min-h-screen">
+<!-- Header -->
+<header class="bg-white dark:bg-slate-900 border-b border-primary/10 px-6 lg:px-20">
+<div class="max-w-7xl mx-auto flex items-center justify-between h-16">
+<div class="flex items-center gap-3">
+<div class="bg-primary/10 p-1.5 rounded-lg">
+<span class="material-symbols-outlined text-primary text-2xl">ev_station</span>
+</div>
+<h1 class="text-lg font-bold tracking-tight text-slate-900 dark:text-white">Smart EV Station</h1>
+</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-primary text-sm font-semibold border-b-2 border-primary py-5" href="#">Dashboard</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-primary transition-colors text-sm font-medium py-5" href="#">Station List</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-primary transition-colors text-sm font-medium py-5" href="#">Statistics</a>
+</nav>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-1 max-w-7xl mx-auto w-full px-6 lg:px-20 py-8">
+<!-- Summary Stats -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+<div class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-primary/10 shadow-sm flex items-center gap-5">
+<div class="size-12 rounded-full bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">bolt</span>
+</div>
+<div>
+<p class="text-sm font-medium text-slate-500 dark:text-slate-400">Total Active Sessions</p>
+<p class="text-3xl font-bold text-slate-900 dark:text-white">24</p>
+</div>
+</div>
+<div class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-primary/10 shadow-sm flex items-center gap-5">
+<div class="size-12 rounded-full bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">energy_savings_leaf</span>
+</div>
+<div>
+<p class="text-sm font-medium text-slate-500 dark:text-slate-400">Total Power Output</p>
+<p class="text-3xl font-bold text-slate-900 dark:text-white">842.5 <span class="text-lg font-medium text-slate-400 uppercase tracking-wider">kW</span></p>
+</div>
+</div>
+</div>
+<!-- Active Sessions List -->
+<div class="flex border-b border-primary/10 mb-6 gap-8">
+<button class="text-primary text-sm font-semibold border-b-2 border-primary pb-3 px-1">Active Charging</button>
+<button class="text-slate-500 dark:text-slate-400 hover:text-primary transition-colors text-sm font-medium pb-3 px-1">Unactivated Stations</button>
+</div><div class="bg-white dark:bg-slate-900 rounded-xl border border-primary/10 shadow-sm overflow-hidden">
+<div class="px-6 py-5 border-b border-primary/5 flex items-center justify-between">
+<h2 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                        Active Charging Sessions
+                        
+</h2>
+<div class="flex gap-2">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
+<input class="pl-9 pr-4 py-1.5 text-sm rounded-lg border-primary/10 bg-background-light dark:bg-slate-800 focus:ring-primary focus:border-primary" placeholder="Search active stations..." type="text"/>
+</div>
+</div>
+</div>
+<div class="overflow-x-auto @container">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-primary/[0.02] dark:bg-slate-800/50">
+<th class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Station ID</th>
+<th class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Location</th>
+<th class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Current Output</th>
+<th class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Energy Delivered</th><th class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Charging Duration</th>
+<th class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-primary/5">
+<tr class="hover:bg-primary/[0.01] transition-colors group">
+<td class="px-6 py-4 text-sm font-medium text-primary">ST-1092</td>
+<td class="px-6 py-4 text-sm text-slate-600 dark:text-slate-300">Downtown Hub - A1</td>
+<td class="px-6 py-4 text-sm font-semibold text-slate-900 dark:text-white">120 kW</td>
+<td class="px-6 py-4 text-sm text-slate-600 dark:text-slate-300">45.2 kWh</td><td class="px-6 py-4 text-sm font-mono text-slate-600 dark:text-slate-300">01:45:12</td>
+<td class="px-6 py-4 text-right">
+<button class="inline-flex items-center gap-1 px-4 py-2 bg-primary text-white text-xs rounded-lg hover:bg-primary/90 transition-all font-medium">Mark as Finished</button>
+</td>
+</tr>
+<tr class="hover:bg-primary/[0.01] transition-colors group">
+<td class="px-6 py-4 text-sm font-medium text-primary">ST-2204</td>
+<td class="px-6 py-4 text-sm text-slate-600 dark:text-slate-300">North Plaza - B4</td>
+<td class="px-6 py-4 text-sm font-semibold text-slate-900 dark:text-white">50 kW</td>
+<td class="px-6 py-4 text-sm text-slate-600 dark:text-slate-300">12.8 kWh</td><td class="px-6 py-4 text-sm font-mono text-slate-600 dark:text-slate-300">00:32:05</td>
+<td class="px-6 py-4 text-right">
+<button class="inline-flex items-center gap-1 px-4 py-2 bg-primary text-white text-xs rounded-lg hover:bg-primary/90 transition-all font-medium">Mark as Finished</button>
+</td>
+</tr>
+<tr class="hover:bg-primary/[0.01] transition-colors group">
+<td class="px-6 py-4 text-sm font-medium text-primary">ST-0881</td>
+<td class="px-6 py-4 text-sm text-slate-600 dark:text-slate-300">East Wing - C2</td>
+<td class="px-6 py-4 text-sm font-semibold text-slate-900 dark:text-white">22 kW</td>
+<td class="px-6 py-4 text-sm text-slate-600 dark:text-slate-300">8.4 kWh</td><td class="px-6 py-4 text-sm font-mono text-slate-600 dark:text-slate-300">00:15:40</td>
+<td class="px-6 py-4 text-right">
+<button class="inline-flex items-center gap-1 px-4 py-2 bg-primary text-white text-xs rounded-lg hover:bg-primary/90 transition-all font-medium">Mark as Finished</button>
+</td>
+</tr>
+<tr class="hover:bg-primary/[0.01] transition-colors group">
+<td class="px-6 py-4 text-sm font-medium text-primary">ST-1142</td>
+<td class="px-6 py-4 text-sm text-slate-600 dark:text-slate-300">South Terminal - F8</td>
+<td class="px-6 py-4 text-sm font-semibold text-slate-900 dark:text-white">150 kW</td>
+<td class="px-6 py-4 text-sm text-slate-600 dark:text-slate-300">62.1 kWh</td><td class="px-6 py-4 text-sm font-mono text-slate-600 dark:text-slate-300">02:10:55</td>
+<td class="px-6 py-4 text-right">
+<button class="inline-flex items-center gap-1 px-4 py-2 bg-primary text-white text-xs rounded-lg hover:bg-primary/90 transition-all font-medium">Mark as Finished</button>
+</td>
+</tr>
+<tr class="hover:bg-primary/[0.01] transition-colors group">
+<td class="px-6 py-4 text-sm font-medium text-primary">ST-0993</td>
+<td class="px-6 py-4 text-sm text-slate-600 dark:text-slate-300">Central Park - G2</td>
+<td class="px-6 py-4 text-sm font-semibold text-slate-900 dark:text-white">11 kW</td>
+<td class="px-6 py-4 text-sm text-slate-600 dark:text-slate-300">3.2 kWh</td><td class="px-6 py-4 text-sm font-mono text-slate-600 dark:text-slate-300">00:08:22</td>
+<td class="px-6 py-4 text-right">
+<button class="inline-flex items-center gap-1 px-4 py-2 bg-primary text-white text-xs rounded-lg hover:bg-primary/90 transition-all font-medium">Mark as Finished</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="px-6 py-4 bg-primary/[0.02] border-t border-primary/5 text-center">
+<button class="text-xs font-semibold text-primary hover:underline">View all active sessions</button>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="max-w-7xl mx-auto w-full px-6 lg:px-20 py-8 border-t border-primary/5 flex flex-col md:flex-row justify-between items-center gap-4">
+<p class="text-xs text-slate-400">© 2024 Smart EV Station Management System. All rights reserved.</p>
+<div class="flex gap-6">
+<a class="text-xs text-slate-400 hover:text-primary transition-colors" href="#">Support</a>
+<a class="text-xs text-slate-400 hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="text-xs text-slate-400 hover:text-primary transition-colors" href="#">Terms of Service</a>
+</div>
+</footer>
+</div>
+</body></html>
