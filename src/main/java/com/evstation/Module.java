@@ -17,7 +17,6 @@ enum HuyenLamDong {
     DAM_RONG("Dam Rong");
 
     private final String tenTiengViet;
-    int han_hoat_dong = 500;
 
     // Constructor cua Enum: chay 1 lan khi JVM load class nay
     HuyenLamDong(String ten) {
@@ -710,8 +709,27 @@ public class Module {
     // ----------------------------------------------------------
     // Chuc nang 10: Tinh so tien du kien
     // ----------------------------------------------------------
+
+    /*
+     * Mục tiêu: TÍnh toán số tiền cần thiết cho một chiếc xe có dung lượng pin
+     * trung bình là 70kW, từ đó
+     * xuất ra Chi Phí và Thời Gian sạc dự kiến cho người dùng để họ có thể lựa chọn
+     * trạm sạc phù hợp nhất.
+     * 
+     * Công thức: Chi Phí = ((Dung lượng pin x %Pin Cần Sạc) * Đơn giá điện ) + Chi
+     * Phí Quá Hạn (đối với trạm sạc nhanh và siêu nhanh)
+     * Ta có :
+     * - Dung lượng pin = 70kW
+     * - % Pin Cần Sạc -> Người dùng nhập, (nếu không nhập thì mặc định là 80%)
+     * - Đơn giá điện = 3.850 VND/kWh
+     * - Chi Phí Quá Hạn = 1.000 VND/phút đối với sạc nhanh và 3.000 VND/phút đối
+     * với sạc siêu nhanh (cho mỗi phút quá thời gian dự kiến)
+     * 
+     * => Output : Chi Phí Cuối Cùng và thời gian dự kiến
+     * 
+     */
     public void tinhChiPhiDuKien(Scanner scanner) {
-        System.out.println("-> [Chuc nang 10] T?.");
+        System.out.println("-> [Chuc nang 10] Tinh so tien du kien.");
 
     }
 }
