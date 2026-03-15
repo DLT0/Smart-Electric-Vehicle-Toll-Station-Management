@@ -13,7 +13,9 @@ public class Menu {
         XoaTruSac,
         TimKiem,
         ThongKeTruSacCanBaoTri,
-        XuatFile
+        XuatFile,
+        TinhChiPhi1Tram,
+        TinhChiPhiDS
     }
 
     private Scanner scanner;
@@ -55,6 +57,8 @@ public class Menu {
         System.out.printf("|   %d  | %-38s |%n", MenuCT.ThongKeTruSacCanBaoTri.ordinal(),
                 "Thong ke danh sach tru sac can bao tri");
         System.out.printf("|   %d  | %-38s |%n", MenuCT.XuatFile.ordinal(), "Xuat danh sach tru sac ra file Exel.");
+        System.out.printf("|   %d  | %-38s |%n", MenuCT.TinhChiPhi1Tram.ordinal(), "Tinh chi phi du kien cho 1 tram.");
+        System.out.printf("|   %d  | %-38s |%n", MenuCT.TinhChiPhiDS.ordinal(), "Goi y chi phi cho tat ca cac tram.");
         XuatKeNgang(50);
     }
 
@@ -108,6 +112,14 @@ public class Menu {
             case TimKiem:
                 System.out.println("\n--- TIM KIEM THONG TIN TRAM THEO ID TRAM SAC ---");
                 module.timKiem(scanner);
+                break;
+            case TinhChiPhi1Tram:
+                System.out.println("\n--- TINH CHI PHI DU KIEN CHO 1 TRAM ---");
+                module.tinhChiPhi1Tram(scanner);
+                break;
+            case TinhChiPhiDS:
+                System.out.println("\n--- GOI Y CHI PHI CHO TAT CA CAC TRAM ---");
+                module.tinhChiPhiDS(scanner);
                 break;
             default:
                 break;

@@ -721,15 +721,149 @@ public class Module {
      * Ta có :
      * - Dung lượng pin = 70kW
      * - % Pin Cần Sạc -> Người dùng nhập, (nếu không nhập thì mặc định là 80%)
-     * - Đơn giá điện = 3.850 VND/kWh
+     * - Đơn giá điện = 3.850 VND/kWh ------> Đã khai báo với biến GIA_MOI_KWH =
+     * 3850
      * - Chi Phí Quá Hạn = 1.000 VND/phút đối với sạc nhanh và 3.000 VND/phút đối
      * với sạc siêu nhanh (cho mỗi phút quá thời gian dự kiến)
      * 
      * => Output : Chi Phí Cuối Cùng và thời gian dự kiến
      * 
      */
-    public void tinhChiPhiDuKien(Scanner scanner) {
-        System.out.println("-> [Chuc nang 10] Tinh so tien du kien.");
 
+    // ----------------------------------------------------------
+    // Chuc nang 10.1: Tinh chi phi 1 tram
+    // ----------------------------------------------------------
+    public void tinhChiPhi1Tram(Scanner scanner) {
+        System.out.print("Nhap ID tram can tinh chi phi du kien: ");
+        String id = scanner.nextLine().trim();
+
+        TramSac found = null;
+        for (TramSac t : danhSach) {
+            if (t.getMaTram().equalsIgnoreCase(id)) {
+                found = t;
+                break;
+            }
+        }
+
+        if (found == null) {
+            System.out.println("!!! Khong tim thay tram co ID: " + id);
+            return;
+        }
+
+        System.out.print("Nhap % pin can sac (0-100) [Mac dinh: 80]: ");
+        String pinInput = scanner.nextLine().trim();
+        double phanTramPin = 80;
+        if (!pinInput.isEmpty()) {
+            try {
+                phanTramPin = Double.parseDouble(pinInput);
+                if (phanTramPin <= 0 || phanTramPin > 100) {
+                    System.out.println("=> % pin khong hop le, su dung mac dinh 80%.");
+                    phanTramPin = 80;
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("=> % pin khong hop le, su dung mac dinh 80%.");
+                phanTramPin = 80;
+            }
+        }
+
+        System.out.print("Nhap thoi gian du kien qua han neu co (phut) [Mac dinh: 0]: ");
+        String quaHanInput = scanner.nextLine().trim();
+        int phutQuaHan = 0;
+        if (!quaHanInput.isEmpty()) {
+            try {
+                phutQuaHan = Integer.parseInt(quaHanInput);
+                if (phutQuaHan < 0)
+                    phutQuaHan = 0;
+            } catch (NumberFormatException e) {
+                System.out.println("=> Thoi gian khong hop le, su dung mac dinh 0 phut.");
+            }
+        }
+
+        double dungLuongPin = 70.0;
+        double dienNangCanSac = dungLuongPin * (phanTramPin / 100.0);
+        double chiPhiDien = dienNangCanSac * TramSac.GIA_MOI_KWH;
+
+        double chiPhiQuaHan = 0;
+        if (found instanceof TramSacNhanh) {
+            chiPhiQuaHan = phutQuaHan * 1000;
+        } else if (found instanceof TramSacSieuNhanh) {
+            chiPhiQuaHan = phutQuaHan * 3000;
+        }
+
+        double tongChiPhi = chiPhiDien + chiPhiQuaHan;
+        double thoiGianSacGio = dienNangCanSac / found.getCongSuat();
+
+        System.out.println("\n" + "=".repeat(40));
+        System.out.println("      DU TOAN CHI PHI SAC XE (" + found.getMaTram() + ")");
+        System.out.println("=".repeat(40));
+        System.out.println("- Ten tram: " + found.getTenTram());
+        System.out.println("- Cong suat: " + found.getCongSuat() + " kW");
+        System.out.println("- Muc pin can sac: " + phanTramPin + "%");
+        System.out.printf("- Thoi gian sac du kien: %.2f gio%n", thoiGianSacGio);
+        System.out.printf("- Chi phi dien (%.1f kWh): %,.0f VND%n", dienNangCanSac, chiPhiDien);
+        if (phutQuaHan > 0) {
+            System.out.printf("- Chi phi qua han (%d phut): %,.0f VND%n", phutQuaHan, chiPhiQuaHan);
+        }
+        System.out.println("-".repeat(40));
+        System.out.printf("=> TONG CHI PHI DU KIEN: %,.0f VND%n", tongChiPhi);
+        System.out.println("=".repeat(40));
+    }
+
+    // ----------------------------------------------------------
+    // Chuc nang 10.2: Tinh chi phi danh sach
+    // ----------------------------------------------------------
+    public void tinhChiPhiDS(Scanner scanner) {
+        System.out.print("Nhap % pin can sac (0-100) [Mac dinh: 80]: ");
+        String pinInput = scanner.nextLine().trim();
+        double phanTramPin = 80;
+        if (!pinInput.isEmpty()) {
+            try {
+                phanTramPin = Double.parseDouble(pinInput);
+                if (phanTramPin <= 0 || phanTramPin > 100) {
+                    System.out.println("=> % pin khong hop le, su dung mac dinh 80%.");
+                    phanTramPin = 80;
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("=> % pin khong hop le, su dung mac dinh 80%.");
+                phanTramPin = 80;
+            }
+        }
+
+        double dungLuongPin = 70.0;
+        double dienNangCanSac = dungLuongPin * (phanTramPin / 100.0);
+        double chiPhiDien = dienNangCanSac * TramSac.GIA_MOI_KWH;
+
+        System.out.println("\n" + "=".repeat(30) + " GOI Y TRAM SAC " + "=".repeat(30));
+        System.out.println("- Dung luong pin: 70 kWh");
+        System.out
+                .println("- Muc pin can sac: " + phanTramPin + "% (" + String.format("%.1f", dienNangCanSac) + " kWh)");
+        System.out.println("- Chi phi dien thuan tuy: " + String.format("%,.0f", chiPhiDien) + " VND");
+        System.out.println("+------------------+------------+-----------+-----------------+-----------------+");
+        System.out.printf("| %-16s | %-10s | %-9s | %-15s | %-15s |%n",
+                "Loai", "ID", "Cong Suat", "Thoi gian(gio)", "Tien qua han/p");
+        System.out.println("+------------------+------------+-----------+-----------------+-----------------+");
+
+        for (TramSac t : danhSach) {
+            double thoiGianGio = dienNangCanSac / t.getCongSuat();
+            double phiQuaHan = 0;
+            if (t instanceof TramSacNhanh)
+                phiQuaHan = 1000;
+            else if (t instanceof TramSacSieuNhanh)
+                phiQuaHan = 3000;
+
+            String phiQuaHanStr = phiQuaHan > 0 ? String.format("%,.0f", phiQuaHan) : "0";
+
+            System.out.printf("| %-16s | %-10s | %6.1f kW | %15.2f | %15s |%n",
+                    t.getLoaiPrefix(), t.getMaTram(), t.getCongSuat(), thoiGianGio, phiQuaHanStr);
+        }
+        System.out.println("+------------------+------------+-----------+-----------------+-----------------+");
+        System.out.println("* Luu y: Chi phi cuoi cung = Chi phi dien + (Tien qua han/p * So phut qua han)");
+    }
+
+    // ----------------------------------------------------------
+    // Chuc nang 11: Sap xep danh sach
+    // ----------------------------------------------------------
+    public void sapXepDS() {
+        System.out.println();
     }
 }
