@@ -1,14 +1,4 @@
-# ⚡ EVCore - Smart Electric Vehicle Management System
-> A robust Java package for managing electric vehicle charging infrastructure.
-
-<div align="center">
-
-![Java](https://img.shields.io/badge/Java_21-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
-![Maven](https://img.shields.io/badge/Maven-C71A36?style=for-the-badge&logo=apache-maven&logoColor=white)
-
-</div>
-
----
+# ⚡ Hệ Thống Quản Lý Trạm Sạc Xe Điện VN
 
 ## 📖 Tổng quan
 **EVCore** (Smart-EV-Toll-Station) là gói giải pháp backend xử lý nghiệp vụ quản lý trạm sạc xe điện. Được thiết kế theo chuẩn hướng đối tượng (OOP) và phát triển trên nền tảng **Java 21**, dự án này không chỉ là một ứng dụng Console mà còn là một **Core Engine** có khả năng tích hợp linh hoạt vào các hệ thống Web (Spring Boot) hoặc Desktop (JavaFX).
