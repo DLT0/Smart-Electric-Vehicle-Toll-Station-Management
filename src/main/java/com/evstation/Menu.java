@@ -126,7 +126,7 @@ public class Menu {
         }
     }
 
-    public void ChayChuongTrinh() {
+    public void chayChuongTrinh() {
         MenuCT chon;
 
         do {
