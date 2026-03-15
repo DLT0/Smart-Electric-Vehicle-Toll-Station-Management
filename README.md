@@ -1,7 +1,7 @@
-# ⚡ EVCore - Smart Electric Vehicle Management System
+# ⚡ Hệ Thống Quản Lý Trạm Sạc Xe Điện VN
 
 ## 📖 Tổng quan
-**EVCore** (Smart-EV-Toll-Station) là gói giải pháp backend xử lý nghiệp vụ quản lý trạm sạc xe điện. Được thiết kế theo chuẩn hướng đối tượng (OOP) và phát triển trên nền tảng **Java 21**, dự án này không chỉ là một ứng dụng Console mà còn là một **Core Engine** có khả năng tích hợp linh hoạt vào các hệ thống Web (Spring Boot) hoặc Desktop (JavaFX).
+**Hệ Thống Quản Lý Trạm Sạc Xe Điện VN** là gói giải pháp backend xử lý nghiệp vụ quản lý trạm sạc xe điện. Được thiết kế theo chuẩn hướng đối tượng (OOP) và phát triển trên nền tảng **Java 21**, dự án này không chỉ là một ứng dụng Console mà còn là một **Core Engine** có khả năng tích hợp linh hoạt vào các hệ thống Web (Spring Boot) hoặc Desktop (JavaFX).
 
 ---
 
