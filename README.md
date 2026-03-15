@@ -10,13 +10,15 @@
 
 | # | Chức năng | Mô tả |
 |---|---|---|
-| 1 | **Thêm 1 trạm sạc** | Nhập ID, chọn khu vực (số thứ tự), nhập công suất & số cổng. Có vòng lặp kiểm tra ID trùng, dữ liệu sai kiểu sẽ nhắc nhập lại. |
-| 2 | **Thêm danh sách trạm** | Nhập số lượng rồi gọi lặp chức năng 1. |
-| 3 | **Xem danh sách** | Hiển thị bảng đầy đủ: Loại, ID, Tên, Công suất, Số cổng, Vận hành (h), Trạng thái, Chi phí. |
-| 4 | **Cập nhật trạm** | Cập nhật trạng thái sạc hoặc thời gian hoạt động của trạm theo ID. |
-| 5 | **Xóa trạm** | Tìm và xóa trạm theo ID, có xác nhận trước khi thực hiện. |
-| 6 | **Thống kê** | Thống kê danh sách trạm cần bảo trì. |
-| 7 | **Xuất File** | Xuất danh sách trạm ra file Exel. |
+| 1 | **Thêm 1 trạm sạc** | Tự động sinh ID theo khu vực, nhập công suất (7-300kW). Có validator kiểm tra dữ liệu đầu vào. |
+| 2 | **Thêm danh sách trạm** | Nhập số lượng cần thêm và thực hiện nhập liệu hàng loạt. |
+| 3 | **Xem danh sách** | Hiển thị bảng chi tiết: Loại, ID, Tên, Công suất, Thời gian vận hành, Trạng thái. Tự động sắp xếp thông minh. |
+| 4 | **Cập nhật trạm** | Cập nhật trạng thái (Sẵn sàng/Đang sạc) hoặc điều chỉnh số giờ vận hành tích lũy. |
+| 5 | **Xóa trạm** | Gỡ bỏ trạm khỏi hệ thống dựa trên ID, có bước xác nhận an toàn trước khi xóa. |
+| 6 | **Tìm kiếm** | Tìm và hiển thị thông tin chi tiết của một trạm cụ thể thông qua mã ID duy nhất. |
+| 7 | **Thống kê bảo trì** | Lọc danh sách các trạm có mức độ hao mòn cao (>90% hạn bảo trì 500h). |
+| 8 | **Tính chi phí (1 trạm)** | Dự toán số tiền và thời gian sạc dựa trên % pin cần sạc (Dung lượng mặc định 70kWh). |
+| 9 | **Gợi ý trạm (DS)** | So sánh thời gian sạc và biểu phí quá hạn giữa tất cả các trạm trong hệ thống. |
 
 ---
 
@@ -24,11 +26,12 @@
 
 | Tính năng | Mô tả | Chi tiết triển khai |
 |---|---|---|
-| **Phân loại tự động** | Tự động chọn Class con phù hợp | Chậm (<=11kW), Nhanh (<=120kW), Siêu nhanh (>120kW) |
-| **Định danh thông minh**| Quy ước ID duy nhất | Format: `[PREFIX]-[AREA]-[SERIAL]` (VD: `SN-DAL-001`) |
-| **Ràng buộc dữ liệu** | Data Validation cực kỳ nghiêm ngặt | Chống trùng ID, giới hạn công suất [7-300kW], type-safety |
-| **Quản lý vận hành** | Theo dõi trạng thái & thời gian | Tích hợp logic cảnh báo bảo trì dựa trên số giờ chạy (>400h) |
-| **Sắp xếp nâng cao**| Custom Comparator | Ưu tiên hiển thị trạm đang bận, sau đó sắp xếp theo vị trí |
+| **Mô phỏng Thời gian thực** | Quản lý phiên sạc chính xác | Sử dụng `LocalDateTime` để tính toán khoảng thời gian sạc (Duration) và tự động cộng dồn vào quỹ giờ vận hành. |
+| **Kiến trúc Refactored** | Tối ưu tính tái sử dụng | Phân tách rõ ràng **Public Helpers** (Dùng chung) và **Private Helpers** (Nội bộ). Các hàm tìm kiếm trả về Object thay vì void. |
+| **Phân loại tự động** | Tự động chọn Class con phù hợp | Chậm (<=11kW), Nhanh (<=120kW), Siêu nhanh (>120kW) dựa trên tính Đa hình (Polymorphism). |
+| **Định danh thông minh**| Quy ước ID duy nhất | Format: `[PREFIX]-[AREA]-[SERIAL]` (VD: `SN-DAL-001`). Tự động nhảy số thứ tự theo khu vực. |
+| **Dữ liệu Mẫu (Mocking)**| Sẵn sàng để Demo | Tích hợp sẵn bộ dữ liệu mẫu đa dạng trạm, kèm theo giả lập thời gian bắt đầu sạc cho các trạm đang bận. |
+| **Sắp xếp nâng cao**| Custom Comparator | Ưu tiên hiển thị trạm đang sạc lên đầu, sau đó sắp xếp theo vị trí khu vực và thứ tự hệ thống. |
 
 ### 🛡️ Cơ chế Validation (Mẫu)
 `EVCore` đảm bảo dữ liệu luôn sạch từ tầng Model:
@@ -50,8 +53,11 @@ src/main/java/com/evstation/
 └── Module.java        # Core Logic (The real Package)
     ├── HuyenLamDong   # Enum-based Area Management
     ├── TramSac        # Model Layer (Polymorphism & Abstract)
-    └── Module         # Service Layer (Business Logic & Repository)
+    ├── Module         # Service Layer (Business Logic & Repository)
 ```
+
+> [!NOTE]
+> Để biết chi tiết về các thay đổi trong đợt tái cấu trúc (Refactoring) gần nhất, vui lòng xem file [Refactored_Architecture.md](./Refactored_Architecture.md).
 
 ---
 
