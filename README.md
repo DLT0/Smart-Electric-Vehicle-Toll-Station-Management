@@ -1,13 +1,4 @@
 # ⚡ EVCore - Smart Electric Vehicle Management System
-> A robust Java package for managing electric vehicle charging infrastructure.
-
-<div align="center">
-
-![Java](https://img.shields.io/badge/Java_21-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
-![Maven](https://img.shields.io/badge/Maven-C71A36?style=for-the-badge&logo=apache-maven&logoColor=white)
-
-</div>
-
 ---
 
 ## 📖 Tổng quan
