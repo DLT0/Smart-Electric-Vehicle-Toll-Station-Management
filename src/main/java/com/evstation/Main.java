@@ -63,35 +63,54 @@ public class Main {
         module.themVaoDanhSach(HuyenLamDong.DAM_RONG, 30);
 
         // --- GIA LAP TRANG THAI VA THOI GIAN ---
-        // Lay mot vai tram de gia lap "Dang sac"
-        TramSac t1 = module.timTramTheoId("SS-DAL-003"); // Da Lat - Sieu nhanh
-        if (t1 != null) {
-            t1.setSanSang(false);
-            t1.setThoiGianBatDauSac(LocalDateTime.now().minusMinutes(135)); // Sac duoc 2h15p
-        }
+        // Lay nhieu tram de gia lap "Dang sac" voi cac tinh huong khac nhau:
+        
+        // 1. Dalat - Sieu nhanh (250kW) - Da sac 135p - Qua han nang
+        mockCharging(module, "SS-DAL-003", 135); 
+        
+        // 2. Dalat - Nhanh (60kW) - Da sac 100p - Qua han
+        mockCharging(module, "SN-DAL-003", 100);
 
-        TramSac t2 = module.timTramTheoId("SN-DUC-001"); // Duc Trong - Nhanh
-        if (t2 != null) {
-            t2.setSanSang(false);
-            t2.setThoiGianBatDauSac(LocalDateTime.now().minusMinutes(45)); // Sac duoc 45p
-        }
+        // 3. Duc Trong - Nhanh (30kW) - Da sac 45p - Dang trong thoi gian cho phep
+        mockCharging(module, "SN-DUC-001", 45);
 
-        TramSac t3 = module.timTramTheoId("SC-DAL-001"); // Da Lat - Cham
-        if (t3 != null) {
-            t3.setSanSang(false);
-            t3.setThoiGianBatDauSac(LocalDateTime.now().minusMinutes(300));
-        }
+        // 4. Dalat - Cham (7.2kW) - Da sac 400p - Sac cham ko tinh qua han
+        mockCharging(module, "SC-DAL-001", 400);
+
+        // 5. Bao Loc - Sieu nhanh (300kW) - Da sac 15p - Moi bat dau
+        mockCharging(module, "SS-BAO-002", 15);
+
+        // 6. Di Linh - Sieu nhanh (200kW) - Da sac 80p - Sap hoac da qua han tuy muc pin
+        mockCharging(module, "SS-DIL-002", 80);
+
+        // 7. Lam Ha - Nhanh (120kW) - Da sac 60p - Dang sac
+        mockCharging(module, "SN-LAM-001", 60);
+
+        // 8. Don Duong - Cham (7.2kW) - Da sac 200p
+        mockCharging(module, "SC-DON-001", 200);
 
         // Gia lap thoi gian van hanh de canh bao bao tri
         TramSac b1 = module.timTramTheoId("SN-BAO-001");
-        if (b1 != null) b1.setThoiGianHoatDong(455.5); 
+        if (b1 != null)
+            b1.setThoiGianHoatDong(455.5);
 
         TramSac b2 = module.timTramTheoId("SS-DIL-001");
-        if (b2 != null) b2.setThoiGianHoatDong(510.0); 
+        if (b2 != null)
+            b2.setThoiGianHoatDong(510.0);
 
         TramSac b3 = module.timTramTheoId("SC-DAL-002");
-        if (b3 != null) b3.setThoiGianHoatDong(12.0);
-        
-        System.out.println(">>> [He thong] Da nap " + 34 + " tru sac mockup thanh cong!");
+        if (b3 != null)
+            b3.setThoiGianHoatDong(12.0);
+    }
+
+    /**
+     * Helper de gia lap mot tram dang sac
+     */
+    private static void mockCharging(Module module, String id, int minutesAgo) {
+        TramSac t = module.timTramTheoId(id);
+        if (t != null) {
+            t.setSanSang(false);
+            t.setThoiGianBatDauSac(LocalDateTime.now().minusMinutes(minutesAgo));
+        }
     }
 }

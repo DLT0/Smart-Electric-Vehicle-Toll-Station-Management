@@ -33,16 +33,6 @@
 | **Dữ liệu Mẫu (Mocking)**| Sẵn sàng để Demo | Tích hợp sẵn bộ dữ liệu mẫu đa dạng trạm, kèm theo giả lập thời gian bắt đầu sạc cho các trạm đang bận. |
 | **Sắp xếp nâng cao**| Custom Comparator | Ưu tiên hiển thị trạm đang sạc lên đầu, sau đó sắp xếp theo vị trí khu vực và thứ tự hệ thống. |
 
-### 🛡️ Cơ chế Validation (Mẫu)
-`EVCore` đảm bảo dữ liệu luôn sạch từ tầng Model:
-```java
-public void setCongSuat(double value) {
-    if (value <= 0) value = 7; // Mặc định tối thiểu 7kW
-    else if (value > 300) value = 300; // Giới hạn hạ tầng tối đa
-    this._congSuat = value;
-}
-```
-
 ---
 
 ## 📁 Cấu trúc Thư mục

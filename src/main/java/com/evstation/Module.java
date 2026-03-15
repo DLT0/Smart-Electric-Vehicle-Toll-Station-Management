@@ -189,7 +189,7 @@ abstract class TramSac {
     protected abstract String getLoaiPrefix();
 
     public void hienThiChiTiet() {
-        System.out.printf("| %-16s | %-10s | %-29s | %6.1f kW | %7.1f h | %-10s |%n",
+        System.out.printf("| %-16s | %-10s | %-40s | %6.1f kW | %7.1f h | %-10s |%n",
                 getLoaiPrefix(), getMaTram(), getTenTram(), getCongSuat(), getThoiGianHoatDong(),
                 isSanSang() ? "San sang" : "Dang sac");
     }
@@ -298,7 +298,8 @@ public class Module {
     }
 
     /**
-     * Dinh dang thoi gian theo yeu cau: neu < 60 thi hien phut, >= 60 thi hien gio va phut.
+     * Dinh dang thoi gian theo yeu cau: neu < 60 thi hien phut, >= 60 thi hien gio
+     * va phut.
      */
     public String dinhDangThoiGian(long phut) {
         if (phut < 60) {
@@ -737,28 +738,6 @@ public class Module {
     // Chuc nang 10: Tinh so tien du kien
     // ----------------------------------------------------------
 
-    /*
-     * Mục tiêu: TÍnh toán số tiền cần thiết cho một chiếc xe có dung lượng pin
-     * trung bình là 70kW, từ đó
-     * xuất ra Chi Phí và Thời Gian sạc dự kiến cho người dùng để họ có thể lựa chọn
-     * trạm sạc phù hợp nhất.
-     * 
-     * Công thức: Chi Phí = ((Dung lượng pin x %Pin Cần Sạc) * Đơn giá điện ) + Chi
-     * Phí Quá Hạn (đối với trạm sạc nhanh và siêu nhanh)
-     * Ta có :
-     * - Dung lượng pin = 70kW
-     * - % Pin Cần Sạc -> Người dùng nhập, (nếu không nhập thì mặc định là 80%)
-     * - Đơn giá điện = 3.850 VND/kWh ------> Đã khai báo với biến GIA_MOI_KWH =
-     * 3850
-     * - Chi Phí Quá Hạn = 1.000 VND/phút đối với sạc nhanh và 3.000 VND/phút đối
-     * với sạc siêu nhanh (cho mỗi phút quá thời gian dự kiến)
-     * 
-     * => Output : Chi Phí Cuối Cùng và thời gian dự kiến
-     */
-
-    // ----------------------------------------------------------
-    // Chuc nang 10.1: Tinh chi phi 1 tram
-    // ----------------------------------------------------------
     public void tinhChiPhi1Tram(Scanner scanner) {
         System.out.print("Nhap ID tram can xem chi phi: ");
         String id = scanner.nextLine().trim();
@@ -791,8 +770,8 @@ public class Module {
                 }
             }
         } else {
-            // TRUONG HOP 2: TRAM DANG SAC -> XUAT HOA DON (Dung mac dinh 80% vi phien sac da bat dau)
-            System.out.println("(!) Tram nay dang trong phien sac (80% pin). Dang khoi tao hoa don...");
+            // TRUONG HOP 2: TRAM DANG SAC -> XUAT HOA DON
+            System.out.println("(!) Tram nay dang trong phien sac. He thong dang tinh toan hoa don thuc te...");
         }
 
         double dienNangCanSac = dungLuongPin * (phanTramPin / 100.0);
@@ -802,38 +781,22 @@ public class Module {
 
         int phutQuaHan = 0;
         long thoiGianDaSacPhut = 0;
+        double donGiaPhuPhi = 0;
+
+        // Xac dinh don gia phu phi theo loai tram
+        if (found instanceof TramSacNhanh) donGiaPhuPhi = 1000;
+        else if (found instanceof TramSacSieuNhanh) donGiaPhuPhi = 3000;
 
         if (isThucTe) {
-            // Tinh toan THUC TE tu thoi gian bat dau
+            // Tinh toan thoi gian thuc te cho tram dang sac
             thoiGianDaSacPhut = tinhThoiGianSacPhut(found.getThoiGianBatDauSac(), LocalDateTime.now());
             long quaHan = thoiGianDaSacPhut - thoiGianDuKienPhut;
-            if (quaHan > 0 && !(found instanceof TramSacCham)) {
+            if (quaHan > 0 && donGiaPhuPhi > 0) {
                 phutQuaHan = (int) quaHan;
             }
-        } else {
-            // DU TOAN: Cho phep nguoi dung nhap gia lap thoi gian qua han
-            if (!(found instanceof TramSacCham)) {
-                System.out.print("Nhap thoi gian du kien qua han neu co (phut) [Mac dinh: 0]: ");
-                String quaHanInput = scanner.nextLine().trim();
-                if (!quaHanInput.isEmpty()) {
-                    try {
-                        phutQuaHan = Integer.parseInt(quaHanInput);
-                        if (phutQuaHan < 0)
-                            phutQuaHan = 0;
-                    } catch (NumberFormatException e) {
-                        System.out.println("=> Thoi gian khong hop le, su dung mac dinh 0 phut.");
-                    }
-                }
-            }
         }
 
-        double chiPhiQuaHan = 0;
-        if (found instanceof TramSacNhanh) {
-            chiPhiQuaHan = phutQuaHan * 1000;
-        } else if (found instanceof TramSacSieuNhanh) {
-            chiPhiQuaHan = phutQuaHan * 3000;
-        }
-
+        double chiPhiQuaHan = phutQuaHan * donGiaPhuPhi;
         double tongChiPhi = chiPhiDien + chiPhiQuaHan;
 
         System.out.println("\n" + "=".repeat(45));
@@ -844,7 +807,7 @@ public class Module {
         }
         System.out.println("=".repeat(45));
         System.out.println("- Ten tram: " + found.getTenTram());
-        System.out.println("- Muc pin da dang ky sac: " + phanTramPin + "%");
+        System.out.println("- Muc pin: " + phanTramPin + "%");
 
         if (isThucTe) {
             System.out.println("- Thoi gian da sac: " + dinhDangThoiGian(thoiGianDaSacPhut));
@@ -854,13 +817,18 @@ public class Module {
         }
 
         System.out.printf("- Chi phi dien: %,.0f VND%n", chiPhiDien);
-        if (phutQuaHan > 0 && !(found instanceof TramSacCham)) {
+
+        if (isThucTe && phutQuaHan > 0) {
             System.out.printf("- Chi phi qua han (%d phut): %,.0f VND%n", phutQuaHan, chiPhiQuaHan);
+        } else if (!isThucTe && donGiaPhuPhi > 0) {
+            // Thong bao ve phu phi neu co the xay ra (cho tram nhanh/sieu nhanh)
+            System.out.printf("(!) Luu y: Phu phi qua han tai tram nay la %,.0f VND/phut.%n", donGiaPhuPhi);
         }
+
         System.out.println("-".repeat(45));
 
         if (isThucTe) {
-            System.out.printf("=> TONG THANH TOAN (Tinh den hien tai): %,.0f VND%n", tongChiPhi);
+            System.out.printf("=> TONG THANH TOAN: %,.0f VND%n", tongChiPhi);
         } else {
             System.out.printf("=> TONG CHI PHI DU KIEN: %,.0f VND%n", tongChiPhi);
         }
