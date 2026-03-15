@@ -26,7 +26,7 @@ public class Menu {
         this.module = module;
     }
 
-    static void XuatKeNgang(int n) {
+    static void xuatKeNgang(int n) {
         for (int i = 0; i < n; i++) {
             System.out.print("=");
         }
@@ -34,19 +34,19 @@ public class Menu {
 
     }
 
-    static void XuatGachNgang(int n) {
+    static void xuatGachNgang(int n) {
         for (int i = 0; i < n; i++) {
             System.out.print("-");
         }
         System.out.println();
     }
 
-    public static void XuatMenu() {
-        XuatKeNgang(50);
+    public static void xuatMenu() {
+        xuatKeNgang(50);
         System.out.println("|      QUAN LY TRAM SAC XE DIEN THONG MINH      |");
-        XuatKeNgang(50);
+        xuatKeNgang(50);
         System.out.println("| Phim | Chuc nang                              |");
-        XuatGachNgang(50);
+        xuatGachNgang(50);
         System.out.printf("|   %d  | %-38s |%n", MenuCT.Thoat.ordinal(), "Thoat Chuong Trinh.");
         System.out.printf("|   %d  | %-38s |%n", MenuCT.Them1TruSac.ordinal(), "Them 1 tru sac moi.");
         System.out.printf("|   %d  | %-38s |%n", MenuCT.ThemDSTruSac.ordinal(), "Them danh sach tru sac.");
@@ -56,13 +56,13 @@ public class Menu {
         System.out.printf("|   %d  | %-38s |%n", MenuCT.TimKiem.ordinal(), "Tim kiem theo ID.");
         System.out.printf("|   %d  | %-38s |%n", MenuCT.ThongKeTruSacCanBaoTri.ordinal(),
                 "Thong ke danh sach tru sac can bao tri");
-        System.out.printf("|   %d  | %-38s |%n", MenuCT.XuatFile.ordinal(), "Xuat danh sach tru sac ra file Exel.");
+        System.out.printf("|   %d  | %-38s |%n", MenuCT.XuatFile.ordinal(), "Xuat danh sach tru sac ra file Excel.");
         System.out.printf("|   %d  | %-38s |%n", MenuCT.TinhChiPhi1Tram.ordinal(), "Tinh chi phi du kien cho 1 tram.");
         System.out.printf("|   %d  | %-38s |%n", MenuCT.TinhChiPhiDS.ordinal(), "Goi y chi phi cho tat ca cac tram.");
-        XuatKeNgang(50);
+        xuatKeNgang(50);
     }
 
-    public MenuCT ChonMenu() {
+    public MenuCT chonMenu() {
         int min = MenuCT.Thoat.ordinal();
         int max = MenuCT.values()[MenuCT.values().length - 1].ordinal();
         int chon;
@@ -81,7 +81,7 @@ public class Menu {
         return MenuCT.values()[chon];
     }
 
-    public void XuLyMenu(MenuCT chon) {
+    public void xuLyMenu(MenuCT chon) {
         switch (chon) {
             case Thoat:
                 System.out.println("Thoat chuong trinh!");
@@ -113,6 +113,14 @@ public class Menu {
                 System.out.println("\n--- TIM KIEM THONG TIN TRAM THEO ID TRAM SAC ---");
                 module.timKiem(scanner);
                 break;
+            case ThongKeTruSacCanBaoTri:
+                System.out.println("\n--- THONG KE TRAM SAC CAN BAO TRI ---");
+                module.thongKeTruSac(scanner);
+                break;
+            case XuatFile:
+                System.out.println("\n--- XUAT DANH SACH RA FILE EXCEL ---");
+                System.out.println("(!) Chuc nang nay dang duoc phat trien (Coming soon).");
+                break;
             case TinhChiPhi1Tram:
                 System.out.println("\n--- TINH CHI PHI DU KIEN CHO 1 TRAM ---");
                 module.tinhChiPhi1Tram(scanner);
@@ -126,7 +134,7 @@ public class Menu {
         }
     }
 
-    public void ChayChuongTrinh() {
+    public void chayChuongTrinh() {
         MenuCT chon;
 
         do {
@@ -134,13 +142,13 @@ public class Menu {
             System.out.print("\033[H\033[2J");
             System.out.flush();
 
-            XuatMenu();
-            chon = ChonMenu();
+            xuatMenu();
+            chon = chonMenu();
 
             if (chon == MenuCT.Thoat)
                 break;
 
-            XuLyMenu(chon);
+            xuLyMenu(chon);
 
             // Dung cho nguoi dung xem ket qua
             System.out.print("\nNhan Enter de tiep tuc...");
