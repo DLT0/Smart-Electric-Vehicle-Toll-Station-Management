@@ -196,7 +196,7 @@ abstract class TramSac {
 class TramSacCham extends TramSac {
     public TramSacCham(String maTram, HuyenLamDong viTri, double congSuat, int stt, int sttHeThong) {
         super(maTram, viTri, congSuat, sttHeThong);
-        setTenTram("Tram Sac Cham " + viTri.getTen() + " " + stt);
+        setTenTram("Sac Cham " + viTri.getTen() + " " + stt);
     }
 
     @Override
@@ -211,7 +211,7 @@ class TramSacCham extends TramSac {
 class TramSacNhanh extends TramSac {
     public TramSacNhanh(String maTram, HuyenLamDong viTri, double congSuat, int stt, int sttHeThong) {
         super(maTram, viTri, congSuat, sttHeThong);
-        setTenTram("Tram Sac Nhanh " + viTri.getTen() + " " + stt);
+        setTenTram("Sac Nhanh " + viTri.getTen() + " " + stt);
     }
 
     @Override
@@ -226,7 +226,7 @@ class TramSacNhanh extends TramSac {
 class TramSacSieuNhanh extends TramSac {
     public TramSacSieuNhanh(String maTram, HuyenLamDong viTri, double congSuat, int stt, int sttHeThong) {
         super(maTram, viTri, congSuat, sttHeThong);
-        setTenTram("Tram Sac Sieu Nhanh " + viTri.getTen() + " " + stt);
+        setTenTram("Sac Sieu Nhanh " + viTri.getTen() + " " + stt);
     }
 
     @Override
@@ -246,7 +246,6 @@ public class Module {
     // xoa
     private boolean isMockMode = true;
 
-    // #region NAMING_CONVENTION - Quy uoc dat ten cho maTram
     // Dinh dang: [PREFIX]-[MA_KHU_VUC]-[STT]
     //
     // PREFIX xac dinh loai tram:
@@ -485,17 +484,20 @@ public class Module {
     // ----------------------------------------------------------
 
     // Ham bo tro 1: In duong gach ngang cho bang
-    private void inKeNgang() {
-        System.out.println(
-                "+------------------+------------+------------------------------------------+-----------+------------+----------------------+");
+    private void inKeNgang(String kt, int n) {
+        for (int i = 0; i < n; i++) {
+            System.out.print(kt);
+        }
+        System.out.println();
+
     }
 
     // Ham bo tro 2: In tieu de cac cot cua bang
     private void inTieuDeBang() {
-        inKeNgang();
+        inKeNgang("=", 50);
         System.out.printf("| %-16s | %-10s | %-40s | %-9s | %-10s | %-20s |%n",
                 "Loai", "ID", "Ten Tram", "Cong Suat", "Trang Thai", "Thoi gian SD");
-        inKeNgang();
+        inKeNgang("=", 50);
     }
 
     // Ham bo tro 3: Xuat DS
@@ -526,7 +528,7 @@ public class Module {
             return;
         inTieuDeBang();
         inDSTram(t);
-        inKeNgang();
+        inKeNgang("=", 50);
     }
 
     // Kieu 2: Xuat toan bao danh sach (co kem logic sap xep)
@@ -560,7 +562,7 @@ public class Module {
         for (TramSac t : sortedList) {
             inDSTram(t);
         }
-        inKeNgang();
+        inKeNgang("=", 50);
     }
 
     // ----------------------------------------------------------
