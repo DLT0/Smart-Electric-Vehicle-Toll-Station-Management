@@ -45,10 +45,6 @@ src/main/java/com/evstation/
     ├── TramSac        # Model Layer (Polymorphism & Abstract)
     ├── Module         # Service Layer (Business Logic & Repository)
 ```
-
-> [!NOTE]
-> Để biết chi tiết về các thay đổi trong đợt tái cấu trúc (Refactoring) gần nhất, vui lòng xem file [Refactored_Architecture.md](./Refactored_Architecture.md).
-
 ---
 
 ## 🚀 Hướng dẫn cài đặt & chạy chương trình
@@ -87,3 +83,6 @@ mvn exec:java -Dexec.mainClass="com.evstation.Main"
 ```
 
 ---
+
+### Credit
+> From CTK49B With Love
