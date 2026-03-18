@@ -26,27 +26,12 @@ public class Menu {
         this.module = module;
     }
 
-    static void xuatKeNgang(int n) {
-        for (int i = 0; i < n; i++) {
-            System.out.print("=");
-        }
-        System.out.println();
-
-    }
-
-    static void xuatGachNgang(int n) {
-        for (int i = 0; i < n; i++) {
-            System.out.print("-");
-        }
-        System.out.println();
-    }
-
     public static void xuatMenu() {
-        xuatKeNgang(50);
+        Module.inKeNgang("=", 50);
         System.out.println("|      QUAN LY TRAM SAC XE DIEN THONG MINH      |");
-        xuatKeNgang(50);
+        Module.inKeNgang("=", 50);
         System.out.println("| Phim | Chuc nang                              |");
-        xuatGachNgang(50);
+        Module.inKeNgang("-", 50);
         System.out.printf("|   %-2d  | %-38s |%n", MenuCT.Thoat.ordinal(), "Thoat Chuong Trinh.");
         System.out.printf("|   %-2d  | %-38s |%n", MenuCT.Them1TruSac.ordinal(), "Them 1 tru sac moi.");
         System.out.printf("|   %-2d  | %-38s |%n", MenuCT.ThemDSTruSac.ordinal(), "Them danh sach tru sac.");
@@ -60,7 +45,7 @@ public class Menu {
         System.out.printf("|   %-2d  | %-38s |%n", MenuCT.TinhChiPhi1Tram.ordinal(),
                 "Tinh chi phi du kien cho 1 tram.");
         System.out.printf("|   %-2d  | %-38s |%n", MenuCT.TinhChiPhiDS.ordinal(), "Goi y chi phi cho tat ca cac tram.");
-        xuatKeNgang(50);
+        Module.inKeNgang("=", 50);
     }
 
     public MenuCT chonMenu() {

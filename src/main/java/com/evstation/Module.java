@@ -484,20 +484,19 @@ public class Module {
     // ----------------------------------------------------------
 
     // Ham bo tro 1: In duong gach ngang cho bang
-    private void inKeNgang(String kt, int n) {
+    public static void inKeNgang(String kt, int n) {
         for (int i = 0; i < n; i++) {
             System.out.print(kt);
         }
         System.out.println();
-
     }
 
     // Ham bo tro 2: In tieu de cac cot cua bang
     private void inTieuDeBang() {
-        inKeNgang("=", 50);
+        inKeNgang("=", 121);
         System.out.printf("| %-16s | %-10s | %-40s | %-9s | %-10s | %-20s |%n",
                 "Loai", "ID", "Ten Tram", "Cong Suat", "Trang Thai", "Thoi gian SD");
-        inKeNgang("=", 50);
+        inKeNgang("=", 121);
     }
 
     // Ham bo tro 3: Xuat DS
@@ -528,7 +527,7 @@ public class Module {
             return;
         inTieuDeBang();
         inDSTram(t);
-        inKeNgang("=", 50);
+        inKeNgang("=", 121);
     }
 
     // Kieu 2: Xuat toan bao danh sach (co kem logic sap xep)
@@ -562,7 +561,7 @@ public class Module {
         for (TramSac t : sortedList) {
             inDSTram(t);
         }
-        inKeNgang("=", 50);
+        inKeNgang("=", 121);
     }
 
     // ----------------------------------------------------------
