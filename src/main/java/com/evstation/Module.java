@@ -183,8 +183,20 @@ abstract class TramSac {
         setThoiGianBatDauSac(null);
     }
 
-    public double tinhMucHaoMon() {
+//Tinh muc do hao mon 
+    public double DoHaoMon() {
         return (this.thoiGianHoatDong / HAN_BAO_TRI_MAC_DINH) * 100;
+    }
+
+    public double tinhMucHaoMon() {
+        return DoHaoMon();
+    }
+
+    public boolean HanBaoTri() {
+        if (DoHaoMon() < 90) {
+            return true;
+        }
+        return false;
     }
 
     protected abstract String getLoaiPrefix();
@@ -912,3 +924,5 @@ public class Module {
         System.out.println();
     }
 }
+
+
