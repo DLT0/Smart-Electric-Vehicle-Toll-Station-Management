@@ -830,7 +830,8 @@ public class Module {
             System.out.println("- Thoi gian da sac: " + dinhDangThoiGian(thoiGianDaSacPhut));
             System.out.println("- Thoi gian tieu chuan: " + dinhDangThoiGian(thoiGianDuKienPhut));
         } else {
-            System.out.println("- Thoi gian sac du kien: " + dinhDangThoiGian(thoiGianDuKienPhut));
+            System.out.println("- Thoi gian sac du kien: " + din
+     * - Tìm hiểu các viết hàm private, cụ thể là hàm tự động cập nhật giờ sử dụnghDangThoiGian(thoiGianDuKienPhut));
         }
 
         System.out.printf("- Chi phi dien: %,.0f VND%n", chiPhiDien);
@@ -890,7 +891,7 @@ public class Module {
             String thoiGianStr = dinhDangThoiGian(thoiGianPhut);
 
             double phiQuaHan = 0;
-            if (t instanceof TramSacNhanh)
+            if (t instanceof TramSacNhanh)xzzz
                 phiQuaHan = 1000;
             else if (t instanceof TramSacSieuNhanh)
                 phiQuaHan = 3000;
