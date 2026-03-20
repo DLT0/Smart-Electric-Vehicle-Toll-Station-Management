@@ -1,6 +1,6 @@
 package com.evstation;
 
-import java.util.*;
+import java.util.Scanner;
 
 public class Menu {
 
