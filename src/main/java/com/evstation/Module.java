@@ -359,7 +359,7 @@ public class Module {
     private void inTieuDeBang() {
         inKeNgang("=", 160);
         System.out.printf("| %-16s | %-10s | %-40s | %-9s | %-8s | %-15s | %-16s | %-20s |%n",
-            "Loai", "ID", "Ten Tram", "Cong Suat", "Hao Mon", "Luu y bao tri", "Trang Thai", "Thoi gian SD");
+            "Loai", "ID", "Ten Tram", "Cong Suat", "Hao Mon", "Luu y bao tri", "Trang Thai", "Thoi gian sac");
         inKeNgang("=", 160);
     }
 
@@ -654,14 +654,14 @@ public class Module {
             }
         }
 
-        System.out.println("\n" + "=".repeat(121) + " THONG KE TRAM CAN BAO TRI " + "=".repeat(72));
+        System.out.println("\n" + "=".repeat(36) + " THONG KE TRAM CAN BAO TRI " + "=".repeat(36));
         System.out.println("(Tram co muc haomon > 90% cua han bao tri 500h)");
         
         if (tramBaoTri.isEmpty()) {
             System.out.println("\n✓ Tat ca cac tram deu co tinh trang tot. Khong co tram nao can bao tri.");
         } else {
             System.out.println("\n[CANH BAO] Co " + tramBaoTri.size() + " tram can bao tri:");
-            System.out.println("-".repeat(121));
+            System.out.println("-".repeat(21));
             inTieuDeBang();
             for (TramSac t : tramBaoTri) {
                 inDSTram(t);
@@ -677,13 +677,13 @@ public class Module {
         }
     }
 
-    // Ham bo tro: Thong ke tram co so gio su dung < x (nhap tu ban phim)
+    // Ham bo tro: Thong ke tram co so gio su dung > x (nhap tu ban phim)
     public void thongKeGioSDThap(Scanner scanner) {
-        System.out.print("\nNhap so gio su dung toi da (h): ");
-        double gioDtMax = 0;
+        System.out.print("\nNhap so gio su dung toi thieu (h): ");
+        double gioMin = 0;
         try {
-            gioDtMax = Double.parseDouble(scanner.nextLine().trim());
-            if (gioDtMax < 0) {
+            gioMin = Double.parseDouble(scanner.nextLine().trim());
+            if (gioMin < 0) {
                 System.out.println("!!! So gio khong duoc am!");
                 return;
             }
@@ -692,26 +692,32 @@ public class Module {
             return;
         }
 
-        List<TramSac> tramThap = new ArrayList<>();
+        List<TramSac> tramCao = new ArrayList<>();
         for (TramSac t : danhSach) {
-            if (t.getThoiGianHoatDong() < gioDtMax) {
-                tramThap.add(t);
+            double gioSuDung = t.getThoiGianHoatDong();
+            if (!t.isSanSang() && t.getThoiGianBatDauSac() != null) {
+                gioSuDung += tinhThoiGianSacPhut(t.getThoiGianBatDauSac(), LocalDateTime.now()) / 60.0;
+            }
+            if (gioSuDung > gioMin) {
+                tramCao.add(t);
             }
         }
 
-        System.out.println("\n" + "=".repeat(80) + " THONG KE TRAM CO SO GIO SU DUNG < " + String.format("%.1f", gioDtMax) + "h ");
+        System.out.println("\n" + "=".repeat(36) + " THONG KE TRAM CO SO GIO SU DUNG > X " + String.format("%.1f", gioMin) + "h" + " " + "=".repeat(36))    ;
         
-        if (tramThap.isEmpty()) {
-            System.out.println("\nKhong co tram nao co so gio su dung nho hon " + gioDtMax + "h.");
+        if (tramCao.isEmpty()) {
+            System.out.println("\nKhong co tram nao co so gio su dung lon hon " + gioMin + "h.");
         } else {
-            // Sap xep theo thoi gian hoat dong tang dan
-            Collections.sort(tramThap, (a, b) -> Double.compare(a.getThoiGianHoatDong(), b.getThoiGianHoatDong()));
+            // Sap xep theo thoi gian hoat dong giam dan
+            Collections.sort(tramCao, (a, b) -> Double.compare(
+                    b.getThoiGianHoatDong() + (b.isSanSang() ? 0 : tinhThoiGianSacPhut(b.getThoiGianBatDauSac(), LocalDateTime.now()) / 60.0),
+                    a.getThoiGianHoatDong() + (a.isSanSang() ? 0 : tinhThoiGianSacPhut(a.getThoiGianBatDauSac(), LocalDateTime.now()) / 60.0)));
             
-            System.out.println("\nCo " + tramThap.size() + " tram co so gio su dung < " + gioDtMax + "h:");
-            System.out.println("-".repeat(121));
+            System.out.println("\nCo " + tramCao.size() + " tram co so gio su dung > " + gioMin + "h:");
+          
             inTieuDeBang();
-            for (TramSac t : tramThap) {
-                inDSTram(t);
+            for (TramSac t : tramCao) {
+                inDSTramWithTotal(t);
             }
             inKeNgang("=", 121);
         }
@@ -744,10 +750,10 @@ public class Module {
             }
         }
 
-        System.out.println("\n" + "=".repeat(100) + " THONG KE KHU VUC CO TAN XUAT SU DUNG CAO NHAT ");
-        System.out.println("-".repeat(121));
-        System.out.printf("| %-40s | So Tram | Tong Gio Su Dung (h) | Ty Le On %% |%n", "Ten Khu Vuc");
-        System.out.println("-".repeat(121));
+        System.out.println("\n" + "=".repeat(26) + " THONG KE KHU VUC CO TAN XUAT SU DUNG CAO NHAT " + "=".repeat(26));
+          
+        System.out.printf("| %-40s | So Tram | Tong Gio Su Dung (h)| Ty Le %%    |%n", "Ten Khu Vuc");
+        System.out.println("-".repeat(101));
 
         // Sap xep theo so tram giam dan
         List<Map.Entry<HuyenLamDong, Integer>> sortedList = new ArrayList<>(demKhuVuc.entrySet());
@@ -760,12 +766,12 @@ public class Module {
             double tongGio = tongGioKhuVuc.get(kv);
             double tyLe = (soTram * 100.0) / danhSach.size();
             
-            String marker = (kv == kvCaoNhat) ? " [HANG " + rank + "]" : "";
+            String marker = (rank <= 3) ? " [HANG " + rank + "]" : "";
             System.out.printf("| %-40s | %-7d | %-19.1f | %-9.1f%% |%s%n", 
                 kv.getTen(), soTram, tongGio, tyLe, marker);
             rank++;
         }
-        System.out.println("-".repeat(121));
+        System.out.println("-".repeat(101));
 
         if (kvCaoNhat != null) {
             System.out.println("\n[KET LUAN] Khu vuc co tan xuat su dung cao nhat:");
@@ -773,7 +779,7 @@ public class Module {
             System.out.println("  - So tram: " + soTramCaoNhat);
             System.out.println("  - Tong gio su dung: " + String.format("%.1f", tongGioKhuVuc.get(kvCaoNhat)) + " gio");
         }
-        System.out.println("=".repeat(121));
+        System.out.println("=".repeat(101));
     }
 
     // ----------------------------------------------------------
