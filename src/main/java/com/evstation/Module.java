@@ -195,14 +195,16 @@ public class Module {
     // ----------------------------------------------------------
     // Ham phu tro: Tu dong sinh maTram dua theo quy uoc NAMING_CONVENTION
     // prefix duoc chon tu dong dua vao congSuat de phan biet loai tram
+    // Tham so countAtLocation la so luong tram hien co tai khu vuc do
+    // (duoc tinh mot lan o ham themVaoDanhSach de tranh lap lai duyet danh sach).
     // ----------------------------------------------------------
-    private String sinhMaTram(HuyenLamDong khuVuc, double congSuat) {
+    private String sinhMaTram(HuyenLamDong khuVuc, double congSuat, int countAtLocation) {
         String prefix = (congSuat <= 11) ? PREFIX_CHAM
                 : (congSuat <= 120) ? PREFIX_NHANH
                         : PREFIX_SIEU_NHANH;
         String tenEnum = khuVuc.name().replace("_", ""); // "DA_LAT" -> "DALAT"
         String maKhuVuc = tenEnum.substring(0, Math.min(MA_KHU_VUC_LENGTH, tenEnum.length())).toUpperCase();
-        int sttTaiKhuVuc = countStationsAtLocation(khuVuc) + 1;
+        int sttTaiKhuVuc = countAtLocation + 1;
         String sttStr = String.format(MA_TRAM_STT_FORMAT, sttTaiKhuVuc);
         return prefix + MA_TRAM_SEPARATOR + maKhuVuc + MA_TRAM_SEPARATOR + sttStr;
     }
@@ -263,11 +265,12 @@ public class Module {
     return cs;
     }
 
-    // Ham phu tro (Public de tai su dung): Sinh ID, phan loai va them tram vao danh
-    // sach
+    // Ham phu tro (Public de tai su dung): Sinh ID, phan loai va them tram vao danh sach.
+    // Toi uu: chi tinh so tram hien co tai khu vuc 1 lan, su dung chung cho ma tram va STT.
     public TramSac themVaoDanhSach(HuyenLamDong khuVuc, double cs) {
-        String id = sinhMaTram(khuVuc, cs);
-        int stt = countStationsAtLocation(khuVuc) + 1;
+        int countAtLocation = countStationsAtLocation(khuVuc);
+        String id = sinhMaTram(khuVuc, cs, countAtLocation);
+        int stt = countAtLocation + 1;
         TramSac moi = null;
         if (cs <= 11) {
             moi = new TramSacCham(id, khuVuc, cs, stt);
