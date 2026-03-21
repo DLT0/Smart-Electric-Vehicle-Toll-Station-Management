@@ -63,8 +63,8 @@ public class Menu {
         System.out.println("| Phim | Chuc nang thong ke                    |");
         Module.inKeNgang("-", 55);
         System.out.printf("|   %-2d  | %-37s |%n", MenuThongKe.Thoat.ordinal(), "Quay lai menu chinh.");
-        System.out.printf("|   %-2d  | %-37s |%n", MenuThongKe.BaoTri.ordinal(), "Tram sac can bao tri (>90%).");
-        System.out.printf("|   %-2d  | %-37s |%n", MenuThongKe.GioSDThap.ordinal(), "Tram sac co gio SD < X.");
+        System.out.printf("|   %-2d  | %-37s |%n", MenuThongKe.BaoTri.ordinal(), "Tram sac can bao tri .");
+        System.out.printf("|   %-2d  | %-37s |%n", MenuThongKe.GioSDThap.ordinal(), "Tram sac co gio SD > X.");
         System.out.printf("|   %-2d  | %-37s |%n", MenuThongKe.KhuVucCao.ordinal(), "Khu vuc tan xuat cao nhat.");
         Module.inKeNgang("=", 55);
     }
@@ -196,11 +196,11 @@ public class Menu {
                 System.out.println("=> Quay lai menu chinh.");
                 break;
             case BaoTri:
-                System.out.println("\n--- THONG KE TRAM SAC CAN BAO TRI (HAO MON > 90%) ---");
+                System.out.println("\n--- THONG KE TRAM SAC CAN BAO TRI  ---");
                 module.thongKeBaoTri();
                 break;
             case GioSDThap:
-                System.out.println("\n--- THONG KE TRAM SAC CO GIO SU DUNG < X ---");
+                System.out.println("\n--- THONG KE TRAM SAC CO GIO SU DUNG > X ---");
                 module.thongKeGioSDThap(scanner);
                 break;
             case KhuVucCao:
