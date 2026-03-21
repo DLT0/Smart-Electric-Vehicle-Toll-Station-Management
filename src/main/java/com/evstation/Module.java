@@ -236,6 +236,44 @@ class TramSacSieuNhanh extends TramSac {
 }
 
 // ============================================================
+// ENUM: Danh sach cac lua chon thong ke tru sac
+// ============================================================
+enum LoaiThongKe {
+    BAO_TRI("Tru sac can bao tri (haomon > 90%)"),
+    GIO_SD_THAP("Tru sac co so gio su dung < X (nhap X tu ban phim)"),
+    KHU_VUC_CAO("Thong ke khu vuc co tan xuat su dung cao nhat"),
+    QUAY_LAI("Quay lai menu chinh");
+
+    private final String moTa;
+
+    LoaiThongKe(String moTa) {
+        this.moTa = moTa;
+    }
+
+    public String getMoTa() {
+        return moTa;
+    }
+
+    public static void hienThiMenu() {
+        LoaiThongKe[] options = LoaiThongKe.values();
+        System.out.println("\n  +-----+--------------------------------------------------+");
+        System.out.printf("  | %-3s | %-48s |%n", "STT", "Loai Thong Ke");
+        System.out.println("  +-----+--------------------------------------------------+");
+        for (int i = 0; i < options.length; i++) {
+            System.out.printf("  | %-3d | %-48s |%n", i + 1, options[i].getMoTa());
+        }
+        System.out.println("  +-----+--------------------------------------------------+");
+    }
+
+    public static LoaiThongKe layTheoSoThuTu(int soThuTu) {
+        LoaiThongKe[] options = LoaiThongKe.values();
+        if (soThuTu < 1 || soThuTu > options.length)
+            return null;
+        return options[soThuTu - 1];
+    }
+}
+
+// ============================================================
 // LOP QUAN LY: Module
 // ============================================================
 public class Module {
@@ -716,32 +754,182 @@ public class Module {
     // ----------------------------------------------------------
     // Chuc nang 8: Thong ke he thong tru sac
     // ----------------------------------------------------------
-    /*
-     * MỤC TIÊU: Cung cấp báo cáo tổng quan và chi tiết về hiệu suất vận hành.
-     * 
-     * 1. Quy trình thực hiện:
-     * - Hiển thị Menu phụ: Cho phép chọn loại thống kê (Theo khu vực, Trạng thái,
-     * hoặc Độ ưu tiên bảo trì).
-     * - Xử lý dữ liệu: Lọc danh sách và sắp xếp (sort) theo tiêu chí người dùng đã
-     * chọn.
-     * - Hiển thị kết quả: Xuất bảng dữ liệu chi tiết kèm các chỉ số quan trọng.
-     * 
-     * 2. Các yêu cầu kỹ thuật:
-     * - Quản lý vận hành: (Cần thêm) Thuộc tính gio_da_dung và han_bao_tri (mặc
-     * định 500h) trong class TramSac.
-     * - Logic bảo trì: Hàm kiểm tra tỷ lệ độ hao mòn (gio_da_dung / han_bao_tri).
-     * Nếu > 90% thì báo động bảo trì.
-     * - Báo cáo tổng hợp (Summary): Cuối bảng phải có phần kết luận:
-     * + Tổng số trụ sạc, số trụ đang bận (Busy) vs. Rảnh (Ready).
-     * + Số lượng trụ cần bảo trì gấp hoặc đang bị hỏng.
-     * + Khu vực có tần suất sử dụng cao nhất.
-     * 3. Nâng cao:
-     * - Tìm hiểu thêm chức năng xóa các trạm sạc có số giờ sử dụng > han_bao_tri
-     * - Tìm hiểu các viết hàm private, cụ thể là hàm tự động cập nhật giờ sử dụng
-     * sau khi kết thúc quá trình sử dụng.
-     */
     public void thongKeTruSac(Scanner scanner) {
-        System.out.println("-> [Chuc nang 8] Thong ke.");
+        if (danhSach.isEmpty()) {
+            System.out.println("!!! Danh sach trong. Khong co tram sac nao de thong ke.");
+            return;
+        }
+
+        while (true) {
+            LoaiThongKe.hienThiMenu();
+            System.out.print("Chon loai thong ke (1-4): ");
+
+            LoaiThongKe loaiThongKe = null;
+            try {
+                int soChon = Integer.parseInt(scanner.nextLine().trim());
+                loaiThongKe = LoaiThongKe.layTheoSoThuTu(soChon);
+                if (loaiThongKe == null) {
+                    System.out.println("!!! So thu tu khong hop le!");
+                    continue;
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("!!! Phai nhap mot so nguyen!");
+                continue;
+            }
+
+            switch (loaiThongKe) {
+                case BAO_TRI:
+                    thongKeBaoTri();
+                    break;
+                case GIO_SD_THAP:
+                    thongKeGioSDThap(scanner);
+                    break;
+                case KHU_VUC_CAO:
+                    thongKeKhuVucCaoNhat();
+                    break;
+                case QUAY_LAI:
+                    System.out.println("=> Quay lai menu chinh.");
+                    return;
+            }
+
+            System.out.print("\nBan co muon tiep tuc thong ke? (y/n): ");
+            if (!scanner.nextLine().trim().toLowerCase().startsWith("y")) {
+                break;
+            }
+        }
+    }
+
+    // Ham bo tro: Thong ke tram can bao tri (haomon > 90%)
+    public void thongKeBaoTri() {
+        List<TramSac> tramBaoTri = new ArrayList<>();
+        
+        for (TramSac t : danhSach) {
+            double mucHaoMon = t.tinhMucHaoMon();
+            if (mucHaoMon > 90) {
+                tramBaoTri.add(t);
+            }
+        }
+
+        System.out.println("\n" + "=".repeat(121) + " THONG KE TRAM CAN BAO TRI " + "=".repeat(72));
+        System.out.println("(Tram co muc haomon > 90% cua han bao tri 500h)");
+        
+        if (tramBaoTri.isEmpty()) {
+            System.out.println("\n✓ Tat ca cac tram deu co tinh trang tot. Khong co tram nao can bao tri.");
+        } else {
+            System.out.println("\n[CANH BAO] Co " + tramBaoTri.size() + " tram can bao tri:");
+            System.out.println("-".repeat(121));
+            inTieuDeBang();
+            for (TramSac t : tramBaoTri) {
+                inDSTram(t);
+            }
+            inKeNgang("=", 121);
+            System.out.println("\nChi tiet hao mon:");
+            for (TramSac t : tramBaoTri) {
+                double mucHaoMon = t.tinhMucHaoMon();
+                System.out.println("  [" + t.getMaTram() + "] " + t.getTenTram() 
+                    + " - Hao mon: " + String.format("%.1f", mucHaoMon) + "% (Da su dung: " 
+                    + String.format("%.1f", t.getThoiGianHoatDong()) + "h / 500h)");
+            }
+        }
+    }
+
+    // Ham bo tro: Thong ke tram co so gio su dung < x (nhap tu ban phim)
+    public void thongKeGioSDThap(Scanner scanner) {
+        System.out.print("\nNhap so gio su dung toi da (h): ");
+        double gioDtMax = 0;
+        try {
+            gioDtMax = Double.parseDouble(scanner.nextLine().trim());
+            if (gioDtMax < 0) {
+                System.out.println("!!! So gio khong duoc am!");
+                return;
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("!!! Phai nhap mot so!");
+            return;
+        }
+
+        List<TramSac> tramThap = new ArrayList<>();
+        for (TramSac t : danhSach) {
+            if (t.getThoiGianHoatDong() < gioDtMax) {
+                tramThap.add(t);
+            }
+        }
+
+        System.out.println("\n" + "=".repeat(80) + " THONG KE TRAM CO SO GIO SU DUNG < " + String.format("%.1f", gioDtMax) + "h ");
+        
+        if (tramThap.isEmpty()) {
+            System.out.println("\nKhong co tram nao co so gio su dung nho hon " + gioDtMax + "h.");
+        } else {
+            // Sap xep theo thoi gian hoat dong tang dan
+            Collections.sort(tramThap, (a, b) -> Double.compare(a.getThoiGianHoatDong(), b.getThoiGianHoatDong()));
+            
+            System.out.println("\nCo " + tramThap.size() + " tram co so gio su dung < " + gioDtMax + "h:");
+            System.out.println("-".repeat(121));
+            inTieuDeBang();
+            for (TramSac t : tramThap) {
+                inDSTram(t);
+            }
+            inKeNgang("=", 121);
+        }
+    }
+
+    // Ham bo tro: Thong ke khu vuc co tan xuat su dung cao nhat (tong so gio su dung)
+    public void thongKeKhuVucCaoNhat() {
+        // Dem so lan su dung (so tram) tai moi khu vuc va tong gio su dung
+        Map<HuyenLamDong, Integer> demKhuVuc = new LinkedHashMap<>();
+        Map<HuyenLamDong, Double> tongGioKhuVuc = new LinkedHashMap<>();
+
+        for (HuyenLamDong kv : HuyenLamDong.values()) {
+            demKhuVuc.put(kv, 0);
+            tongGioKhuVuc.put(kv, 0.0);
+        }
+
+        for (TramSac t : danhSach) {
+            HuyenLamDong kv = t.getViTri();
+            demKhuVuc.put(kv, demKhuVuc.get(kv) + 1);
+            tongGioKhuVuc.put(kv, tongGioKhuVuc.get(kv) + t.getThoiGianHoatDong());
+        }
+
+        // Tim khu vuc co tan xuat cao nhat (so tram nhieu nhat)
+        HuyenLamDong kvCaoNhat = null;
+        int soTramCaoNhat = 0;
+        for (Map.Entry<HuyenLamDong, Integer> entry : demKhuVuc.entrySet()) {
+            if (entry.getValue() > soTramCaoNhat) {
+                soTramCaoNhat = entry.getValue();
+                kvCaoNhat = entry.getKey();
+            }
+        }
+
+        System.out.println("\n" + "=".repeat(100) + " THONG KE KHU VUC CO TAN XUAT SU DUNG CAO NHAT ");
+        System.out.println("-".repeat(121));
+        System.out.printf("| %-40s | So Tram | Tong Gio Su Dung (h) | Ty Le On %% |%n", "Ten Khu Vuc");
+        System.out.println("-".repeat(121));
+
+        // Sap xep theo so tram giam dan
+        List<Map.Entry<HuyenLamDong, Integer>> sortedList = new ArrayList<>(demKhuVuc.entrySet());
+        Collections.sort(sortedList, (a, b) -> Integer.compare(b.getValue(), a.getValue()));
+
+        int rank = 1;
+        for (Map.Entry<HuyenLamDong, Integer> entry : sortedList) {
+            HuyenLamDong kv = entry.getKey();
+            int soTram = entry.getValue();
+            double tongGio = tongGioKhuVuc.get(kv);
+            double tyLe = (soTram * 100.0) / danhSach.size();
+            
+            String marker = (kv == kvCaoNhat) ? " [HANG " + rank + "]" : "";
+            System.out.printf("| %-40s | %-7d | %-19.1f | %-9.1f%% |%s%n", 
+                kv.getTen(), soTram, tongGio, tyLe, marker);
+            rank++;
+        }
+        System.out.println("-".repeat(121));
+
+        if (kvCaoNhat != null) {
+            System.out.println("\n[KET LUAN] Khu vuc co tan xuat su dung cao nhat:");
+            System.out.println("  - Khu vuc: " + kvCaoNhat.getTen());
+            System.out.println("  - So tram: " + soTramCaoNhat);
+            System.out.println("  - Tong gio su dung: " + String.format("%.1f", tongGioKhuVuc.get(kvCaoNhat)) + " gio");
+        }
+        System.out.println("=".repeat(121));
     }
 
     // ----------------------------------------------------------
@@ -912,3 +1100,4 @@ public class Module {
         System.out.println();
     }
 }
+// viet menu phu su dung enum 
