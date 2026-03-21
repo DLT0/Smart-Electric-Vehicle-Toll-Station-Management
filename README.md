@@ -24,6 +24,48 @@
 
 ---
 
+## 🧭 Bảng Hàm Chính Và Hàm Phụ Trợ
+
+### 1) Mapping hàm chính và helper gọi trực tiếp
+
+| # | Hàm chính (Module) | Mục tiêu nghiệp vụ | Hàm phụ trợ liên quan trực tiếp |
+|---|---|---|---|
+| 1 | `them1TruSac(Scanner)` | Thêm 1 trạm sạc mới | `chonKhuVuc`, `nhapCongSuat`, `themVaoDanhSach` |
+| 2 | `themDSTruSac(Scanner)` | Thêm nhiều trạm theo số lượng nhập | `chonKhuVuc`, `nhapCongSuat`, `themVaoDanhSach` |
+| 3 | `nhapCoDinh(Scanner)` | Nạp bộ dữ liệu mẫu | `TramSac.confirm`, `themVaoDanhSach`, `apDungTrangThaiTest` |
+| 4 | `xuatDanhSach()` | Xuất bảng toàn bộ trạm sạc | `inTieuDeBang`, `inDSTram` |
+| 5 | `capNhatTrangThai(Scanner)` | Cập nhật trạng thái hoặc giờ hoạt động | `timTramTheoId`, `xuatThongTin1Tram`, `tinhThoiGianSacPhut`, `TramSac.confirm`, `xuatDanhSach` |
+| 6 | `xoaTruSac(Scanner)` | Xóa trạm theo ID có xác nhận | `timTramTheoId`, `xuatThongTin1Tram`, `TramSac.confirm` |
+| 7 | `timKiem(Scanner)` | Tìm trạm theo ID | `timTramTheoId` |
+| 8 | `thongKeTruSac(Scanner)` | Điều phối menu thống kê | `LoaiThongKe.hienThiMenu`, `LoaiThongKe.layTheoSoThuTu`, `thongKeBaoTri`, `thongKeGioSDThap`, `thongKeKhuVucCaoNhat`, `TramSac.confirm` |
+| 9 | `thongKeBaoTri()` | Thống kê trạm cần bảo trì | `inTieuDeBang`, `inDSTram` |
+| 10 | `thongKeGioSDThap(Scanner)` | Lọc trạm có tổng giờ sử dụng > ngưỡng X | `tinhThoiGianSacPhut`, `inTieuDeBang`, `inDSTramWithTotal` |
+| 11 | `thongKeKhuVucCaoNhat()` | Thống kê khu vực có tần suất sử dụng cao nhất | (không dùng helper nội bộ riêng, xử lý trực tiếp với `Map`) |
+| 12 | `tinhChiPhi1Tram(Scanner)` | Tính dự toán/hóa đơn cho 1 trạm | `timTramTheoId`, `tinhThoiGianSacPhut`, `dinhDangThoiGian` |
+| 13 | `tinhChiPhiDS(Scanner)` | Gợi ý chi phí cho toàn bộ trạm | `dinhDangThoiGian` |
+| 14 | `sapXepDS()` | Sắp xếp danh sách theo mức ưu tiên sử dụng | `inTieuDeBang`, `inDSTram` |
+
+### 2) Danh mục helper nội bộ và nơi sử dụng
+
+| Helper | Loại | Được dùng bởi |
+|---|---|---|
+| `sinhMaTram(HuyenLamDong, double, int)` | Sinh mã trạm theo quy ước ID | `themVaoDanhSach` |
+| `countStationsAtLocation(HuyenLamDong)` | Đếm số trạm cùng khu vực | `themVaoDanhSach` |
+| `chonKhuVuc(Scanner)` | Chọn khu vực từ danh sách enum | `them1TruSac`, `themDSTruSac` |
+| `nhapCongSuat(Scanner)` | Nhập và kiểm tra công suất | `them1TruSac`, `themDSTruSac` |
+| `apDungTrangThaiTest(String, boolean, int, double, double)` | Gán trạng thái test cho dữ liệu mẫu | `nhapCoDinh` |
+| `inTieuDeBang()` | In header bảng thống nhất | `xuatThongTin1Tram`, `xuatDanhSach`, `thongKeBaoTri`, `thongKeGioSDThap`, `sapXepDS` |
+| `inDSTram(TramSac)` | In 1 dòng thông tin trạm | `xuatThongTin1Tram`, `xuatDanhSach`, `thongKeBaoTri`, `sapXepDS` |
+| `inDSTramWithTotal(TramSac)` | In 1 dòng trạm kèm tổng giờ sử dụng | `thongKeGioSDThap` |
+| `tinhThoiGianTieuChuanPhut(TramSac)` | Tính chuẩn thời gian sạc 56kWh | `tinhPhuThoiGianQuaHan` |
+| `tinhPhuThoiGianQuaHan(TramSac, long)` | Tính nhãn phút quá hạn khi hiển thị | `inDSTram` |
+| `timTramTheoId(String)` | Tìm trạm theo ID chuẩn hóa | `capNhatTrangThai`, `xoaTruSac`, `timKiem`, `tinhChiPhi1Tram`, `apDungTrangThaiTest` |
+| `tinhThoiGianSacPhut(LocalDateTime, LocalDateTime)` | Tính chênh lệch phút giữa 2 thời điểm | `inDSTram`, `inDSTramWithTotal`, `capNhatTrangThai`, `thongKeGioSDThap`, `tinhChiPhi1Tram` |
+| `dinhDangThoiGian(long)` | Đổi phút -> chuỗi giờ/phút | `inDSTram`, `tinhChiPhi1Tram`, `tinhChiPhiDS` |
+| `TramSac.confirm(Scanner, String)` | Chuẩn hóa xác nhận Yes/No | `nhapCoDinh`, `capNhatTrangThai`, `xoaTruSac`, `thongKeTruSac` |
+
+---
+
 ## 🛠️ Tính năng Kỹ thuật & Nguyên lý Thiết kế
 
 | Tính năng | Mô tả | Chi tiết triển khai |

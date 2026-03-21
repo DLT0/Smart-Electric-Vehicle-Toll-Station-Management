@@ -141,6 +141,27 @@ public class Module {
     // CÁC HÀM CHỨC NĂNG CHÍNH (PUBLIC API)
     // =========================================================================
 
+    // HÀM HỖ TRỢ DÙNG CHUNG: XÁC NHẬN YES/NO 
+    // confirm(scanner, prompt): Chuẩn hóa toàn bộ câu hỏi Yes/No trong hệ thống.
+    // - In ra: "<prompt> (y/n): "
+    // - Chấp nhận: y, yes, n, no (không phân biệt hoa thường, bỏ khoảng trắng thừa)
+    // - Nếu nhập sai, yêu cầu nhập lại cho đến khi hợp lệ.
+    public static boolean confirm(Scanner scanner, String prompt) {
+        while (true) {
+            System.out.print(prompt + " (y/n): ");
+            String ans = scanner.nextLine().trim().toLowerCase();
+
+            if (ans.equals("y") || ans.equals("yes")) {
+                return true;
+            }
+            if (ans.equals("n") || ans.equals("no")) {
+                return false;
+            }
+
+            System.out.println("!!! Vui long chi nhap y/n hoac yes/no.");
+        }
+    }
+
     /**
      * Tinh khoang thoi gian (phut) giua 2 thoi diem batDau va ketThuc.
      * Dung cho chuc nang 10 (tinh chi phi) va giup tinh toan thoi gian da sac thuc
@@ -331,8 +352,9 @@ public class Module {
     // ----------------------------------------------------------
     public void nhapCoDinh(Scanner scanner) {
         if (!danhSach.isEmpty()) {
-            System.out.print("He thong dang co " + danhSach.size() + " tram. Ghi de bang du lieu co dinh? (y/n): ");
-            if (!scanner.nextLine().trim().toLowerCase().equals("y")) {
+            boolean overwrite = TramSac.confirm(scanner,
+                    "He thong dang co " + danhSach.size() + " tram. Ghi de bang du lieu co dinh?");
+            if (!overwrite) {
                 System.out.println("=> Huy thao tac.");
                 return;
             }
@@ -561,8 +583,7 @@ public class Module {
                     System.out.println("!!! Lua chon khong hop le!");
                     return;
                 }
-                System.out.print("Xac nhan thay doi trang thai? (y/n): ");
-                if (scanner.nextLine().trim().toLowerCase().equals("y")) {
+                if (TramSac.confirm(scanner, "Xac nhan thay doi trang thai?")) {
                     // Tinh toan thoi gian sac lien tuc va cong don
                     if (newStatus && !found.isSanSang() && found.getThoiGianBatDauSac() != null) {
                         // Tu Dang sac (false) -> San sang (true)
@@ -586,8 +607,7 @@ public class Module {
             try {
                 double moi = Double.parseDouble(scanner.nextLine().trim());
                 // Khong can kiem tra thu cong - setThoiGianHoatDong() tu xu ly gia tri am
-                System.out.print("Xac nhan thay doi thoi gian hoat dong? (y/n): ");
-                if (scanner.nextLine().trim().toLowerCase().equals("y")) {
+                if (TramSac.confirm(scanner, "Xac nhan thay doi thoi gian hoat dong?")) {
                     found.setThoiGianHoatDong(moi);
                     System.out.println("==> Cap nhat thoi gian thanh cong!");
                 }
@@ -629,9 +649,7 @@ public class Module {
         System.out.println("Thong tin tram tim thay:");
         xuatThongTin1Tram(found);
 
-        System.out.print("Xac nhan xoa tram nay ? (Y/N): ");
-        String ans = scanner.nextLine().trim();
-        if (ans.equalsIgnoreCase("Y") || ans.equalsIgnoreCase("YES")) {
+        if (TramSac.confirm(scanner, "Xac nhan xoa tram nay ?")) {
             danhSach.remove(found);
             System.out.println("=> Da xoa thanh cong tram ID: " + id);
         } else {
@@ -715,8 +733,8 @@ public class Module {
                     return;
             }
 
-            System.out.print("\nBan co muon tiep tuc thong ke? (y/n): ");
-            if (!scanner.nextLine().trim().toLowerCase().startsWith("y")) {
+            System.out.println();
+            if (!TramSac.confirm(scanner, "Ban co muon tiep tuc thong ke?")) {
                 break;
             }
         }
