@@ -10,15 +10,17 @@
 
 | # | Chức năng | Mô tả |
 |---|---|---|
-| 1 | **Thêm 1 trạm sạc** | Tự động sinh ID theo khu vực, nhập công suất (7-300kW). Có validator kiểm tra dữ liệu đầu vào. |
-| 2 | **Thêm danh sách trạm** | Nhập số lượng cần thêm và thực hiện nhập liệu hàng loạt. |
-| 3 | **Xem danh sách** | Hiển thị bảng chi tiết: Loại, ID, Tên, Công suất, Thời gian vận hành, Trạng thái. Tự động sắp xếp thông minh. |
-| 4 | **Cập nhật trạm** | Cập nhật trạng thái (Sẵn sàng/Đang sạc) hoặc điều chỉnh số giờ vận hành tích lũy. |
-| 5 | **Xóa trạm** | Gỡ bỏ trạm khỏi hệ thống dựa trên ID, có bước xác nhận an toàn trước khi xóa. |
-| 6 | **Tìm kiếm** | Tìm và hiển thị thông tin chi tiết của một trạm cụ thể thông qua mã ID duy nhất. |
-| 7 | **Thống kê bảo trì** | Lọc danh sách các trạm có mức độ hao mòn cao (>90% hạn bảo trì 500h). |
-| 8 | **Tính chi phí (1 trạm)** | Dự toán số tiền và thời gian sạc dựa trên % pin cần sạc (Dung lượng mặc định 70kWh). |
-| 9 | **Gợi ý trạm (DS)** | So sánh thời gian sạc và biểu phí quá hạn giữa tất cả các trạm trong hệ thống. |
+| 1 | **Thêm 1 trạm sạc** | Chọn khu vực, nhập công suất (7-300kW), hệ thống tự sinh ID theo quy ước và tự phân loại loại trạm. |
+| 2 | **Thêm danh sách trạm** | Nhập số lượng và thêm nhiều trạm liên tiếp trong một phiên nhập liệu. |
+| 3 | **Xem danh sách trạm** | Hiển thị đầy đủ bảng thông tin: Loại, ID, Tên trạm, Công suất, Hao mòn, Lưu ý bảo trì, Trạng thái, Thời gian sạc. |
+| 4 | **Cập nhật trạng thái trạm** | Cập nhật trạng thái sạc (San sang/Dang sac) hoặc cập nhật thời gian hoạt động tích lũy. |
+| 5 | **Xóa trạm sạc** | Xóa theo ID, có bước xác nhận trước khi thực hiện. |
+| 6 | **Tìm kiếm theo ID** | Tìm kiếm linh hoạt theo ID (hỗ trợ bỏ dấu gạch và khoảng trắng). |
+| 7 | **Thống kê trạm sạc** | Có menu phụ gồm: trạm cần bảo trì, trạm có giờ sử dụng > X, khu vực có tần suất sử dụng cao nhất. |
+| 8 | **Xuất danh sách ra Excel** | Đang phát triển (Coming soon). |
+| 9 | **Tính chi phí cho 1 trạm** | Dự toán hoặc xuất hóa đơn thực tế theo trạng thái trạm, có xử lý thời gian quá hạn cho trạm nhanh/siêu nhanh. |
+| 10 | **Sắp xếp danh sách theo hao mòn** | Sắp xếp và hiển thị theo độ hao mòn để hỗ trợ theo dõi bảo trì. |
+| 11 | **Gợi ý chi phí cho tất cả trạm** | So sánh chi phí/thời gian giữa các trạm để hỗ trợ lựa chọn phương án sạc. |
 
 ---
 

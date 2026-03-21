@@ -138,13 +138,16 @@ public class Menu {
                 System.out.println("\nDanh sach tru sac hien tai:");
                 module.xuatDanhSach();
                 module.xoaTruSac(scanner);
+
+                System.out.println("\nDanh sach tru sac sau khi xoa:");
+                module.xuatDanhSach();
                 break;
             case TimKiem:
                 System.out.println("\n--- TIM KIEM THONG TIN TRAM THEO ID TRAM SAC ---");
+                module.xuatDanhSach();
                 module.timKiem(scanner);
                 break;
             case ThongKeTruSacCanBaoTri:
-                System.out.println("\n--- MENU PHU THONG KE ---");
                 xuLyThongKe();
                 break;
             case XuatFile:

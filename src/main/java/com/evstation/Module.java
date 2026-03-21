@@ -597,7 +597,15 @@ public class Module {
 
         TramSac found = timTramTheoId(id);
         if (found != null) {
-            xuatThongTin1Tram(found);
+            double mucHaoMon = found.tinhMucHaoMon();
+            System.out.println("\nThong tin tram tim thay:");
+            System.out.println("- ID: " + found.getMaTram());
+            System.out.println("- Ten Tram: " + found.getTenTram());
+            System.out.println("- Vi Tri: " + found.getViTri().getTen());
+            System.out.printf("- Cong Suat: %.1f kW%n", found.getCongSuat());
+            System.out.println("- Trang Thai: " + found.getTrangThaiHoatDong());
+            System.out.printf("- Hao Mon: %.1f%%%n", mucHaoMon);
+            System.out.println("- Luu y bao tri: " + found.getTrangThaiBaoTri());
         } else {
             System.out.println("!!! Khong tim thay tram co ID: " + id);
         }
@@ -758,7 +766,7 @@ public class Module {
             }
         }
 
-        System.out.println("\n" + "=".repeat(26) + " THONG KE KHU VUC CO TAN XUAT SU DUNG CAO NHAT " + "=".repeat(26));
+        System.out.println("\n" + "=".repeat(26) + " THONG KE KHU VUC CO TAN SUAT SU DUNG CAO NHAT " + "=".repeat(26));
           
         System.out.printf("| %-40s | So Tram | Tong Gio Su Dung (h)| Ty Le %%    |%n", "Ten Khu Vuc");
         System.out.println("-".repeat(101));

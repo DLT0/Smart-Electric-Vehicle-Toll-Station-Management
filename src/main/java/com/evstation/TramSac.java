@@ -133,19 +133,19 @@ abstract class TramSac {
     public String getTrangThaiBaoTri() {
         double mucHaoMon = tinhMucHaoMon();
         if (mucHaoMon >= 100.0) {
-            return "Bảo trì";
+            return "Bao tri";
         }
         if (mucHaoMon > 90.0) {
-            return "Cần bảo trì";
+            return "Can bao tri";
         }
-        return "Ổn định";
+        return "On dinh";
     }
 
     public String getTrangThaiHoatDong() {
         if (tinhMucHaoMon() >= 100.0) {
-            return "Ngừng hoạt động";
+            return "Ngung hoat dong";
         }
-        return this.sanSang ? "Sẵn sàng" : "Đang sạc";
+        return this.sanSang ? "San sang" : "Dang sac";
     }
 
     protected abstract String getLoaiPrefix();
