@@ -352,7 +352,7 @@ public class Module {
     // ----------------------------------------------------------
     public void nhapCoDinh(Scanner scanner) {
         if (!danhSach.isEmpty()) {
-            boolean overwrite = TramSac.confirm(scanner,
+                boolean overwrite = confirm(scanner,
                     "He thong dang co " + danhSach.size() + " tram. Ghi de bang du lieu co dinh?");
             if (!overwrite) {
                 System.out.println("=> Huy thao tac.");
@@ -583,7 +583,7 @@ public class Module {
                     System.out.println("!!! Lua chon khong hop le!");
                     return;
                 }
-                if (TramSac.confirm(scanner, "Xac nhan thay doi trang thai?")) {
+                if (confirm(scanner, "Xac nhan thay doi trang thai?")) {
                     // Tinh toan thoi gian sac lien tuc va cong don
                     if (newStatus && !found.isSanSang() && found.getThoiGianBatDauSac() != null) {
                         // Tu Dang sac (false) -> San sang (true)
@@ -607,7 +607,7 @@ public class Module {
             try {
                 double moi = Double.parseDouble(scanner.nextLine().trim());
                 // Khong can kiem tra thu cong - setThoiGianHoatDong() tu xu ly gia tri am
-                if (TramSac.confirm(scanner, "Xac nhan thay doi thoi gian hoat dong?")) {
+                if (confirm(scanner, "Xac nhan thay doi thoi gian hoat dong?")) {
                     found.setThoiGianHoatDong(moi);
                     System.out.println("==> Cap nhat thoi gian thanh cong!");
                 }
@@ -649,7 +649,7 @@ public class Module {
         System.out.println("Thong tin tram tim thay:");
         xuatThongTin1Tram(found);
 
-        if (TramSac.confirm(scanner, "Xac nhan xoa tram nay ?")) {
+        if (confirm(scanner, "Xac nhan xoa tram nay ?")) {
             danhSach.remove(found);
             System.out.println("=> Da xoa thanh cong tram ID: " + id);
         } else {
@@ -734,7 +734,7 @@ public class Module {
             }
 
             System.out.println();
-            if (!TramSac.confirm(scanner, "Ban co muon tiep tuc thong ke?")) {
+            if (!confirm(scanner, "Ban co muon tiep tuc thong ke?")) {
                 break;
             }
         }

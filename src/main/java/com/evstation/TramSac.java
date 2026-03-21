@@ -1,7 +1,7 @@
 package com.evstation;
 
 import java.time.LocalDateTime;
-import java.util.Scanner;
+
 
 // ============================================================
 // LỚP TRỪU TƯỢNG: TramSac
