@@ -1,8 +1,14 @@
 package com.evstation;
 
-import java.util.*;
-import java.time.LocalDateTime;
 import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
 
 // ============================================================
 // ENUM: Danh sach cac don vi hanh chinh tinh Lam Dong 2026
@@ -807,14 +813,14 @@ public class Module {
             }
         }
 
-        System.out.println("\n" + "=".repeat(121) + " THONG KE TRAM CAN BAO TRI " + "=".repeat(72));
+        System.out.println("\n" + "=".repeat(89) + " THONG KE TRAM CAN BAO TRI " + "=".repeat(72));
         System.out.println("(Tram co muc haomon > 90% cua han bao tri 500h)");
         
         if (tramBaoTri.isEmpty()) {
             System.out.println("\n✓ Tat ca cac tram deu co tinh trang tot. Khong co tram nao can bao tri.");
         } else {
             System.out.println("\n[CANH BAO] Co " + tramBaoTri.size() + " tram can bao tri:");
-            System.out.println("-".repeat(121));
+            System.out.println("-".repeat(21));
             inTieuDeBang();
             for (TramSac t : tramBaoTri) {
                 inDSTram(t);
@@ -852,7 +858,7 @@ public class Module {
             }
         }
 
-        System.out.println("\n" + "=".repeat(80) + " THONG KE TRAM CO SO GIO SU DUNG < " + String.format("%.1f", gioDtMax) + "h ");
+        System.out.println("\n" + "=".repeat(80) + " THONG KE TRAM CO SO GIO SU DUNG > X " + String.format("%.1f", gioDtMax) + "h ");
         
         if (tramThap.isEmpty()) {
             System.out.println("\nKhong co tram nao co so gio su dung nho hon " + gioDtMax + "h.");
@@ -866,7 +872,7 @@ public class Module {
             for (TramSac t : tramThap) {
                 inDSTram(t);
             }
-            inKeNgang("=", 121);
+            inKeNgang("=", 101);
         }
     }
 

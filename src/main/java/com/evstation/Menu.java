@@ -1,8 +1,8 @@
-package com.evstation;
+    package com.evstation;
 
-import java.util.Scanner;
+    import java.util.Scanner;
 
-public class Menu {
+    public class Menu {
 
     public enum MenuCT {
         Thoat,
@@ -19,21 +19,23 @@ public class Menu {
         TinhChiPhiDS,
     }
 
-    public enum MenuThongKe {
-        Thoat,
-        BaoTri,
-        GioSDThap,
-        KhuVucCao
-    }
-    //prive int thong ke tru
 
-    private Scanner scanner;
-    public Module module;
+        public enum MenuThongKe {
+            Thoat,
+            BaoTri,
+            GioSDThap,
+            KhuVucCao,
+            
+        }
+        //prive int thong ke tru
 
-    public Menu(Module module) {
-        this.scanner = new Scanner(System.in);
-        this.module = module;
-    }
+        private Scanner scanner;
+        public Module module;
+
+        public Menu(Module module) {
+            this.scanner = new Scanner(System.in);
+            this.module = module;
+        }
 
     public static void xuatMenu() {
         Module.inKeNgang("=", 50);
@@ -56,56 +58,60 @@ public class Menu {
         Module.inKeNgang("=", 50);
     }
 
-    public static void xuatMenuThongKe() {
-        Module.inKeNgang("=", 55);
-        System.out.println("|        MENU PHU - THONG KE TRAM SAC          |");
-        Module.inKeNgang("=", 55);
-        System.out.println("| Phim | Chuc nang thong ke                    |");
-        Module.inKeNgang("-", 55);
-        System.out.printf("|   %-2d  | %-37s |%n", MenuThongKe.Thoat.ordinal(), "Quay lai menu chinh.");
-        System.out.printf("|   %-2d  | %-37s |%n", MenuThongKe.BaoTri.ordinal(), "Tram sac can bao tri (>90%).");
-        System.out.printf("|   %-2d  | %-37s |%n", MenuThongKe.GioSDThap.ordinal(), "Tram sac co gio SD < X.");
-        System.out.printf("|   %-2d  | %-37s |%n", MenuThongKe.KhuVucCao.ordinal(), "Khu vuc tan xuat cao nhat.");
-        Module.inKeNgang("=", 55);
-    }
+        public static void xuatMenuThongKe() {
+            Module.inKeNgang("=", 55);
+            System.out.println("|        MENU PHU - THONG KE TRAM SAC          |");
+            Module.inKeNgang("=", 55);
+            System.out.println("| Phim | Chuc nang thong ke                    |");
+            Module.inKeNgang("-", 55);
+            System.out.printf("|   %-2d  | %-37s |%n", MenuThongKe.Thoat.ordinal(), "Quay lai menu chinh.");
+            System.out.printf("|   %-2d  | %-37s |%n", MenuThongKe.BaoTri.ordinal(), "Tram sac can bao tri .");
+            System.out.printf("|   %-2d  | %-37s |%n", MenuThongKe.GioSDThap.ordinal(), "Tram sac co gio SD > X.");
+            System.out.printf("|   %-2d  | %-37s |%n", MenuThongKe.KhuVucCao.ordinal(), "Khu vuc tan xuat cao nhat.");
 
-    public MenuCT chonMenu() {
-        int min = MenuCT.Thoat.ordinal();
-        int max = MenuCT.values()[MenuCT.values().length - 1].ordinal();
-        int chon;
+            Module.inKeNgang("=", 55);
+        }
 
-        do {
-            System.out.printf("Nhap chon (%d <= chon <= %d): ", min, max);
-            try {
-                chon = Integer.parseInt(scanner.nextLine().trim());
-                if (min <= chon && chon <= max)
-                    break;
-            } catch (NumberFormatException e) {
-                // Bo qua, lap lai
-            }
-        } while (true);
+        public MenuCT chonMenu() {
+            int min = MenuCT.Thoat.ordinal();
+            int max = MenuCT.values()[MenuCT.values().length - 1].ordinal();
+            int chon;
 
-        return MenuCT.values()[chon];
-    }
+            do {
+                System.out.printf("Nhap chon (%d <= chon <= %d): ", min, max);
+                try {
+                    chon = Integer.parseInt(scanner.nextLine().trim());
+                    if (min <= chon && chon <= max)
+                        break;
+                } catch (NumberFormatException e) {
+                    // Bo qua, lap lai
+                }
+            } while (true);
 
-    public MenuThongKe chonMenuThongKe() {
-        int min = MenuThongKe.Thoat.ordinal();
-        int max = MenuThongKe.values()[MenuThongKe.values().length - 1].ordinal();
-        int chon;
+            return MenuCT.values()[chon];
+        }
 
-        do {
-            System.out.printf("Nhap chon (%d <= chon <= %d): ", min, max);
-            try {
-                chon = Integer.parseInt(scanner.nextLine().trim());
-                if (min <= chon && chon <= max)
-                    break;
-            } catch (NumberFormatException e) {
-                // Bo qua, lap lai
-            }
-        } while (true);
+        public MenuThongKe chonMenuThongKe() {
+            int min = MenuThongKe.Thoat.ordinal();
+            int max = MenuThongKe.values()[MenuThongKe.values().length - 1].ordinal();
+            int chon;
 
-        return MenuThongKe.values()[chon];
-    }
+            do {
+                System.out.printf("Nhap chon (%d <= chon <= %d): ", min, max);
+                try {
+                    chon = Integer.parseInt(scanner.nextLine().trim());
+                    if (min <= chon && chon <= max)
+                        break;
+                } catch (NumberFormatException e) {
+                    // Bo qua, lap lai
+                }
+            } while (true);
+
+            return MenuThongKe.values()[chon];
+        }
+
+        public void xuLyThongKe() {
+            MenuThongKe chon;
 
     public void xuLyMenu(MenuCT chon) {
         switch (chon) {
@@ -168,72 +174,5 @@ public class Menu {
                 break;
         }
     }
-
-    public void xuLyThongKe() {
-        MenuThongKe chon;
-
-        do {
-            xuatMenuThongKe();
-            chon = chonMenuThongKe();
-
-            if (chon == MenuThongKe.Thoat) {
-                System.out.println("=> Quay lai menu chinh.");
-                break;
-            }
-
-            xuLyMenuThongKe(chon);
-
-            // Dung cho nguoi dung xem ket qua
-            System.out.print("\nNhan Enter de tiep tuc...");
-            scanner.nextLine();
-
-        } while (true);
-    }
-
-    public void xuLyMenuThongKe(MenuThongKe chon) {
-        switch (chon) {
-            case Thoat:
-                System.out.println("=> Quay lai menu chinh.");
-                break;
-            case BaoTri:
-                System.out.println("\n--- THONG KE TRAM SAC CAN BAO TRI (HAO MON > 90%) ---");
-                module.thongKeBaoTri();
-                break;
-            case GioSDThap:
-                System.out.println("\n--- THONG KE TRAM SAC CO GIO SU DUNG < X ---");
-                module.thongKeGioSDThap(scanner);
-                break;
-            case KhuVucCao:
-                System.out.println("\n--- THONG KE KHU VUC CO TAN XUAT SU DUNG CAO NHAT ---");
-                module.thongKeKhuVucCaoNhat();
-                break;
-            default:
-                break;
-        }
-    }
-
-    public void chayChuongTrinh() {
-        MenuCT chon;
-
-        do {
-            // Xoa man hinh
-            System.out.print("\033[H\033[2J");
-            System.out.flush();
-
-            xuatMenu();
-            chon = chonMenu();
-
-            if (chon == MenuCT.Thoat)
-                break;
-
-            xuLyMenu(chon);
-
-            // Dung cho nguoi dung xem ket qua
-            System.out.print("\nNhan Enter de tiep tuc...");
-            scanner.nextLine();
-
-        } while (true);
-
-        scanner.close();
-    }
 }
+ 
