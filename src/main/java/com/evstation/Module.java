@@ -381,10 +381,15 @@ public class Module {
             }
         }
         String thoiGianStr = (phut > 0) ? dinhDangThoiGian(phut) + extra : "-";
+        
+        // Tinh muc hao mon va trang thai bao tri
+        double mucHaoMon = t.tinhMucHaoMon();
+        String haoMonStr = String.format("%.1f%%", mucHaoMon);
+        String luuYBaoTri = t.getTrangThaiBaoTri();
 
-        System.out.printf("| %-16s | %-10s | %-40s | %6.1f kW | %-10s | %-20s |%n",
+        System.out.printf("| %-16s | %-10s | %-40s | %6.1f kW | %-8s | %-15s | %-16s | %-20s |%n",
                 t.getLoaiPrefix(), t.getMaTram(), t.getTenTram(), t.getCongSuat(),
-                t.isSanSang() ? "San sang" : "Dang sac", thoiGianStr);
+                haoMonStr, luuYBaoTri, t.getTrangThaiHoatDong(), thoiGianStr);
     }
 
     // Ham bo tro 3b: Xuat DS cung tong gio su dung (cho thon ke > x)
@@ -395,9 +400,15 @@ public class Module {
         }
 
         String totalStr = String.format("%.1f gio", totalHour);
-        System.out.printf("| %-16s | %-10s | %-40s | %6.1f kW | %-10s | %-20s |%n",
+        
+        // Tinh muc hao mon va trang thai bao tri
+        double mucHaoMon = t.tinhMucHaoMon();
+        String haoMonStr = String.format("%.1f%%", mucHaoMon);
+        String luuYBaoTri = t.getTrangThaiBaoTri();
+        
+        System.out.printf("| %-16s | %-10s | %-40s | %6.1f kW | %-8s | %-15s | %-16s | %-20s |%n",
                 t.getLoaiPrefix(), t.getMaTram(), t.getTenTram(), t.getCongSuat(),
-                t.isSanSang() ? "San sang" : "Dang sac", totalStr);
+                haoMonStr, luuYBaoTri, t.getTrangThaiHoatDong(), totalStr);
     }
 
     // Kieu 1: Xuat thong tin chi tiet cua DUY NHAT 1 tram
@@ -406,8 +417,7 @@ public class Module {
             return;
         inTieuDeBang();
         inDSTram(t);
-        inKeNgang("=", 121);
-        
+        inKeNgang("=", 160);
     }
 
     // Kieu 2: Xuat toan bao danh sach (co kem logic sap xep)
@@ -441,7 +451,7 @@ public class Module {
         for (TramSac t : sortedList) {
             inDSTram(t);
         }
-        inKeNgang("=", 121);
+        inKeNgang("=", 160);
     }
 
     // ----------------------------------------------------------
@@ -664,7 +674,7 @@ public class Module {
             for (TramSac t : tramBaoTri) {
                 inDSTram(t);
             }
-            inKeNgang("=", 121);
+            inKeNgang("=", 160);
             System.out.println("\nChi tiet hao mon:");
             for (TramSac t : tramBaoTri) {
                 double mucHaoMon = t.tinhMucHaoMon();
@@ -717,7 +727,7 @@ public class Module {
             for (TramSac t : tramCao) {
                 inDSTramWithTotal(t);
             }
-            inKeNgang("=", 121);
+            inKeNgang("=", 160);
         }
     }
 

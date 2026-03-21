@@ -51,22 +51,22 @@ public class Menu {
         System.out.printf("|   %-2d  | %-38s |%n", MenuCT.ThongKeTruSacCanBaoTri.ordinal(), "Thong ke danh sach tru sac can bao tri");
         System.out.printf("|   %-2d  | %-38s |%n", MenuCT.XuatFile.ordinal(), "Xuat danh sach tru sac ra file Excel.");
         System.out.printf("|   %-2d  | %-38s |%n", MenuCT.TinhChiPhi1Tram.ordinal(), "Tinh chi phi du kien cho 1 tram.");
-        System.out.printf("|   %-2d  | %-38s |%n", MenuCT.SapXepDS.ordinal(), "Sap xep danh sach tru sac.");
+        System.out.printf("|   %-2d  | %-38s |%n", MenuCT.SapXepDS.ordinal(), "Sap xep danh sach tru sac");
         System.out.printf("|   %-2d  | %-38s |%n", MenuCT.TinhChiPhiDS.ordinal(), "Goi y chi phi cho tat ca cac tram.");
         Module.inKeNgang("=", 50);
     }
 
     public static void xuatMenuThongKe() {
-        Module.inKeNgang("=", 55);
+        Module.inKeNgang("=", 50);
         System.out.println("|        MENU PHU - THONG KE TRAM SAC          |");
-        Module.inKeNgang("=", 55);
+        Module.inKeNgang("=", 50);
         System.out.println("| Phim | Chuc nang thong ke                    |");
-        Module.inKeNgang("-", 55);
+        Module.inKeNgang("-", 50);
         System.out.printf("|   %-2d  | %-37s |%n", MenuThongKe.Thoat.ordinal(), "Quay lai menu chinh.");
         System.out.printf("|   %-2d  | %-37s |%n", MenuThongKe.BaoTri.ordinal(), "Tram sac can bao tri .");
         System.out.printf("|   %-2d  | %-37s |%n", MenuThongKe.GioSDThap.ordinal(), "Tram sac co gio SD > X.");
         System.out.printf("|   %-2d  | %-37s |%n", MenuThongKe.KhuVucCao.ordinal(), "Khu vuc tan xuat cao nhat.");
-        Module.inKeNgang("=", 55);
+        Module.inKeNgang("=", 50);
     }
 
     public MenuCT chonMenu() {
@@ -110,7 +110,7 @@ public class Menu {
     public void xuLyMenu(MenuCT chon) {
         switch (chon) {
             case SapXepDS:
-                System.out.println("\n--- SAP XEP DANH SACH TRAM SAC ---");
+                System.out.println("\n--- SAP XEP DANH SACH TRAM SAC THEO DO HAO MON ---");
                 module.sapXepDS();
                 break;
             case Thoat:
