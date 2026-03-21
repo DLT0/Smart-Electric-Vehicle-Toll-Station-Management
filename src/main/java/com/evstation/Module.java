@@ -439,21 +439,18 @@ public class Module {
     // Ham phu tro: Nhap va kiem tra cong suat hop le
     private double nhapCongSuat(Scanner scanner) {
         double cs = 0;
-        while (cs < 7) {
-            System.out.print("Nhap cong suat kW (7 <= cs <= 300): ");
-            try {
-                cs = Double.parseDouble(scanner.nextLine().trim());
-                if (cs < 7) {
-                    System.out.println("!!! Cong suat toi thieu la 7kW!");
-                } else if (cs > 300) {
-                    System.out.println("!!! Cong suat toi da la 300kW!");
-                    cs = 300;
-                }
-            } catch (NumberFormatException e) {
-                System.out.println("!!! Cong suat phai la mot so!");
+        System.out.print("Nhap cong suat kW (7 <= cs <= 300): ");
+        try {
+            cs = Double.parseDouble(scanner.nextLine().trim());
+            if (cs < 7) {
+                System.out.println("!!! Cong suat toi thieu la 7kW!");
+            } else if (cs > 300) {
+                System.out.println("!!! Cong suat toi da la 300kW!");
             }
+        } catch (NumberFormatException e) {
+            System.out.println("!!! Cong suat phai la mot so!");
         }
-        return cs;
+    return cs;
     }
 
     // Ham phu tro (Public de tai su dung): Sinh ID, phan loai va them tram vao danh
@@ -538,7 +535,7 @@ public class Module {
     // Ham bo tro 2: In tieu de cac cot cua bang
     private void inTieuDeBang() {
         inKeNgang("=", 121);
-        System.out.printf("| %-16s | %-10s | %-40s | %-9s | %-10s | %-20s |%n",
+        System.out.printf("| %-16s | %-10s | %-40s | %s | %-10s | %-20s |%n",
                 "Loai", "ID", "Ten Tram", "Cong Suat", "Trang Thai", "Thoi gian SD");
         inKeNgang("=", 121);
     }
@@ -1102,7 +1099,7 @@ public class Module {
     // ----------------------------------------------------------
     // Chuc nang 11: Sap xep danh sach
     // ----------------------------------------------------------
-    public void sapXepDS() {
+    public void sapXepDS(String tt1, String tt2, String tt3) {
         if (danhSach.isEmpty()) {
             System.out.println("!!! Danh sach trong. Khong co tram nao de sap xep.");
             return;
@@ -1110,10 +1107,9 @@ public class Module {
 
         // Dinh nghia thu tu uu tien cho trang thai
         Map<String, Integer> statusOrder = Map.of(
-                "Dang sac", 0,
-                "San sang", 1,
-                "Bao tri", 2,
-                "Khong hoat dong", 3);
+                tt1, 0,
+                tt2, 1,
+                tt3, 2);
 
         // Ham lay chuoi trang thai tu doi tuong TramSac
         java.util.function.Function<TramSac, String> extractStatus = t -> {
@@ -1141,4 +1137,3 @@ public class Module {
         inKeNgang("=", 121);
     }
 }
-// viet menu phu su dung enum 
