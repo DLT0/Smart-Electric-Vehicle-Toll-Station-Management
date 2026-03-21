@@ -15,7 +15,8 @@ public class Menu {
         ThongKeTruSacCanBaoTri,
         XuatFile,
         TinhChiPhi1Tram,
-        TinhChiPhiDS
+        SapXepDS,
+        TinhChiPhiDS,
     }
 
     public enum MenuThongKe {
@@ -47,11 +48,10 @@ public class Menu {
         System.out.printf("|   %-2d  | %-38s |%n", MenuCT.CapNhatTrangThai.ordinal(), "Cap nhat trang thai.");
         System.out.printf("|   %-2d  | %-38s |%n", MenuCT.XoaTruSac.ordinal(), "Xoa tru sac.");
         System.out.printf("|   %-2d  | %-38s |%n", MenuCT.TimKiem.ordinal(), "Tim kiem theo ID.");
-        System.out.printf("|   %-2d  | %-38s |%n", MenuCT.ThongKeTruSacCanBaoTri.ordinal(),
-                "Thong ke danh sach tru sac can bao tri");
+        System.out.printf("|   %-2d  | %-38s |%n", MenuCT.ThongKeTruSacCanBaoTri.ordinal(), "Thong ke danh sach tru sac can bao tri");
         System.out.printf("|   %-2d  | %-38s |%n", MenuCT.XuatFile.ordinal(), "Xuat danh sach tru sac ra file Excel.");
-        System.out.printf("|   %-2d  | %-38s |%n", MenuCT.TinhChiPhi1Tram.ordinal(),
-                "Tinh chi phi du kien cho 1 tram.");
+        System.out.printf("|   %-2d  | %-38s |%n", MenuCT.TinhChiPhi1Tram.ordinal(), "Tinh chi phi du kien cho 1 tram.");
+        System.out.printf("|   %-2d  | %-38s |%n", MenuCT.SapXepDS.ordinal(), "Sap xep danh sach tru sac.");
         System.out.printf("|   %-2d  | %-38s |%n", MenuCT.TinhChiPhiDS.ordinal(), "Goi y chi phi cho tat ca cac tram.");
         Module.inKeNgang("=", 50);
     }
@@ -109,6 +109,13 @@ public class Menu {
 
     public void xuLyMenu(MenuCT chon) {
         switch (chon) {
+            case SapXepDS:
+                System.out.println("\n--- SAP XEP DANH SACH TRAM SAC ---");
+                string tt1 = "Dang sac";
+                string tt2 = "San sang";
+                string tt3 = "Bao tri";
+                module.sapXepDS(tt1, tt2, tt3);
+                break;
             case Thoat:
                 System.out.println("Thoat chuong trinh!");
                 break;

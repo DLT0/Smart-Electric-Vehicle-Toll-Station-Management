@@ -1096,7 +1096,7 @@ public class Module {
     // ----------------------------------------------------------
     // Chuc nang 11: Sap xep danh sach
     // ----------------------------------------------------------
-    public void sapXepDS() {
+    public void sapXepDS(String tt1, String tt2, String tt3) {
         if (danhSach.isEmpty()) {
             System.out.println("!!! Danh sach trong. Khong co tram nao de sap xep.");
             return;
@@ -1104,10 +1104,9 @@ public class Module {
 
         // Dinh nghia thu tu uu tien cho trang thai
         Map<String, Integer> statusOrder = Map.of(
-                "Dang sac", 0,
-                "San sang", 1,
-                "Bao tri", 2,
-                "Khong hoat dong", 3);
+                tt1, 0,
+                tt2, 1,
+                tt3, 2);
 
         // Ham lay chuoi trang thai tu doi tuong TramSac
         java.util.function.Function<TramSac, String> extractStatus = t -> {
