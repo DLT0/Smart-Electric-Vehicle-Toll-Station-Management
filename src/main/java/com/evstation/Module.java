@@ -460,7 +460,7 @@ public class Module {
                 } else if (cs > 300) {
                     System.out.println("!!! Cong suat toi da la 300kW!");
                     cs = 300;
-                }https://github.com/vinceliuice/grub2-themes.git
+                }
             } catch (NumberFormatException e) {
                 System.out.println("!!! Cong suat phai la mot so!");
             }
@@ -1132,10 +1132,6 @@ public class Module {
     // ----------------------------------------------------------
     // Chuc nang 11: Sap xep danh sach
     // ----------------------------------------------------------
-    public void sapXepDS() {
-        sapXepDS("San sang", "Dang sac", "Bao tri");
-    }
-
     // Sap xep theo thu tu uu tien:
     // 1. Dang san sang (hao mon <= 90%)
     // 2. Dang sac
