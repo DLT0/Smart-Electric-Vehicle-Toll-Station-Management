@@ -501,7 +501,7 @@ public class Module {
         }
 
         int n = 0;
-        while (n <= 0) {
+        while (n <= 0) {d
             System.out.print("Nhap so luong tram sac can them (> 0): ");
             try {
                 n = Integer.parseInt(scanner.nextLine().trim());
@@ -816,7 +816,7 @@ public class Module {
             }
         }
 
-        System.out.println("\n" + "=".repeat(89) + " THONG KE TRAM CAN BAO TRI " + "=".repeat(72));
+        System.out.println("\n" + "=".repeat(36) + " THONG KE TRAM CAN BAO TRI " + "=".repeat(36));
         System.out.println("(Tram co muc haomon > 90% cua han bao tri 500h)");
         
         if (tramBaoTri.isEmpty()) {
@@ -906,9 +906,9 @@ public class Module {
             }
         }
 
-        System.out.println("\n" + "=".repeat(100) + " THONG KE KHU VUC CO TAN XUAT SU DUNG CAO NHAT ");
-        System.out.println("-".repeat(121));
-        System.out.printf("| %-40s | So Tram | Tong Gio Su Dung (h) | Ty Le On %% |%n", "Ten Khu Vuc");
+        System.out.println("\n" + "=".repeat(36) + " THONG KE KHU VUC CO TAN XUAT SU DUNG CAO NHAT ");
+        System.out.println("-".repeat(36));
+        System.out.printf("| %-40s | So Tram | Tong Gio Su Dung (h)| Ty Le  % |%n", "Ten Khu Vuc");
         System.out.println("-".repeat(121));
 
         // Sap xep theo so tram giam dan
