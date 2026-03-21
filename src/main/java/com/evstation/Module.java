@@ -72,7 +72,7 @@ abstract class TramSac {
     private double thoiGianHoatDong; // Tong so gio tich luy da van hanh, phai >= 0
     protected static final double GIA_MOI_KWH = 3850; // Don gia co dinh (VND/kWh)
     protected static final double HAN_BAO_TRI_MAC_DINH = 500.0; // Han bao tri mac dinh (h)
-    private double hanBaoTri; // Han bao tri rieng cho tung tram
+    // private double hanBaoTri; // Han bao tri rieng cho tung tram
     private int sttHeThong; // STT khi them vao he thong (de sap xep fallback)
     private LocalDateTime thoiGianBatDauSac; // Thoi gian bat dau sac (neu dang sac)
 
@@ -891,7 +891,7 @@ public class Module {
             String thoiGianStr = dinhDangThoiGian(thoiGianPhut);
 
             double phiQuaHan = 0;
-            if (t instanceof TramSacNhanh)xzzz
+            if (t instanceof TramSacNhanh)
                 phiQuaHan = 1000;
             else if (t instanceof TramSacSieuNhanh)
                 phiQuaHan = 3000;
