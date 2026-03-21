@@ -1069,7 +1069,6 @@ public class Module {
         } else if (!isThucTe && donGiaPhuPhi > 0) {
             // Thong bao ve phu phi neu co the xay ra (cho tram nhanh/sieu nh
         System.out.println("+------------------+------------+-----------+-----------------+-----------------+");
-anh)
             System.out.printf("(!) Luu y: Phu phi qua han tai tram nay la %,.0f VND/phut.%n", donGiaPhuPhi);
         }
 
