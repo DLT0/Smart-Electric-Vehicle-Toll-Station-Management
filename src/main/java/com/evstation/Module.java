@@ -1,8 +1,14 @@
 package com.evstation;
 
-import java.util.*;
-import java.time.LocalDateTime;
 import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
 
 // ============================================================
 // ENUM: Danh sach cac don vi hanh chinh tinh Lam Dong 2026
@@ -37,7 +43,7 @@ enum HuyenLamDong {
     public static void hienThiDanhSach() {
         HuyenLamDong[] dsKhuVuc = HuyenLamDong.values();
         System.out.println("  +-----+-------------------------+");
-        System.out.printf("  | %-3s | %-23s |%n", "STT", "Ten Don Vi");
+        System.out.printf("   | %-3s | %-23s |%n", "STT", "Ten Don Vi");
         System.out.println("  +-----+-------------------------+");
         for (int i = 0; i < dsKhuVuc.length; i++) {
             System.out.printf("  | %-3d | %-23s |%n", i + 1, dsKhuVuc[i].getTen());
@@ -810,14 +816,14 @@ public class Module {
             }
         }
 
-        System.out.println("\n" + "=".repeat(121) + " THONG KE TRAM CAN BAO TRI " + "=".repeat(72));
+        System.out.println("\n" + "=".repeat(89) + " THONG KE TRAM CAN BAO TRI " + "=".repeat(72));
         System.out.println("(Tram co muc haomon > 90% cua han bao tri 500h)");
         
         if (tramBaoTri.isEmpty()) {
             System.out.println("\n✓ Tat ca cac tram deu co tinh trang tot. Khong co tram nao can bao tri.");
         } else {
             System.out.println("\n[CANH BAO] Co " + tramBaoTri.size() + " tram can bao tri:");
-            System.out.println("-".repeat(121));
+            System.out.println("-".repeat(21));
             inTieuDeBang();
             for (TramSac t : tramBaoTri) {
                 inDSTram(t);
@@ -855,7 +861,7 @@ public class Module {
             }
         }
 
-        System.out.println("\n" + "=".repeat(80) + " THONG KE TRAM CO SO GIO SU DUNG < " + String.format("%.1f", gioDtMax) + "h ");
+        System.out.println("\n" + "=".repeat(80) + " THONG KE TRAM CO SO GIO SU DUNG > X " + String.format("%.1f", gioDtMax) + "h ");
         
         if (tramThap.isEmpty()) {
             System.out.println("\nKhong co tram nao co so gio su dung nho hon " + gioDtMax + "h.");
@@ -869,7 +875,7 @@ public class Module {
             for (TramSac t : tramThap) {
                 inDSTram(t);
             }
-            inKeNgang("=", 121);
+            inKeNgang("=", 101);
         }
     }
 
@@ -1097,7 +1103,42 @@ public class Module {
     // Chuc nang 11: Sap xep danh sach
     // ----------------------------------------------------------
     public void sapXepDS() {
-        System.out.println();
+        if (danhSach.isEmpty()) {
+            System.out.println("!!! Danh sach trong. Khong co tram nao de sap xep.");
+            return;
+        }
+
+        // Dinh nghia thu tu uu tien cho trang thai
+        Map<String, Integer> statusOrder = Map.of(
+                "Dang sac", 0,
+                "San sang", 1,
+                "Bao tri", 2,
+                "Khong hoat dong", 3);
+
+        // Ham lay chuoi trang thai tu doi tuong TramSac
+        java.util.function.Function<TramSac, String> extractStatus = t -> {
+            if (!t.isSanSang())
+                return "Dang sac";
+            // Neu gio_da_su_dung dat nguong bao tri mac dinh -> Bao tri
+            if (t.getThoiGianHoatDong() >= TramSac.HAN_BAO_TRI_MAC_DINH)
+                return "Bao tri";
+            return "San sang";
+        };
+
+        Comparator<TramSac> comparator = Comparator
+            .comparingInt((TramSac t) -> statusOrder.getOrDefault(extractStatus.apply(t), Integer.MAX_VALUE))
+            .thenComparing((TramSac t) -> t.getViTri().getTen(), String.CASE_INSENSITIVE_ORDER)
+            .thenComparingInt(TramSac::getSttHeThong);
+
+        List<TramSac> sorted = new ArrayList<>(danhSach);
+        sorted.sort(comparator);
+
+        System.out.println("\n" + "=".repeat(40) + " DANH SACH (DA SAP XEP) " + "=".repeat(40));
+        inTieuDeBang();
+        for (TramSac t : sorted) {
+            inDSTram(t);
+        }
+        inKeNgang("=", 121);
     }
 }
 // viet menu phu su dung enum 
