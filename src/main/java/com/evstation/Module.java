@@ -246,7 +246,7 @@ class TramSacSieuNhanh extends TramSac {
 // ============================================================
 enum LoaiThongKe {
     BAO_TRI("Tru sac can bao tri (haomon > 90%)"),
-    GIO_SD_THAP("Tru sac co so gio su dung < X (nhap X tu ban phim)"),
+    GIO_SD_THAP("Tru sac co so gio su dung > X (nhap X tu ban phim)"),
     KHU_VUC_CAO("Thong ke khu vuc co tan xuat su dung cao nhat"),
     QUAY_LAI("Quay lai menu chinh");
 
@@ -562,6 +562,19 @@ public class Module {
                 t.isSanSang() ? "San sang" : "Dang sac", thoiGianStr);
     }
 
+    // Ham bo tro 3b: Xuat DS cung tong gio su dung (cho thon ke > x)
+    private void inDSTramWithTotal(TramSac t) {
+        double totalHour = t.getThoiGianHoatDong();
+        if (!t.isSanSang() && t.getThoiGianBatDauSac() != null) {
+            totalHour += tinhThoiGianSacPhut(t.getThoiGianBatDauSac(), LocalDateTime.now()) / 60.0;
+        }
+
+        String totalStr = String.format("%.1f gio", totalHour);
+        System.out.printf("| %-16s | %-10s | %-40s | %6.1f kW | %-10s | %-20s |%n",
+                t.getLoaiPrefix(), t.getMaTram(), t.getTenTram(), t.getCongSuat(),
+                t.isSanSang() ? "San sang" : "Dang sac", totalStr);
+    }
+
     // Kieu 1: Xuat thong tin chi tiet cua DUY NHAT 1 tram
     public void xuatThongTin1Tram(TramSac t) {
         if (t == null)
@@ -836,13 +849,13 @@ public class Module {
         }
     }
 
-    // Ham bo tro: Thong ke tram co so gio su dung < x (nhap tu ban phim)
+    // Ham bo tro: Thong ke tram co so gio su dung > x (nhap tu ban phim)
     public void thongKeGioSDThap(Scanner scanner) {
-        System.out.print("\nNhap so gio su dung toi da (h): ");
-        double gioDtMax = 0;
+        System.out.print("\nNhap so gio su dung toi thieu (h): ");
+        double gioMin = 0;
         try {
-            gioDtMax = Double.parseDouble(scanner.nextLine().trim());
-            if (gioDtMax < 0) {
+            gioMin = Double.parseDouble(scanner.nextLine().trim());
+            if (gioMin < 0) {
                 System.out.println("!!! So gio khong duoc am!");
                 return;
             }
@@ -851,28 +864,34 @@ public class Module {
             return;
         }
 
-        List<TramSac> tramThap = new ArrayList<>();
+        List<TramSac> tramCao = new ArrayList<>();
         for (TramSac t : danhSach) {
-            if (t.getThoiGianHoatDong() < gioDtMax) {
-                tramThap.add(t);
+            double gioSuDung = t.getThoiGianHoatDong();
+            if (!t.isSanSang() && t.getThoiGianBatDauSac() != null) {
+                gioSuDung += tinhThoiGianSacPhut(t.getThoiGianBatDauSac(), LocalDateTime.now()) / 60.0;
+            }
+            if (gioSuDung > gioMin) {
+                tramCao.add(t);
             }
         }
 
-        System.out.println("\n" + "=".repeat(80) + " THONG KE TRAM CO SO GIO SU DUNG > X " + String.format("%.1f", gioDtMax) + "h ");
+        System.out.println("\n" + "=".repeat(36) + " THONG KE TRAM CO SO GIO SU DUNG > X " + String.format("%.1f", gioMin) + "h" + " " + "=".repeat(36))    ;
         
-        if (tramThap.isEmpty()) {
-            System.out.println("\nKhong co tram nao co so gio su dung nho hon " + gioDtMax + "h.");
+        if (tramCao.isEmpty()) {
+            System.out.println("\nKhong co tram nao co so gio su dung lon hon " + gioMin + "h.");
         } else {
-            // Sap xep theo thoi gian hoat dong tang dan
-            Collections.sort(tramThap, (a, b) -> Double.compare(a.getThoiGianHoatDong(), b.getThoiGianHoatDong()));
+            // Sap xep theo thoi gian hoat dong giam dan
+            Collections.sort(tramCao, (a, b) -> Double.compare(
+                    b.getThoiGianHoatDong() + (b.isSanSang() ? 0 : tinhThoiGianSacPhut(b.getThoiGianBatDauSac(), LocalDateTime.now()) / 60.0),
+                    a.getThoiGianHoatDong() + (a.isSanSang() ? 0 : tinhThoiGianSacPhut(a.getThoiGianBatDauSac(), LocalDateTime.now()) / 60.0)));
             
-            System.out.println("\nCo " + tramThap.size() + " tram co so gio su dung < " + gioDtMax + "h:");
-            System.out.println("-".repeat(121));
+            System.out.println("\nCo " + tramCao.size() + " tram co so gio su dung > " + gioMin + "h:");
+          
             inTieuDeBang();
-            for (TramSac t : tramThap) {
-                inDSTram(t);
+            for (TramSac t : tramCao) {
+                inDSTramWithTotal(t);
             }
-            inKeNgang("=", 101);
+            inKeNgang("=", 121);
         }
     }
 
