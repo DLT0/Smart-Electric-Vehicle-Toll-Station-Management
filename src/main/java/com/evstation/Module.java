@@ -69,10 +69,10 @@ abstract class TramSac {
     private HuyenLamDong viTri; // Vi tri duoc chon tu Enum (type-safe)
     private boolean sanSang; // true = San sang | false = Dang su dung
     private double congSuat; // Cong suat sac (don vi: kW), phai > 0
+    private double thoiGianSuDung; // So gio su dung cua phien sac hien tai/gan nhat
     private double thoiGianHoatDong; // Tong so gio tich luy da van hanh, phai >= 0
     protected static final double GIA_MOI_KWH = 3850; // Don gia co dinh (VND/kWh)
     protected static final double HAN_BAO_TRI_MAC_DINH = 500.0; // Han bao tri mac dinh (h)
-    private double hanBaoTri; // Han bao tri rieng cho tung tram
     private int sttHeThong; // STT khi them vao he thong (de sap xep fallback)
     private LocalDateTime thoiGianBatDauSac; // Thoi gian bat dau sac (neu dang sac)
 
@@ -140,6 +140,16 @@ abstract class TramSac {
         this.congSuat = value;
     }
 
+    public double getThoiGianSuDung() {
+        return this.thoiGianSuDung;
+    }
+
+    public void setThoiGianSuDung(double value) {
+        if (value < 0)
+            value = 0;
+        this.thoiGianSuDung = value;
+    }
+
     public double getThoiGianHoatDong() {
         return this.thoiGianHoatDong;
     }
@@ -165,15 +175,34 @@ abstract class TramSac {
         setMaTram(maTram); // maTram duoc Module.sinhMaTram() tao ra
         setViTri(viTri);
         setCongSuat(congSuat);
+        setThoiGianSuDung(0.0); // Tu dong khoi tao la 0
         setThoiGianHoatDong(0.0); // Tu dong khoi tao la 0
         setSanSang(true); // Mac dinh: San sang / Trong
         setSttHeThong(sttHeThong);
-        // setHanBaoTri(HAN_BAO_TRI_MAC_DINH); // Mac dinh lay 500h
         setThoiGianBatDauSac(null);
     }
 
     public double tinhMucHaoMon() {
-        return (this.thoiGianHoatDong / HAN_BAO_TRI_MAC_DINH) * 100;
+        double mucHaoMon = (this.thoiGianHoatDong / HAN_BAO_TRI_MAC_DINH) * 100;
+        return Math.min(mucHaoMon, 100.0);
+    }
+
+    public String getTrangThaiBaoTri() {
+        double mucHaoMon = tinhMucHaoMon();
+        if (mucHaoMon >= 100.0) {
+            return "Bảo trì";
+        }
+        if (mucHaoMon > 90.0) {
+            return "Cần bảo trì";
+        }
+        return "Ổn định";
+    }
+
+    public String getTrangThaiHoatDong() {
+        if (tinhMucHaoMon() >= 100.0) {
+            return "Ngừng hoạt động";
+        }
+        return this.sanSang ? "Sẵn sàng" : "Đang sạc";
     }
 
     protected abstract String getLoaiPrefix();
@@ -422,28 +451,21 @@ public class Module {
     // Ham phu tro: Nhap va kiem tra cong suat hop le
     private double nhapCongSuat(Scanner scanner) {
         double cs = 0;
-        System.out.print("Nhap cong suat kW (7 <= cs <= 300): ");
-        try {
-            cs = Double.parseDouble(scanner.nextLine().trim());
-            if (cs < 7) {
-                System.out.println("!!! Cong suat toi thieu la 7kW!");
-            } else if (cs > 300) {
-                System.out.println("!!! Cong suat toi da la 300kW!");
+        while (cs < 7) {
+            System.out.print("Nhap cong suat kW (7 <= cs <= 300): ");
+            try {
+                cs = Double.parseDouble(scanner.nextLine().trim());
+                if (cs < 7) {
+                    System.out.println("!!! Cong suat toi thieu la 7kW!");
+                } else if (cs > 300) {
+                    System.out.println("!!! Cong suat toi da la 300kW!");
+                    cs = 300;
+                }https://github.com/vinceliuice/grub2-themes.git
+            } catch (NumberFormatException e) {
+                System.out.println("!!! Cong suat phai la mot so!");
             }
-        } catch (NumberFormatException e) {
-            System.out.println("!!! Cong suat phai la mot so!");
-        System.out.print("Nhap cong suat kW (7 <= cs <= 300): ");
-        try {
-            cs = Double.parseDouble(scanner.nextLine().trim());
-            if (cs < 7) {
-                System.out.println("!!! Cong suat toi thieu la 7kW!");
-            } else if (cs > 300) {
-                System.out.println("!!! Cong suat toi da la 300kW!");
-            }
-        } catch (NumberFormatException e) {
-            System.out.println("!!! Cong suat phai la mot so!");
         }
-    return cs;
+        return cs;
     }
 
     // Ham phu tro (Public de tai su dung): Sinh ID, phan loai va them tram vao danh
@@ -527,10 +549,10 @@ public class Module {
 
     // Ham bo tro 2: In tieu de cac cot cua bang
     private void inTieuDeBang() {
-        inKeNgang("=", 121);
-        System.out.printf("| %-16s | %-10s | %-40s | %s | %-10s | %-20s |%n",
-                "Loai", "ID", "Ten Tram", "Cong Suat", "Trang Thai", "Thoi gian SD");
-        inKeNgang("=", 121);
+        inKeNgang("=", 160);
+        System.out.printf("| %-16s | %-10s | %-40s | %-9s | %-8s | %-15s | %-16s | %-20s |%n",
+            "Loai", "ID", "Ten Tram", "Cong Suat", "Hao Mon", "Luu y bao tri", "Trang Thai", "Thoi gian SD");
+        inKeNgang("=", 160);
     }
 
     // Ham bo tro 3: Xuat DS
@@ -548,11 +570,18 @@ public class Module {
                 }
             }
         }
-        String thoiGianStr = (phut > 0) ? dinhDangThoiGian(phut) + extra : "-";
+        String thoiGianStr;
+        if (phut > 0) {
+            thoiGianStr = dinhDangThoiGian(phut) + extra;
+        } else if (t.getThoiGianSuDung() > 0) {
+            thoiGianStr = String.format("%.2f gio", t.getThoiGianSuDung());
+        } else {
+            thoiGianStr = "-";
+        }
 
-        System.out.printf("| %-16s | %-10s | %-40s | %6.1f kW | %-10s | %-20s |%n",
+        System.out.printf("| %-16s | %-10s | %-40s | %6.1f kW | %7.1f%% | %-15s | %-16s | %-20s |%n",
                 t.getLoaiPrefix(), t.getMaTram(), t.getTenTram(), t.getCongSuat(),
-                t.isSanSang() ? "San sang" : "Dang sac", thoiGianStr);
+                t.tinhMucHaoMon(), t.getTrangThaiBaoTri(), t.getTrangThaiHoatDong(), thoiGianStr);
     }
 
     // Kieu 1: Xuat thong tin chi tiet cua DUY NHAT 1 tram
@@ -561,7 +590,7 @@ public class Module {
             return;
         inTieuDeBang();
         inDSTram(t);
-        inKeNgang("=", 121);
+        inKeNgang("=", 160);
     }
 
     // Kieu 2: Xuat toan bao danh sach (co kem logic sap xep)
@@ -574,16 +603,20 @@ public class Module {
         // Tao ban sao de sap xep ma khong anh huong den danh sach goc
         List<TramSac> sortedList = new ArrayList<>(danhSach);
 
-        // Sap xep theo yeu cau:
-        // 1. trangThai: Dang hoat dong (false) truoc, San sang (true) sau
-        // 2. viTri: Theo thu tu Enum
-        // 3. sttHeThong: Theo thu tu them vao
+        // Sap xep mac dinh theo nghiep vu:
+        // 1. San sang
+        // 2. Dang sac
+        // 3. Bao tri / Ngung hoat dong
+        // Neu dong nhom thi sap xep theo gio tich luy tang dan
         Collections.sort(sortedList, (a, b) -> {
-            int res = Boolean.compare(a.isSanSang(), b.isSanSang());
+            int mucA = a.tinhMucHaoMon() >= 100.0 ? 2 : (a.isSanSang() ? 0 : 1);
+            int mucB = b.tinhMucHaoMon() >= 100.0 ? 2 : (b.isSanSang() ? 0 : 1);
+
+            int res = Integer.compare(mucA, mucB);
             if (res != 0)
                 return res;
 
-            res = Integer.compare(a.getViTri().ordinal(), b.getViTri().ordinal());
+            res = Double.compare(a.getThoiGianHoatDong(), b.getThoiGianHoatDong());
             if (res != 0)
                 return res;
 
@@ -620,7 +653,7 @@ public class Module {
 
         System.out.println("\nChon thong tin can cap nhat:");
         System.out.println("1. Trang thai (San sang/Dang sac)");
-        System.out.println("2. Thoi gian hoat dong (h)");
+        System.out.println("2. Thoi gian tich luy (h)");
         System.out.print("Nhap lua chon (1-2): ");
 
         int loai;
@@ -646,14 +679,22 @@ public class Module {
                 }
                 System.out.print("Xac nhan thay doi trang thai? (y/n): ");
                 if (scanner.nextLine().trim().toLowerCase().equals("y")) {
+                    if (!newStatus && found.tinhMucHaoMon() >= 100.0) {
+                        System.out.println("!!! Tram da hao mon 100%, khong the chuyen sang Dang sac.");
+                        return;
+                    }
+
                     // Tinh toan thoi gian sac lien tuc va cong don
                     if (newStatus && !found.isSanSang() && found.getThoiGianBatDauSac() != null) {
                         // Tu Dang sac (false) -> San sang (true)
                         long phutDaSac = tinhThoiGianSacPhut(found.getThoiGianBatDauSac(), LocalDateTime.now());
-                        found.setThoiGianHoatDong(found.getThoiGianHoatDong() + (phutDaSac / 60.0));
+                        double gioSuDung = phutDaSac / 60.0;
+                        found.setThoiGianSuDung(gioSuDung);
+                        found.setThoiGianHoatDong(found.getThoiGianHoatDong() + gioSuDung);
                         found.setThoiGianBatDauSac(null);
                     } else if (!newStatus && found.isSanSang()) {
                         // Tu San sang (true) -> Dang sac (false)
+                        found.setThoiGianSuDung(0.0);
                         found.setThoiGianBatDauSac(LocalDateTime.now());
                     }
 
@@ -665,11 +706,10 @@ public class Module {
                 return;
             }
         } else if (loai == 2) {
-            System.out.print("\nNhap thoi gian hoat dong moi (h >= 0): ");
+            System.out.print("\nNhap thoi gian tich luy moi (h >= 0): ");
             try {
                 double moi = Double.parseDouble(scanner.nextLine().trim());
-                // Khong can kiem tra thu cong - setThoiGianHoatDong() tu xu ly gia tri am
-                System.out.print("Xac nhan thay doi thoi gian hoat dong? (y/n): ");
+                System.out.print("Xac nhan thay doi thoi gian tich luy? (y/n): ");
                 if (scanner.nextLine().trim().toLowerCase().equals("y")) {
                     found.setThoiGianHoatDong(moi);
                     System.out.println("==> Cap nhat thoi gian thanh cong!");
@@ -1093,7 +1133,7 @@ public class Module {
     // Chuc nang 11: Sap xep danh sach
     // ----------------------------------------------------------
     public void sapXepDS() {
-        sapXepDS("Dang sac", "San sang", "Bao tri");
+        sapXepDS("San sang", "Dang sac", "Bao tri");
     }
 
     // Sap xep theo thu tu uu tien:
@@ -1101,7 +1141,7 @@ public class Module {
     // 2. Dang sac
     // 3. Bao tri (can bao tri / ngung hoat dong)
     // Trong cung 1 nhom: sap xep theo gio tich luy tang dan
-    public void sapXepDS(String tt1, String tt2, String tt3) {
+    public void sapXepDS() {
         if (danhSach.isEmpty()) {
             System.out.println("!!! Danh sach trong. Khong co tram nao de sap xep.");
             return;
@@ -1109,26 +1149,8 @@ public class Module {
 
         List<TramSac> sorted = new ArrayList<>(danhSach);
         sorted.sort((a, b) -> {
-            double haoMonA = a.tinhMucHaoMon();
-            double haoMonB = b.tinhMucHaoMon();
-
-            int pA;
-            if (a.isSanSang() && haoMonA <= 90.0) {
-                pA = 0; // Dang san sang
-            } else if (!a.isSanSang() && haoMonA < 100.0) {
-                pA = 1; // Dang sac
-            } else {
-                pA = 2; // Bao tri / Ngung hoat dong
-            }
-
-            int pB;
-            if (b.isSanSang() && haoMonB <= 90.0) {
-                pB = 0;
-            } else if (!b.isSanSang() && haoMonB < 100.0) {
-                pB = 1;
-            } else {
-                pB = 2;
-            }
+            int pA = a.tinhMucHaoMon() >= 100.0 ? 2 : (a.isSanSang() ? 0 : 1);
+            int pB = b.tinhMucHaoMon() >= 100.0 ? 2 : (b.isSanSang() ? 0 : 1);
 
             if (pA != pB)
                 return Integer.compare(pA, pB);
@@ -1145,6 +1167,6 @@ public class Module {
         for (TramSac t : sorted) {
             inDSTram(t);
         }
-        inKeNgang("=", 121);
+        inKeNgang("=", 160);
     }
 }
