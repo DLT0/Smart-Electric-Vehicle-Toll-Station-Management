@@ -184,7 +184,7 @@ abstract class TramSac {
     }
 
     public double tinhMucHaoMon() {
-        return (this.thoiGianHoatDong / this.hanBaoTri) * 100;
+        return (this.thoiGianHoatDong / HAN_BAO_TRI_MAC_DINH) * 100;
     }
 
     protected abstract String getLoaiPrefix();
@@ -830,8 +830,7 @@ public class Module {
             System.out.println("- Thoi gian da sac: " + dinhDangThoiGian(thoiGianDaSacPhut));
             System.out.println("- Thoi gian tieu chuan: " + dinhDangThoiGian(thoiGianDuKienPhut));
         } else {
-            System.out.println("- Thoi gian sac du kien: " + din
-     * - Tìm hiểu các viết hàm private, cụ thể là hàm tự động cập nhật giờ sử dụnghDangThoiGian(thoiGianDuKienPhut));
+              System.out.println("- Thoi gian sac du kien: " + dinhDangThoiGian(thoiGianDuKienPhut));
         }
 
         System.out.printf("- Chi phi dien: %,.0f VND%n", chiPhiDien);
