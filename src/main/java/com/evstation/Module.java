@@ -4,7 +4,6 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,194 +64,7 @@ enum HuyenLamDong {
     }
 }
 
-// ============================================================
-// LOP TRUU TUONG: TramSac
-// ============================================================
-abstract class TramSac {
-    // * Khai bao cac truong du lieu (the private) - Rang buoc du lieu
-    private String maTram; // Ma dinh danh duy nhat cho tram sac
-    private String tenTram; // Ten = Loai + ViTri + STT
-    private HuyenLamDong viTri; // Vi tri duoc chon tu Enum (type-safe)
-    private boolean sanSang; // true = San sang | false = Dang su dung
-    private double congSuat; // Cong suat sac (don vi: kW), phai > 0
-    private double thoiGianHoatDong; // Tong so gio tich luy da van hanh, phai >= 0
-    protected static final double GIA_MOI_KWH = 3850; // Don gia co dinh (VND/kWh)
-    protected static final double HAN_BAO_TRI_MAC_DINH = 500.0; // Han bao tri mac dinh (h)
-    private double hanBaoTri; // Han bao tri rieng cho tung tram
-    private int sttHeThong; // STT khi them vao he thong (de sap xep fallback)
-    private LocalDateTime thoiGianBatDauSac; // Thoi gian bat dau sac (neu dang sac)
 
-    // * Dong goi thuoc tinh (the public) - Getter & Setter
-    public LocalDateTime getThoiGianBatDauSac() {
-        return this.thoiGianBatDauSac;
-    }
-
-    public void setThoiGianBatDauSac(LocalDateTime t) {
-        this.thoiGianBatDauSac = t;
-    }
-
-    // * ID duoc sinh tu dong boi Module.sinhMaTram()
-    // Vi du dinh dang: "SC-DAL-001", "SC-BAO-003", ...
-    // setMaTram() chi duoc goi 1 lan tu constructor, sau do READ-ONLY
-
-    // maTram: READ-ONLY - chi co getter, khong cho phep cap nhat tu ben ngoai
-    public String getMaTram() {
-        return this.maTram;
-    }
-
-    private void setMaTram(String value) {
-        if (value == null || value.trim().isEmpty())
-            value = "UNKNOWN";
-        this.maTram = value.trim();
-    }
-
-    public String getTenTram() {
-        return this.tenTram;
-    }
-
-    public void setTenTram(String value) {
-        if (value == null || value.trim().isEmpty())
-            value = "Chua dat ten";
-        this.tenTram = value.trim();
-    }
-
-    public HuyenLamDong getViTri() {
-        return this.viTri;
-    }
-
-    public void setViTri(HuyenLamDong value) {
-        if (value == null)
-            return; // Rang buoc: vi tri khong duoc null
-        this.viTri = value;
-    }
-
-    public boolean isSanSang() {
-        return this.sanSang;
-    }
-
-    public void setSanSang(boolean value) {
-        this.sanSang = value; // Boolean khong can rang buoc them
-    }
-
-    public double getCongSuat() {
-        return this.congSuat;
-    }
-
-    public void setCongSuat(double value) {
-        if (value <= 0)
-            value = 7; // Rang buoc: cong suat phai la so duong
-        else if (value > 300)
-            value = 300; // Rang buoc: gioi han toi da 300kW
-        this.congSuat = value;
-    }
-
-    public double getThoiGianHoatDong() {
-        return this.thoiGianHoatDong;
-    }
-
-    public void setThoiGianHoatDong(double value) {
-        if (value < 0)
-            value = 0; // Rang buoc: thoi gian khong duoc am
-        this.thoiGianHoatDong = value;
-    }
-
-    // Thoi gian sac van hoat dong trong version mock / testing
-    private double thoiGianSuDung; // so gio su dung (co the la cho session dang sac)
-
-    public double getThoiGianSuDung() {
-        return this.thoiGianSuDung;
-    }
-
-    public void setThoiGianSuDung(double value) {
-        if (value < 0)
-            value = 0;
-        this.thoiGianSuDung = value;
-    }
-
-    public int getSttHeThong() {
-        return this.sttHeThong;
-    }
-
-    public void setSttHeThong(int value) {
-        if (value < 1)
-            value = 1;
-        this.sttHeThong = value;
-    }
-
-    /*
-     * public double getHanBaoTri() {
-     * return this.hanBaoTri;
-     * }
-     * 
-     * public void setHanBaoTri(double value) {
-     * if (value <= 0)
-     * value = HAN_BAO_TRI_MAC_DINH;
-     * this.hanBaoTri = value;
-     * }
-     */
-    // Constructor: nhan maTram da duoc Module sinh san, cac truong con lai tu dong
-    public TramSac(String maTram, HuyenLamDong viTri, double congSuat, int sttHeThong) {
-        setMaTram(maTram); // maTram duoc Module.sinhMaTram() tao ra
-        setViTri(viTri);
-        setCongSuat(congSuat);
-        setThoiGianHoatDong(0.0); // Tu dong khoi tao la 0
-        setSanSang(true); // Mac dinh: San sang / Trong
-        setSttHeThong(sttHeThong);
-        // setHanBaoTri(HAN_BAO_TRI_MAC_DINH); // Mac dinh lay 500h
-        setThoiGianBatDauSac(null);
-    }
-
-    public double tinhMucHaoMon() {
-        return (this.thoiGianHoatDong / HAN_BAO_TRI_MAC_DINH) * 100;
-    }
-
-    protected abstract String getLoaiPrefix();
-}
-
-// ============================================================
-// LOP CON: TramSacCham (7kW - 11kW)
-// ============================================================
-class TramSacCham extends TramSac {
-    public TramSacCham(String maTram, HuyenLamDong viTri, double congSuat, int stt, int sttHeThong) {
-        super(maTram, viTri, congSuat, sttHeThong);
-        setTenTram("Sac Cham " + viTri.getTen() + " " + stt);
-    }
-
-    @Override
-    protected String getLoaiPrefix() {
-        return "[Sac Cham]";
-    }
-}
-
-// ============================================================
-// LOP CON: TramSacNhanh (12kW - 120kW)
-// ============================================================
-class TramSacNhanh extends TramSac {
-    public TramSacNhanh(String maTram, HuyenLamDong viTri, double congSuat, int stt, int sttHeThong) {
-        super(maTram, viTri, congSuat, sttHeThong);
-        setTenTram("Sac Nhanh " + viTri.getTen() + " " + stt);
-    }
-
-    @Override
-    protected String getLoaiPrefix() {
-        return "[Sac Nhanh]";
-    }
-}
-
-// ============================================================
-// LOP CON: TramSacSieuNhanh (121kW - 300kW)
-// ============================================================
-class TramSacSieuNhanh extends TramSac {
-    public TramSacSieuNhanh(String maTram, HuyenLamDong viTri, double congSuat, int stt, int sttHeThong) {
-        super(maTram, viTri, congSuat, sttHeThong);
-        setTenTram("Sac Sieu Nhanh " + viTri.getTen() + " " + stt);
-    }
-
-    @Override
-    protected String getLoaiPrefix() {
-        return "[Sac Sieu Nhanh]";
-    }
-}
 
 // ============================================================
 // ENUM: Danh sach cac lua chon thong ke tru sac
@@ -1129,49 +941,40 @@ public class Module {
         System.out.println("* Luu y: Chi phi cuoi cung = Chi phi dien + (Tien qua han/p * So phut qua han)");
     }
 
-    // ----------------------------------------------------------
+// ----------------------------------------------------------
     // Chuc nang 11: Sap xep danh sach
     // ----------------------------------------------------------
+    // Sap xep theo thu tu uu tien:
+    // 1. Dang san sang (hao mon <= 90%)
+    // 2. Dang sac
+    // 3. Bao tri (can bao tri / ngung hoat dong)
+    // Trong cung 1 nhom: sap xep theo gio tich luy tang dan
     public void sapXepDS() {
-        // Thiet lap mac dinh: Dang sac -> Bao tri -> San sang
-        sapXepDS("Dang sac", "Bao tri", "San sang");
-    }
-
-    public void sapXepDS(String tt1, String tt2, String tt3) {
         if (danhSach.isEmpty()) {
             System.out.println("!!! Danh sach trong. Khong co tram nao de sap xep.");
             return;
         }
 
-        // Dinh nghia thu tu uu tien cho trang thai
-        Map<String, Integer> statusOrder = Map.of(
-                tt1, 0,
-                tt2, 1,
-                tt3, 2);
-
-        // Ham lay chuoi trang thai tu doi tuong TramSac
-        java.util.function.Function<TramSac, String> extractStatus = t -> {
-            if (!t.isSanSang())
-                return "Dang sac";
-            // Neu gio_da_su_dung dat nguong bao tri mac dinh -> Bao tri
-            if (t.getThoiGianHoatDong() >= TramSac.HAN_BAO_TRI_MAC_DINH)
-                return "Bao tri";
-            return "San sang";
-        };
-
-        Comparator<TramSac> comparator = Comparator
-            .comparingInt((TramSac t) -> statusOrder.getOrDefault(extractStatus.apply(t), Integer.MAX_VALUE))
-            .thenComparing((TramSac t) -> t.getViTri().getTen(), String.CASE_INSENSITIVE_ORDER)
-            .thenComparingInt(TramSac::getSttHeThong);
-
         List<TramSac> sorted = new ArrayList<>(danhSach);
-        sorted.sort(comparator);
+        sorted.sort((a, b) -> {
+            int pA = a.tinhMucHaoMon() >= 100.0 ? 2 : (a.isSanSang() ? 0 : 1);
+            int pB = b.tinhMucHaoMon() >= 100.0 ? 2 : (b.isSanSang() ? 0 : 1);
+
+            if (pA != pB)
+                return Integer.compare(pA, pB);
+
+            int byHours = Double.compare(a.getThoiGianHoatDong(), b.getThoiGianHoatDong());
+            if (byHours != 0)
+                return byHours;
+
+            return Integer.compare(a.getSttHeThong(), b.getSttHeThong());
+        });
 
         System.out.println("\n" + "=".repeat(40) + " DANH SACH (DA SAP XEP) " + "=".repeat(40));
         inTieuDeBang();
         for (TramSac t : sorted) {
             inDSTram(t);
         }
-        inKeNgang("=", 121);
+        inKeNgang("=", 160);
     }
 }
