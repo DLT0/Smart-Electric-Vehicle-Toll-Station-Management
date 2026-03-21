@@ -501,7 +501,7 @@ public class Module {
         }
 
         int n = 0;
-        while (n <= 0) {d
+        while (n <= 0) {
             System.out.print("Nhap so luong tram sac can them (> 0): ");
             try {
                 n = Integer.parseInt(scanner.nextLine().trim());
@@ -906,10 +906,10 @@ public class Module {
             }
         }
 
-        System.out.println("\n" + "=".repeat(36) + " THONG KE KHU VUC CO TAN XUAT SU DUNG CAO NHAT ");
-        System.out.println("-".repeat(36));
-        System.out.printf("| %-40s | So Tram | Tong Gio Su Dung (h)| Ty Le  % |%n", "Ten Khu Vuc");
-        System.out.println("-".repeat(121));
+        System.out.println("\n" + "=".repeat(26) + " THONG KE KHU VUC CO TAN XUAT SU DUNG CAO NHAT " + "=".repeat(26));
+          
+        System.out.printf("| %-40s | So Tram | Tong Gio Su Dung (h)| Ty Le %%    |%n", "Ten Khu Vuc");
+        System.out.println("-".repeat(101));
 
         // Sap xep theo so tram giam dan
         List<Map.Entry<HuyenLamDong, Integer>> sortedList = new ArrayList<>(demKhuVuc.entrySet());
@@ -922,12 +922,12 @@ public class Module {
             double tongGio = tongGioKhuVuc.get(kv);
             double tyLe = (soTram * 100.0) / danhSach.size();
             
-            String marker = (kv == kvCaoNhat) ? " [HANG " + rank + "]" : "";
+            String marker = (rank <= 3) ? " [HANG " + rank + "]" : "";
             System.out.printf("| %-40s | %-7d | %-19.1f | %-9.1f%% |%s%n", 
                 kv.getTen(), soTram, tongGio, tyLe, marker);
             rank++;
         }
-        System.out.println("-".repeat(121));
+        System.out.println("-".repeat(101));
 
         if (kvCaoNhat != null) {
             System.out.println("\n[KET LUAN] Khu vuc co tan xuat su dung cao nhat:");
@@ -935,7 +935,7 @@ public class Module {
             System.out.println("  - So tram: " + soTramCaoNhat);
             System.out.println("  - Tong gio su dung: " + String.format("%.1f", tongGioKhuVuc.get(kvCaoNhat)) + " gio");
         }
-        System.out.println("=".repeat(121));
+        System.out.println("=".repeat(101));
     }
 
     // ----------------------------------------------------------
