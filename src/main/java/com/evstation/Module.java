@@ -156,6 +156,19 @@ abstract class TramSac {
         this.thoiGianHoatDong = value;
     }
 
+    // Thoi gian sac van hoat dong trong version mock / testing
+    private double thoiGianSuDung; // so gio su dung (co the la cho session dang sac)
+
+    public double getThoiGianSuDung() {
+        return this.thoiGianSuDung;
+    }
+
+    public void setThoiGianSuDung(double value) {
+        if (value < 0)
+            value = 0;
+        this.thoiGianSuDung = value;
+    }
+
     public int getSttHeThong() {
         return this.sttHeThong;
     }
@@ -321,7 +334,7 @@ public class Module {
     }
 
     // =========================================================================
-    // CÁC HÀM BỔ TRỢ CHUNG (PUBLIC HELPERS) - Tái sử dụng ở nhiều nơi
+    // CÁC HÀM CHỨC NĂNG CHÍNH (PUBLIC API)
     // =========================================================================
 
     /**
@@ -582,6 +595,7 @@ public class Module {
         inTieuDeBang();
         inDSTram(t);
         inKeNgang("=", 121);
+        
     }
 
     // Kieu 2: Xuat toan bao danh sach (co kem logic sap xep)
@@ -1118,6 +1132,11 @@ public class Module {
     // ----------------------------------------------------------
     // Chuc nang 11: Sap xep danh sach
     // ----------------------------------------------------------
+    public void sapXepDS() {
+        // Thiet lap mac dinh: Dang sac -> Bao tri -> San sang
+        sapXepDS("Dang sac", "Bao tri", "San sang");
+    }
+
     public void sapXepDS(String tt1, String tt2, String tt3) {
         if (danhSach.isEmpty()) {
             System.out.println("!!! Danh sach trong. Khong co tram nao de sap xep.");
