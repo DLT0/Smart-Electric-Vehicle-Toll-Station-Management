@@ -37,7 +37,7 @@ enum HuyenLamDong {
     public static void hienThiDanhSach() {
         HuyenLamDong[] dsKhuVuc = HuyenLamDong.values();
         System.out.println("  +-----+-------------------------+");
-        System.out.printf("  | %-3s | %-23s |%n", "STT", "Ten Don Vi");
+        System.out.printf("   | %-3s | %-23s |%n", "STT", "Ten Don Vi");
         System.out.println("  +-----+-------------------------+");
         for (int i = 0; i < dsKhuVuc.length; i++) {
             System.out.printf("  | %-3d | %-23s |%n", i + 1, dsKhuVuc[i].getTen());
@@ -910,6 +910,41 @@ public class Module {
     // Chuc nang 11: Sap xep danh sach
     // ----------------------------------------------------------
     public void sapXepDS() {
-        System.out.println();
+        if (danhSach.isEmpty()) {
+            System.out.println("!!! Danh sach trong. Khong co tram nao de sap xep.");
+            return;
+        }
+
+        // Dinh nghia thu tu uu tien cho trang thai
+        Map<String, Integer> statusOrder = Map.of(
+                "Dang sac", 0,
+                "San sang", 1,
+                "Bao tri", 2,
+                "Khong hoat dong", 3);
+
+        // Ham lay chuoi trang thai tu doi tuong TramSac
+        java.util.function.Function<TramSac, String> extractStatus = t -> {
+            if (!t.isSanSang())
+                return "Dang sac";
+            // Neu gio_da_su_dung dat nguong bao tri mac dinh -> Bao tri
+            if (t.getThoiGianHoatDong() >= TramSac.HAN_BAO_TRI_MAC_DINH)
+                return "Bao tri";
+            return "San sang";
+        };
+
+        Comparator<TramSac> comparator = Comparator
+            .comparingInt((TramSac t) -> statusOrder.getOrDefault(extractStatus.apply(t), Integer.MAX_VALUE))
+            .thenComparing((TramSac t) -> t.getViTri().getTen(), String.CASE_INSENSITIVE_ORDER)
+            .thenComparingInt(TramSac::getSttHeThong);
+
+        List<TramSac> sorted = new ArrayList<>(danhSach);
+        sorted.sort(comparator);
+
+        System.out.println("\n" + "=".repeat(40) + " DANH SACH (DA SAP XEP) " + "=".repeat(40));
+        inTieuDeBang();
+        for (TramSac t : sorted) {
+            inDSTram(t);
+        }
+        inKeNgang("=", 121);
     }
 }
