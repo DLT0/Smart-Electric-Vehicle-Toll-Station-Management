@@ -111,9 +111,9 @@ public class Menu {
         switch (chon) {
             case SapXepDS:
                 System.out.println("\n--- SAP XEP DANH SACH TRAM SAC ---");
-                string tt1 = "Dang sac";
-                string tt2 = "San sang";
-                string tt3 = "Bao tri";
+                String tt1 = "Dang sac";
+                String tt2 = "San sang";
+                String tt3 = "Bao tri";
                 module.sapXepDS(tt1, tt2, tt3);
                 break;
             case Thoat:
