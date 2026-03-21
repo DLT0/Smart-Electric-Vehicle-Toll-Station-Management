@@ -72,7 +72,7 @@ abstract class TramSac {
     private double thoiGianHoatDong; // Tong so gio tich luy da van hanh, phai >= 0
     protected static final double GIA_MOI_KWH = 3850; // Don gia co dinh (VND/kWh)
     protected static final double HAN_BAO_TRI_MAC_DINH = 500.0; // Han bao tri mac dinh (h)
-    // private double hanBaoTri; // Han bao tri rieng cho tung tram
+    private double hanBaoTri; // Han bao tri rieng cho tung tram
     private int sttHeThong; // STT khi them vao he thong (de sap xep fallback)
     private LocalDateTime thoiGianBatDauSac; // Thoi gian bat dau sac (neu dang sac)
 
@@ -830,8 +830,8 @@ public class Module {
             System.out.println("- Thoi gian da sac: " + dinhDangThoiGian(thoiGianDaSacPhut));
             System.out.println("- Thoi gian tieu chuan: " + dinhDangThoiGian(thoiGianDuKienPhut));
         } else {
-            System.out.println("- Thoi gian sac du kien: " + din
-     * - Tìm hiểu các viết hàm private, cụ thể là hàm tự động cập nhật giờ sử dụnghDangThoiGian(thoiGianDuKienPhut));
+            System.out.println("- Thoi gian sac du kien: " + dinhDangThoiGian(thoiGianDuKienPhut));
+//     Tìm hiểu các viết hàm private, cụ thể là hàm tự động cập nhật giờ sử dụnghDangThoiGian(thoiGianDuKienPhut));
         }
 
         System.out.printf("- Chi phi dien: %,.0f VND%n", chiPhiDien);
