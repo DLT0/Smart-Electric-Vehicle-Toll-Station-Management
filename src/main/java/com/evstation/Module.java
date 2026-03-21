@@ -498,7 +498,7 @@ public class Module {
         }
 
         int n = 0;
-        while (n <= 0) {d
+        while (n <= 0) {
             System.out.print("Nhap so luong tram sac can them (> 0): ");
             try {
                 n = Integer.parseInt(scanner.nextLine().trim());
