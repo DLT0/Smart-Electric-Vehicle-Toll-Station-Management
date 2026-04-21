@@ -12,10 +12,12 @@ public class Menu {
         CapNhatThongTinTram,
         XoaTruSac,
         TimKiem,
+        TimTramThuN,
         ThongKeTruSacCanBaoTri,
         TinhChiPhi1Tram,
         SapXepDS,
         TinhChiPhiDS,
+
     }
 
     public enum MenuThongKe {
@@ -27,19 +29,19 @@ public class Menu {
     //prive int thong ke tru
 
     private Scanner scanner;
-    public Module module;
+    public QuanLyTramSac module;
 
-    public Menu(Module module) {
+    public Menu(QuanLyTramSac module) {
         this.scanner = new Scanner(System.in);
         this.module = module;
     }
 
     public static void xuatMenu() {
-        Module.inKeNgang("=", 50);
+        QuanLyTramSac.inKeNgang("=", 50);
         System.out.println("|      QUAN LY TRAM SAC XE DIEN THONG MINH      |");
-        Module.inKeNgang("=", 50);
+        QuanLyTramSac.inKeNgang("=", 50);
         System.out.println("| Phim | Chuc nang                              |");
-        Module.inKeNgang("-", 50);
+        QuanLyTramSac.inKeNgang("-", 50);
         System.out.printf("|   %-2d  | %-38s |%n", MenuCT.Thoat.ordinal(), "Thoat Chuong Trinh.");
         System.out.printf("|   %-2d  | %-38s |%n", MenuCT.ThemDSTruSac.ordinal(), "Nhap danh sach tru sac.");
         System.out.printf("|   %-2d  | %-38s |%n", MenuCT.NhapCoDinh.ordinal(), "Nhap co dinh.");
@@ -47,24 +49,26 @@ public class Menu {
         System.out.printf("|   %-2d  | %-38s |%n", MenuCT.CapNhatThongTinTram.ordinal(), "Cap nhat thong tin tram.");
         System.out.printf("|   %-2d  | %-38s |%n", MenuCT.XoaTruSac.ordinal(), "Xoa tru sac.");
         System.out.printf("|   %-2d  | %-38s |%n", MenuCT.TimKiem.ordinal(), "Tim kiem theo ID.");
+        System.out.printf("|   %-2d  | %-38s |%n", MenuCT.TimTramThuN.ordinal(), "Tim tram co thoi gian sac thu n. (Min heap)");
         System.out.printf("|   %-2d  | %-38s |%n", MenuCT.ThongKeTruSacCanBaoTri.ordinal(), "Thong ke danh sach tru sac can bao tri");
         System.out.printf("|   %-2d  | %-38s |%n", MenuCT.TinhChiPhi1Tram.ordinal(), "Tinh chi phi du kien cho 1 tram.");
         System.out.printf("|   %-2d  | %-38s |%n", MenuCT.SapXepDS.ordinal(), "Sap xep danh sach tru sac");
         System.out.printf("|   %-2d  | %-38s |%n", MenuCT.TinhChiPhiDS.ordinal(), "Goi y chi phi cho tat ca cac tram.");
-        Module.inKeNgang("=", 50);
+
+        QuanLyTramSac.inKeNgang("=", 50);
     }
 
     public static void xuatMenuThongKe() {
-        Module.inKeNgang("=", 50);
+        QuanLyTramSac.inKeNgang("=", 50);
         System.out.println("|        MENU PHU - THONG KE TRAM SAC          |");
-        Module.inKeNgang("=", 50);
+        QuanLyTramSac.inKeNgang("=", 50);
         System.out.println("| Phim | Chuc nang thong ke                    |");
-        Module.inKeNgang("-", 50);
+        QuanLyTramSac.inKeNgang("-", 50);
         System.out.printf("|   %-2d  | %-37s |%n", MenuThongKe.Thoat.ordinal(), "Quay lai menu chinh.");
         System.out.printf("|   %-2d  | %-37s |%n", MenuThongKe.BaoTri.ordinal(), "Tram sac can bao tri .");
         System.out.printf("|   %-2d  | %-37s |%n", MenuThongKe.GioSDThap.ordinal(), "Tram sac co gio SD > X.");
         System.out.printf("|   %-2d  | %-37s |%n", MenuThongKe.KhuVucCao.ordinal(), "Khu vuc tan xuat cao nhat.");
-        Module.inKeNgang("=", 50);
+        QuanLyTramSac.inKeNgang("=", 50);
     }
 
     public MenuCT chonMenu() {
@@ -159,6 +163,10 @@ public class Menu {
             case TinhChiPhiDS:
                 System.out.println("\n--- GOI Y CHI PHI CHO TAT CA CAC TRAM ---");
                 module.tinhChiPhiDS(scanner);
+                break;
+            case TimTramThuN:
+                System.out.println("\n--- TIM TRAM CO THOI GIAN SAC DU TINH DUNG THU N (MIN HEAP) ---");
+                module.timTramTheoThoiGianSacThuN(scanner);
                 break;
             default:
                 break;
