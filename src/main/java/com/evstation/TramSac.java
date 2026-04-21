@@ -2,7 +2,6 @@ package com.evstation;
 
 import java.time.LocalDateTime;
 
-
 // ============================================================
 // LỚP TRỪU TƯỢNG: TramSac
 // Mô tả: Định nghĩa cấu trúc dữ liệu và hành vi chung của
@@ -16,7 +15,7 @@ import java.time.LocalDateTime;
 //         Áp dụng Trừu tượng (Abstraction):
 //         - getLoaiPrefix() là abstract → mỗi lớp con tự định nghĩa
 // ============================================================
-abstract class TramSac {
+public abstract class TramSac {
 
     // ─── CÁC THUỘC TÍNH (PRIVATE FIELDS) ────────────────────────────────────
     private String maTram;             // Mã định danh duy nhất (ví dụ: "SC-DAL-001")
@@ -27,6 +26,7 @@ abstract class TramSac {
     private double thoiGianSuDung;     // Số giờ của phiên sạc hiện tại / gần nhất
     private double thoiGianHoatDong;   // Tổng giờ vận hành tích lũy (dùng để tính hao mòn)
     private LocalDateTime thoiGianBatDauSac; // Thời điểm bắt đầu sạc; null nếu đang rảnh
+    private double hanBaoTri;           // Ngưỡng bảo trì riêng của trạm (giờ), mặc định = HAN_BAO_TRI_MAC_DINH
 
     // ─── HẰNG SỐ DÙNG CHUNG CHO MỌI LOẠI TRẠM ──────────────────────────────
     protected static final double GIA_MOI_KWH = 3850;           // Đơn giá điện (VND/kWh)
@@ -50,8 +50,9 @@ abstract class TramSac {
     }
 
     private void setMaTram(String value) {
-        if (value == null || value.trim().isEmpty())
+        if (value == null || value.trim().isEmpty()) {
             value = "UNKNOWN";
+        }
         this.maTram = value.trim();
     }
 
@@ -60,8 +61,9 @@ abstract class TramSac {
     }
 
     public void setTenTram(String value) {
-        if (value == null || value.trim().isEmpty())
+        if (value == null || value.trim().isEmpty()) {
             value = "Chua dat ten";
+        }
         this.tenTram = value.trim();
     }
 
@@ -70,8 +72,10 @@ abstract class TramSac {
     }
 
     public void setViTri(HuyenLamDong value) {
-        if (value == null)
+        if (value == null) {
             return; // Ràng buộc: vị trí không được null (bảo vệ tính toàn vẹn)
+
+        }
         this.viTri = value;
     }
 
@@ -88,10 +92,12 @@ abstract class TramSac {
     }
 
     public void setCongSuat(double value) {
-        if (value < 7)
+        if (value < 7) {
             value = 7; // Rang buoc: cong suat phai la so duong
-        else if (value > 300)
+        } else if (value > 300) {
             value = 300; // Rang buoc: gioi han toi da 300kW
+
+        }
         this.congSuat = value;
     }
 
@@ -100,8 +106,9 @@ abstract class TramSac {
     }
 
     public void setThoiGianSuDung(double value) {
-        if (value < 0)
+        if (value < 0) {
             value = 0;
+        }
         this.thoiGianSuDung = value;
     }
 
@@ -110,9 +117,22 @@ abstract class TramSac {
     }
 
     public void setThoiGianHoatDong(double value) {
-        if (value < 0)
+        if (value < 0) {
             value = 0; // Rang buoc: thoi gian khong duoc am
+
+        }
         this.thoiGianHoatDong = value;
+    }
+
+    public double getHanBaoTri() {
+        return this.hanBaoTri;
+    }
+
+    public void setHanBaoTri(double value) {
+        if (value <= 0) {
+            value = HAN_BAO_TRI_MAC_DINH;
+        }
+        this.hanBaoTri = value;
     }
 
     // Constructor: nhan maTram da duoc Module sinh san, cac truong con lai tu dong
@@ -120,14 +140,18 @@ abstract class TramSac {
         setMaTram(maTram); // maTram duoc Module.sinhMaTram() tao ra
         setViTri(viTri);
         setCongSuat(congSuat);
-        setThoiGianSuDung(0.0); // Tu dong khoi tao la 0
-        setThoiGianHoatDong(0.0); // Tu dong khoi tao la 0
-        setSanSang(true); // Mac dinh: San sang / Trong
+        setThoiGianSuDung(0.0);
+        setThoiGianHoatDong(0.0);
+        setSanSang(true);
         setThoiGianBatDauSac(null);
+        setHanBaoTri(HAN_BAO_TRI_MAC_DINH);
     }
 
     public double tinhMucHaoMon() {
-        double mucHaoMon = (this.thoiGianHoatDong / HAN_BAO_TRI_MAC_DINH) * 100;
+        if (this.hanBaoTri <= 0) {
+            return 0.0;
+        }
+        double mucHaoMon = (this.thoiGianHoatDong / this.hanBaoTri) * 100;
         return Math.min(mucHaoMon, 100.0);
     }
 
@@ -150,49 +174,31 @@ abstract class TramSac {
     }
 
     protected abstract String getLoaiPrefix();
-}
 
-// ============================================================
-// LOP CON: TramSacCham (7kW - 11kW)
-// ============================================================
-class TramSacCham extends TramSac {
-    public TramSacCham(String maTram, HuyenLamDong viTri, double congSuat, int stt) {
-        super(maTram, viTri, congSuat);
-        setTenTram("Sac Cham " + viTri.getTen() + " " + stt);
-    }
-
+    // ─── OVERRIDE toString() ─────────────────────────────────────────────────
+    // Tương tự C# ToString(): đóng gói toàn bộ thông tin hiển thị của 1 trạm
+    // thành 1 chuỗi có cấu trúc. Dùng cho tìm kiếm, in danh sách kết quả.
     @Override
-    protected String getLoaiPrefix() {
-        return "[Sac Cham]";
-    }
-}
-
-// ============================================================
-// LOP CON: TramSacNhanh (12kW - 120kW)
-// ============================================================
-class TramSacNhanh extends TramSac {
-    public TramSacNhanh(String maTram, HuyenLamDong viTri, double congSuat, int stt) {
-        super(maTram, viTri, congSuat);
-        setTenTram("Sac Nhanh " + viTri.getTen() + " " + stt);
-    }
-
-    @Override
-    protected String getLoaiPrefix() {
-        return "[Sac Nhanh]";
-    }
-}
-
-// ============================================================
-// LOP CON: TramSacSieuNhanh (121kW - 300kW)
-// ============================================================
-class TramSacSieuNhanh extends TramSac {
-    public TramSacSieuNhanh(String maTram, HuyenLamDong viTri, double congSuat, int stt) {
-        super(maTram, viTri, congSuat);
-        setTenTram("Sac Sieu Nhanh " + viTri.getTen() + " " + stt);
-    }
-
-    @Override
-    protected String getLoaiPrefix() {
-        return "[Sac Sieu Nhanh]";
+    public String toString() {
+        return String.format(
+                "  +------------------------------------------+%n"
+                + "  | ID        : %-28s |%n"
+                + "  | Ten Tram  : %-28s |%n"
+                + "  | Loai      : %-28s |%n"
+                + "  | Vi Tri    : %-28s |%n"
+                + "  | Cong Suat : %-25.1f kW |%n"
+                + "  | Trang Thai: %-28s |%n"
+                + "  | Hao Mon   : %-24.1f %% |%n"
+                + "  | Bao Tri   : %-28s |%n"
+                + "  +------------------------------------------+",
+                this.maTram,
+                this.tenTram,
+                getLoaiPrefix(),
+                (this.viTri != null ? this.viTri.getTen() : "?"),
+                this.congSuat,
+                getTrangThaiHoatDong(),
+                tinhMucHaoMon(),
+                getTrangThaiBaoTri()
+        );
     }
 }
