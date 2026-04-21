@@ -30,6 +30,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // Setup notification handlers
         setupNotifications();
 
+        // Setup modal handlers
+        setupModalHandlers();
+
         // Listen for sidebar events
         listenToSidebarEvents();
 
@@ -43,20 +46,20 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             console.log("Fetching dashboard data from backend...");
             const response = await fetch('/api/dashboard/stats');
-            
+
             if (response.ok) {
                 const data = await response.json();
-                
+
                 // Update DOM with data from Java
                 const totalStationsEl = document.getElementById('total-stations');
                 if (totalStationsEl) totalStationsEl.textContent = data.totalStations;
-                
+
                 const activeSessionsEl = document.getElementById('active-sessions');
                 if (activeSessionsEl) activeSessionsEl.textContent = data.activeSessions;
-                
+
                 const revenueEl = document.getElementById('revenue');
                 if (revenueEl) revenueEl.innerHTML = `${data.revenue}<span class="text-xl ml-1 text-slate-400"></span>`;
-                
+
                 console.log("Dashboard data updated successfully!");
             } else {
                 console.warn("Failed to fetch dashboard data. Status:", response.status);
@@ -186,6 +189,268 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('Showing notifications...');
         // Implement notification panel here
         // Could show alerts, maintenance due dates, etc.
+    }
+
+    async function setupModalHandlers() {
+        console.log('Loading modal from external file: add-station-modal.html');
+
+        try {
+            // Fetch modal từ file HTML riêng
+            const response = await fetch('add-station-modal.html');
+            if (!response.ok) throw new Error("Could not load add-station-modal.html");
+            const text = await response.text();
+
+            // Phân tích HTML
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(text, 'text/html');
+            // Lấy thẻ chứa modal (thẻ div có class fixed inset-0)
+            const modalHTML = doc.querySelector('.fixed.inset-0.z-50');
+
+            if (modalHTML) {
+                // Xóa modal cũ nếu có trong index.html
+                const oldModal = document.getElementById('add-station-modal');
+                if (oldModal) oldModal.remove();
+
+                // Bổ sung các ID cần thiết vào modal lấy từ file để JS có thể nhận diện
+                modalHTML.id = 'add-station-modal';
+                modalHTML.classList.add('hidden'); // Đảm bảo modal ẩn lúc đầu
+
+                // Gắn ID cho nút Đóng
+                const closeBtnDoc = modalHTML.querySelector('button[class*="absolute top-4"]');
+                if (closeBtnDoc) closeBtnDoc.id = 'close-add-station-modal';
+
+                // Gắn ID cho nút Xác nhận và Hủy
+                const buttons = Array.from(modalHTML.querySelectorAll('button'));
+                const confirmBtnDoc = buttons.find(b => b.textContent.includes('Add Station'));
+                if (confirmBtnDoc) confirmBtnDoc.id = 'confirm-add-station';
+
+                const cancelBtnDoc = buttons.find(b => b.textContent.includes('Cancel'));
+                if (cancelBtnDoc) cancelBtnDoc.id = 'cancel-add-station';
+
+                // Gắn modal vào thẻ body của index.html
+                document.body.appendChild(modalHTML);
+                console.log("Modal đã được nhúng thành công vào trang!");
+            }
+        } catch (error) {
+            console.error("Lỗi khi nhúng modal:", error);
+            return;
+        }
+
+        // --- SAU KHI ĐÃ NHÚNG THÀNH CÔNG, BẮT ĐẦU GẮN SỰ KIỆN TƯƠNG TÁC ---
+        const addStationBtn = document.getElementById('add-station-btn');
+        const addStationModal = document.getElementById('add-station-modal');
+        const closeModalBtn = document.getElementById('close-add-station-modal');
+        const cancelBtn = document.getElementById('cancel-add-station');
+        const confirmBtn = document.getElementById('confirm-add-station');
+
+        // Các vùng chọn và slider
+        const regionButtons = document.querySelectorAll('#add-station-modal .grid.grid-cols-3 button');
+        const powerSlider = document.getElementById('power-level');
+        const powerInput = document.querySelector('#add-station-modal input[type="number"]');
+
+        let selectedRegion = 'da-lat';
+        let selectedPower = 120;
+
+        // Open modal
+        if (addStationBtn) {
+            addStationBtn.addEventListener('click', () => {
+                console.log('Opening add station modal...');
+                addStationModal.classList.remove('hidden');
+                addStationModal.classList.add('flex');
+                document.body.classList.add('overflow-hidden');
+
+                // Reset form
+                resetModalForm();
+            });
+        }
+
+        // Close modal functions
+        function closeModal() {
+            console.log('Closing add station modal...');
+            addStationModal.classList.add('hidden');
+            addStationModal.classList.remove('flex');
+            document.body.classList.remove('overflow-hidden');
+        }
+
+        // Close modal event listeners
+        if (closeModalBtn) {
+            closeModalBtn.addEventListener('click', closeModal);
+        }
+
+        if (cancelBtn) {
+            cancelBtn.addEventListener('click', closeModal);
+        }
+
+        // Close on backdrop click
+        if (addStationModal) {
+            addStationModal.addEventListener('click', (e) => {
+                if (e.target === addStationModal) {
+                    closeModal();
+                }
+            });
+        }
+
+        // Region selection
+        regionButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active state from all buttons
+                regionButtons.forEach(btn => btn.classList.remove('ring-2', 'ring-primary'));
+
+                // Add active state to clicked button
+                button.classList.add('ring-2', 'ring-primary');
+
+                // Update selected region
+                selectedRegion = button.dataset.region;
+                if (previewRegion) {
+                    previewRegion.textContent = button.textContent.trim();
+                }
+
+                console.log(`Region selected: ${selectedRegion}`);
+            });
+        });
+
+        // Power slider
+        if (powerSlider) {
+            powerSlider.addEventListener('input', (e) => {
+                selectedPower = parseInt(e.target.value);
+                if (powerValue) {
+                    powerValue.textContent = `${selectedPower}kW`;
+                }
+                if (previewPower) {
+                    previewPower.textContent = `${selectedPower}kW`;
+                }
+
+                console.log(`Power level selected: ${selectedPower}kW`);
+            });
+        }
+
+        // Confirm add station
+        if (confirmBtn) {
+            confirmBtn.addEventListener('click', async () => {
+                console.log('Confirming add station...');
+
+                // Get form data
+                const stationName = document.getElementById('station-name')?.value;
+                const stationAddress = document.getElementById('station-address')?.value;
+
+                // Basic validation
+                if (!stationName || !stationAddress) {
+                    showErrorNotification('Vui lòng điền đầy đủ thông tin trạm sạc');
+                    return;
+                }
+
+                // Create station data
+                const stationData = {
+                    name: stationName,
+                    address: stationAddress,
+                    region: selectedRegion,
+                    powerLevel: selectedPower,
+                    status: 'active',
+                    createdAt: new Date().toISOString()
+                };
+
+                console.log('Station data:', stationData);
+
+                try {
+                    // Here you would normally send to backend
+                    // const response = await fetch('/api/stations', {
+                    //     method: 'POST',
+                    //     headers: { 'Content-Type': 'application/json' },
+                    //     body: JSON.stringify(stationData)
+                    // });
+
+                    // Simulate success for now
+                    await new Promise(resolve => setTimeout(resolve, 500));
+
+                    showSuccessNotification(`Đã thêm trạm sạc "${stationName}" thành công!`);
+                    closeModal();
+
+                    // Refresh dashboard data
+                    loadDashboardData();
+
+                } catch (error) {
+                    console.error('Error adding station:', error);
+                    showErrorNotification('Có lỗi xảy ra khi thêm trạm sạc');
+                }
+            });
+        }
+
+        function resetModalForm() {
+            // Reset form fields
+            const stationNameInput = document.getElementById('station-name');
+            const stationAddressInput = document.getElementById('station-address');
+
+            if (stationNameInput) stationNameInput.value = '';
+            if (stationAddressInput) stationAddressInput.value = '';
+
+            // Reset region selection (default to first region)
+            regionButtons.forEach(btn => btn.classList.remove('ring-2', 'ring-primary'));
+            if (regionButtons.length > 0) {
+                regionButtons[0].classList.add('ring-2', 'ring-primary');
+                selectedRegion = regionButtons[0].dataset.region;
+                if (previewRegion) {
+                    previewRegion.textContent = regionButtons[0].textContent.trim();
+                }
+            }
+
+            // Reset power slider
+            if (powerSlider) {
+                powerSlider.value = '50';
+                selectedPower = 50;
+                if (powerValue) powerValue.textContent = '50kW';
+                if (previewPower) previewPower.textContent = '50kW';
+            }
+        }
+    }
+
+    function showSuccessNotification(message) {
+        const notification = document.createElement('div');
+        notification.className = 'fixed top-24 right-8 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg z-50 transform translate-x-full transition-transform duration-300';
+        notification.innerHTML = `
+            <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined">check_circle</span>
+                <span>${message}</span>
+            </div>
+        `;
+
+        document.body.appendChild(notification);
+
+        // Animation
+        setTimeout(() => {
+            notification.classList.remove('translate-x-full');
+        }, 100);
+
+        setTimeout(() => {
+            notification.classList.add('translate-x-full');
+            setTimeout(() => {
+                notification.remove();
+            }, 300);
+        }, 3000);
+    }
+
+    function showErrorNotification(message) {
+        const notification = document.createElement('div');
+        notification.className = 'fixed top-24 right-8 bg-red-600 text-white px-6 py-3 rounded-lg shadow-lg z-50 transform translate-x-full transition-transform duration-300';
+        notification.innerHTML = `
+            <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined">error</span>
+                <span>${message}</span>
+            </div>
+        `;
+
+        document.body.appendChild(notification);
+
+        // Animation
+        setTimeout(() => {
+            notification.classList.remove('translate-x-full');
+        }, 100);
+
+        setTimeout(() => {
+            notification.classList.add('translate-x-full');
+            setTimeout(() => {
+                notification.remove();
+            }, 300);
+        }, 3000);
     }
 
     // Export app state for debugging
