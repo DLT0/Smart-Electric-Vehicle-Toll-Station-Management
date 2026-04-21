@@ -12,6 +12,13 @@ public class TramSacNhanh extends TramSac {
     public static final double CONG_SUAT_MAX = 120.0; // kW
 
     // ─── CONSTRUCTOR ─────────────────────────────────────────────────────────
+    // Constructor mac dinh: tao tram sac nhanh voi trang thai rong, cong suat mac dinh la CONG_SUAT_MIN.
+    public TramSacNhanh() {
+        super();
+        setCongSuat(CONG_SUAT_MIN);
+        setTenTram("Sac Nhanh (mac dinh)");
+    }
+
     public TramSacNhanh(String maTram, HuyenLamDong viTri, double congSuat, int stt) {
         super(maTram, viTri, congSuat);
         setTenTram("Sac Nhanh " + viTri.getTen() + " " + stt);

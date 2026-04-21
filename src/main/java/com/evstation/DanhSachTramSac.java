@@ -89,6 +89,30 @@ public class DanhSachTramSac extends ArrayList<TramSac> {
                 t.getTrangThaiBaoTri(), t.getTrangThaiHoatDong(),
                 String.format("%.1f gio", totalHour));
     }
+// Xuat String cho Chuc Nang Goi Y
+
+    private static String buildTieuDeGoiYSac() {
+        String nl = System.lineSeparator();
+        return "+------------------+------------+-----------+-----------------+-----------------+" + nl
+                + String.format("| %-16s | %-10s | %-9s | %-15s | %-15s |%n",
+                        "Loai", "ID", "Cong Suat", "Thoi gian sac", "Tien qua han/p")
+                + "+------------------+------------+-----------+-----------------+-----------------+" + nl;
+    }
+
+    private static String buildDongGoiYSac(TramSac t, double dienNangCanSac) {
+        double thoiGianGio = dienNangCanSac / t.getCongSuat();
+        long thoiGianPhut = (long) (thoiGianGio * 60);
+        String thoiGianStr = dinhDangThoiGian(thoiGianPhut);
+
+        double phiQuaHan = t instanceof TramSacNhanh ? 1000
+                : t instanceof TramSacSieuNhanh ? 3000
+                        : 0;
+
+        String phiQuaHanStr = phiQuaHan > 0 ? String.format("%,.0f", phiQuaHan) : "0";
+
+        return String.format("| %-16s | %-10s | %6.1f kW | %-15s | %15s |%n",
+                t.getLoaiPrefix(), t.getMaTram(), t.getCongSuat(), thoiGianStr, phiQuaHanStr);
+    }
 
     // In bang thong tin cua DUY NHAT 1 tram
     public static void xuatThongTin1Tram(TramSac t) {
@@ -119,6 +143,37 @@ public class DanhSachTramSac extends ArrayList<TramSac> {
             sb.append(buildDongTramWithTotal(t));
         }
         sb.append(keNgang("=", BANG_RONG));
+        System.out.println(sb);
+    }
+
+    public static void xuatBangGoiYSac(List<TramSac> list, double phanTramPin, double chiPhiDien) {
+        double dungLuongPin = 70.0;
+        double dienNangCanSac = dungLuongPin * (phanTramPin / 100.0);
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("\n")
+                .append("=".repeat(33))
+                .append(" GOI Y TRAM SAC ")
+                .append("=".repeat(33))
+                .append(System.lineSeparator())
+                .append("- Muc pin can sac: ")
+                .append(phanTramPin)
+                .append("%")
+                .append(System.lineSeparator())
+                .append("- Chi phi du kien thuan tuy: ")
+                .append(String.format("%,.0f", chiPhiDien))
+                .append(" VND")
+                .append(System.lineSeparator())
+                .append(buildTieuDeGoiYSac());
+
+        for (TramSac t : list) {
+            sb.append(buildDongGoiYSac(t, dienNangCanSac));
+        }
+
+        sb.append("+------------------+------------+-----------+-----------------+-----------------+")
+                .append(System.lineSeparator())
+                .append("* Luu y: Chi phi cuoi cung = Chi phi dien + (Tien qua han/phut * So phut qua han)");
+
         System.out.println(sb);
     }
 

@@ -12,6 +12,18 @@ public class TramSacCham extends TramSac {
     public static final double CONG_SUAT_MAX = 11.0;  // kW
 
     // ─── CONSTRUCTOR ─────────────────────────────────────────────────────────
+    // Constructor mac dinh: tao tram sac cham voi trang thai rong, cong suat mac dinh la CONG_SUAT_MIN.
+    // Vi du: TramSacCham t = new TramSacCham();
+    //        t.getMaTram()    => ""                    (chua sinh ma)
+    //        t.getCongSuat()  => 7.0                   (CONG_SUAT_MIN)
+    //        t.getTenTram()   => "Sac Cham (mac dinh)"
+    //        t.isSanSang()    => true
+    public TramSacCham() {
+        super();                               // Goi TramSac() no-arg: khoi tao trang thai rong
+        setCongSuat(CONG_SUAT_MIN);            // Gan cong suat toi thieu hop le cho loai nay
+        setTenTram("Sac Cham (mac dinh)");
+    }
+
     public TramSacCham(String maTram, HuyenLamDong viTri, double congSuat, int stt) {
         super(maTram, viTri, congSuat);
         setTenTram("Sac Cham " + viTri.getTen() + " " + stt);

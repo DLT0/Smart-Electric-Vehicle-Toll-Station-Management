@@ -1,5 +1,6 @@
 package com.evstation;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 // ============================================================
@@ -136,6 +137,22 @@ public abstract class TramSac {
     }
 
     // Constructor: nhan maTram da duoc Module sinh san, cac truong con lai tu dong
+    // Constructor mac dinh (khong tham so): khoi tao trang thai rong/mac dinh.
+    // protected de chi cac lop con moi co the goi, khong cho phep new TramSac() tu ben ngoai.
+    // Luu y: khoi tao truc tiep field de giu dung trang thai "chua co du lieu",
+    // tranh bi setter ep thanh UNKNOWN hoac 7kW trong truong hop constructor no-arg.
+    protected TramSac() {
+        this.maTram = "";
+        this.tenTram = "(Chua xac dinh)";
+        this.viTri = HuyenLamDong.DA_LAT;
+        this.sanSang = true;
+        this.congSuat = 0.0;
+        this.thoiGianSuDung = 0.0;
+        this.thoiGianHoatDong = 0.0;
+        this.thoiGianBatDauSac = null;
+        this.hanBaoTri = HAN_BAO_TRI_MAC_DINH;
+    }
+
     public TramSac(String maTram, HuyenLamDong viTri, double congSuat) {
         setMaTram(maTram); // maTram duoc Module.sinhMaTram() tao ra
         setViTri(viTri);
@@ -153,6 +170,23 @@ public abstract class TramSac {
         }
         double mucHaoMon = (this.thoiGianHoatDong / this.hanBaoTri) * 100;
         return Math.min(mucHaoMon, 100.0);
+    }
+
+    // Kiem tra tram co can bao tri khong (muc hao mon > 90%)
+    // Encapsulate dieu kien de tranh lap lai logic o nhieu noi.
+    public boolean isCanBaoTri() {
+        return tinhMucHaoMon() > 90.0;
+    }
+
+    // Tinh tong so gio su dung thuc te:
+    // = thoiGianHoatDong (tich luy) + so gio dang sac hien tai (neu tram dang ban).
+    // Encapsulate cong thuc duoc dung lap lai o nhieu phuong thuc thong ke va sap xep.
+    public double tinhTongGioSuDung() {
+        double total = this.thoiGianHoatDong;
+        if (!this.sanSang && this.thoiGianBatDauSac != null) {
+            total += Duration.between(this.thoiGianBatDauSac, LocalDateTime.now()).toMinutes() / 60.0;
+        }
+        return total;
     }
 
     public String getTrangThaiBaoTri() {

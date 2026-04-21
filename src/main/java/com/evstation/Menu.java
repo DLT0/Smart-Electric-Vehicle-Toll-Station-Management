@@ -1,5 +1,6 @@
 package com.evstation;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class Menu {
@@ -115,7 +116,13 @@ public class Menu {
         switch (chon) {
             case SapXepDS:
                 System.out.println("\n--- SAP XEP DANH SACH TRAM SAC THEO DO HAO MON ---");
-                module.sapXepDS();
+                List<TramSac> sorted = module.sapXepDS();
+                if (sorted.isEmpty()) {
+                    System.out.println("!!! Danh sach trong. Khong co tram nao de sap xep.");
+                    break;
+                }
+                System.out.println("\n" + "=".repeat(40) + " DANH SACH (DA SAP XEP) " + "=".repeat(40));
+                DanhSachTramSac.xuatBang(sorted);
                 break;
             case Thoat:
                 System.out.println("Thoat chuong trinh!");
@@ -205,7 +212,7 @@ public class Menu {
                 break;
             case GioSDThap:
                 System.out.println("\n--- THONG KE TRAM SAC CO GIO SU DUNG > X ---");
-                module.thongKeGioSDThap(scanner);
+                module.thongKeGioSDLonHonX(scanner);
                 break;
             case KhuVucCao:
                 System.out.println("\n--- THONG KE KHU VUC CO TAN XUAT SU DUNG CAO NHAT ---");

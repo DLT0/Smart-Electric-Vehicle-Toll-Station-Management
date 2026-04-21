@@ -3,12 +3,10 @@ package com.evstation;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.PriorityQueue;
 import java.util.Scanner;
-import java.util.function.Predicate;
 
 // ============================================================
 // ENUM: Danh sach cac lua chon thong ke tru sac
@@ -54,7 +52,30 @@ enum LoaiThongKe {
 // ============================================================
 public class QuanLyTramSac {
 
+    private static final double DUNG_LUONG_PIN_MAC_DINH = 70.0;
+    private static final double PHAN_TRAM_PIN_MAC_DINH = 80.0;
+    private static final double PHU_PHI_TRAM_NHANH = 1000.0;
+    private static final double PHU_PHI_TRAM_SIEU_NHANH = 3000.0;
+
+    private record ThongTinChiPhiTram(
+            double phanTramPin,
+            boolean thucTe,
+            double chiPhiDien,
+            long thoiGianDuKienPhut,
+            long thoiGianDaSacPhut,
+            int phutQuaHan,
+            double donGiaPhuPhi,
+            double chiPhiQuaHan,
+            double tongChiPhi) {
+
+    }
+
     private DanhSachTramSac danhSach = new DanhSachTramSac();
+
+    public QuanLyTramSac() {
+        this.danhSach = new DanhSachTramSac();
+    }
+
     // Dinh dang: [PREFIX]-[MA_KHU_VUC]-[STT]
     //
     // PREFIX xac dinh loai tram:
@@ -175,21 +196,14 @@ public class QuanLyTramSac {
         }
     }
 
-    /**
-     * Tra ve doi tuong TramSac dua vao ID. Giup giam trung lap logic tim kiem.
-     */
-    public TramSac timTramTheoId(String id) {
+    private TramSac timTramTheoIdChinhXac(String id) {
         if (id == null || id.trim().isEmpty()) {
             return null;
         }
 
-        // Loai bo ky tu phan cach (dau gach ngang hoac khoang trang) de nguoi dung tim
-        // kiem linh hoat
         String cleanId = id.replaceAll("[- ]", "").toLowerCase();
-
         for (TramSac t : danhSach) {
-            String cleanTramId = t.getMaTram().replaceAll("[- ]", "").toLowerCase();
-            if (cleanTramId.equals(cleanId)) {
+            if (t.getMaTram().replaceAll("[- ]", "").toLowerCase().equals(cleanId)) {
                 return t;
             }
         }
@@ -394,7 +408,7 @@ public class QuanLyTramSac {
 
     // Ham phu tro: Ap dung trang thai test cho tram theo ID
     private void apDungTrangThaiTest(String id, boolean sanSang, int phutTruoc, double gioSuDung, double tongGio) {
-        TramSac t = timTramTheoId(id);
+        TramSac t = timTramTheoIdChinhXac(id);
         if (t != null) {
             t.setSanSang(sanSang);
             t.setThoiGianSuDung(gioSuDung);
@@ -430,11 +444,10 @@ public class QuanLyTramSac {
     public void capNhatThongTinTram(Scanner scanner) {
 
         // 1. Tim tram theo ID
-        System.out.print("Nhap ID tram can cap nhat: ");
+        System.out.print("Nhap ID / tu khoa tram can cap nhat: ");
         String id = scanner.nextLine().trim();
-        TramSac found = timTramTheoId(id);
+        TramSac found = chonTramTuKetQuaTimKiem(scanner, id, "cap nhat");
         if (found == null) {
-            System.out.println("!!! Khong tim thay tram voi ID '" + id + "'");
             return;
         }
 
@@ -640,24 +653,19 @@ public class QuanLyTramSac {
             return;
         }
 
-        System.out.print("Nhap ID tram can xoa: ");
+        System.out.print("Nhap ID / tu khoa tram can xoa: ");
         String id = scanner.nextLine().trim();
         if (id.isEmpty()) {
             System.out.println("!!! ID khong duoc de trong.");
             return;
         }
 
-        // Tim kiem bang Predicate + Stream: normalize ID roi so khop chinh xac
-        String cleanId = id.replaceAll("[- ]", "").toLowerCase();
-        Predicate<TramSac> matchById = t -> t.getMaTram().replaceAll("[- ]", "").toLowerCase().equals(cleanId);
-        Optional<TramSac> optFound = danhSach.stream().filter(matchById).findFirst();
+        TramSac found = chonTramTuKetQuaTimKiem(scanner, id, "xoa");
 
-        if (optFound.isEmpty()) {
-            System.out.println("!!! Khong tim thay tram co ID: " + id);
+        if (found == null) {
             return;
         }
 
-        TramSac found = optFound.get();
         System.out.println("Thong tin tram tim thay:");
         DanhSachTramSac.xuatThongTin1Tram(found);
 
@@ -675,7 +683,7 @@ public class QuanLyTramSac {
     // truong nao (ID, ten, loai, khu vuc) khong — ignore case, partial match.
     // Tra ve danh sach TẤT CA ket qua khop.
     // ----------------------------------------------------------
-    public List<TramSac> timKiemDanhSach(String keyword) {
+    private List<TramSac> timKiemBloomSort(String keyword) {
         List<TramSac> ketQua = new ArrayList<>();
         if (keyword == null || keyword.trim().isEmpty()) {
             return ketQua;
@@ -707,6 +715,37 @@ public class QuanLyTramSac {
         return ketQua;
     }
 
+    private TramSac chonTramTuKetQuaTimKiem(Scanner scanner, String keyword, String hanhDong) {
+        List<TramSac> ketQua = timKiemBloomSort(keyword);
+        if (ketQua.isEmpty()) {
+            System.out.println("!!! Khong tim thay tram nao khop voi: \"" + keyword + "\"");
+            return null;
+        }
+
+        System.out.println("\n==> Tim thay " + ketQua.size() + " tram phu hop de " + hanhDong + ":");
+        for (int i = 0; i < ketQua.size(); i++) {
+            TramSac tram = ketQua.get(i);
+            System.out.printf("  %d. [%s] %s - %s%n", i + 1, tram.getMaTram(), tram.getTenTram(), tram.getViTri().getTen());
+        }
+
+        while (true) {
+            System.out.printf("Chon tram (0 de quay lai, 1-%d): ", ketQua.size());
+            try {
+                int chon = Integer.parseInt(scanner.nextLine().trim());
+                if (chon == 0) {
+                    System.out.println("=> Quay lai menu chinh.");
+                    return null;
+                }
+                if (chon >= 1 && chon <= ketQua.size()) {
+                    return ketQua.get(chon - 1);
+                }
+            } catch (NumberFormatException e) {
+                // lap lai den khi hop le
+            }
+            System.out.println("!!! Lua chon khong hop le.");
+        }
+    }
+
     // ----------------------------------------------------------
     // Chuc nang 6: Tim kiem (multi-field bloom search + hien thi bang toString())
     // ----------------------------------------------------------
@@ -724,19 +763,13 @@ public class QuanLyTramSac {
             return;
         }
 
-        List<TramSac> ketQua = timKiemDanhSach(keyword);
-
-        if (ketQua.isEmpty()) {
-            System.out.println("!!! Khong tim thay tram nao khop voi: \"" + keyword + "\"");
+        TramSac ketQua = chonTramTuKetQuaTimKiem(scanner, keyword, "xem thong tin");
+        if (ketQua == null) {
             return;
         }
 
-        System.out.println("\n==> Tim thay " + ketQua.size() + " ket qua cho \"" + keyword + "\":");
-        for (int i = 0; i < ketQua.size(); i++) {
-            System.out.println("\n  [ Ket qua " + (i + 1) + " / " + ketQua.size() + " ]");
-            System.out.println(ketQua.get(i).toString());
-        }
-        System.out.println();
+        System.out.println("\nThong tin day du cua tram duoc chon:");
+        DanhSachTramSac.xuatThongTin1Tram(ketQua);
     }
 
     // ----------------------------------------------------------
@@ -772,7 +805,7 @@ public class QuanLyTramSac {
                     thongKeBaoTri();
                     break;
                 case GIO_SD_THAP:
-                    thongKeGioSDThap(scanner);
+                    thongKeGioSDLonHonX(scanner);
                     break;
                 case KHU_VUC_CAO:
                     thongKeKhuVucCaoNhat();
@@ -798,8 +831,7 @@ public class QuanLyTramSac {
         List<TramSac> tramBaoTri = new ArrayList<>();
 
         for (TramSac t : danhSach) {
-            double mucHaoMon = t.tinhMucHaoMon();
-            if (mucHaoMon > 90) {
+            if (t.isCanBaoTri()) {
                 tramBaoTri.add(t);
             }
         }
@@ -832,12 +864,24 @@ public class QuanLyTramSac {
     // - gioMin: ngưỡng số giờ tối thiểu mà người dùng muốn lọc (không liên quan tới ràng buộc nội bộ của TramSac),
     //           chỉ dùng làm tiêu chí lọc danh sách hiện tại.
     // - tramCao: danh sách các trạm có tổng số giờ sử dụng vượt qua gioMin.
-    // - tongGioSuDung: tổng giờ sử dụng thực tế của từng trạm (bao gồm cả thời gian đang sạc nếu có).
-    public void thongKeGioSDThap(Scanner scanner) {
+    // Phan tach logic: loc va sap xep thuan (khong doc input). Co the tai su dung o nhieu noi.
+    // Dung TramSac.tinhTongGioSuDung() de tranh tinh inline lap lai.
+    public List<TramSac> layDSTramGioLonHon(double gioMin) {
+        List<TramSac> tramCao = new ArrayList<>();
+        for (TramSac t : danhSach) {
+            if (t.tinhTongGioSuDung() > gioMin) {
+                tramCao.add(t);
+            }
+        }
+        tramCao.sort((a, b) -> Double.compare(b.tinhTongGioSuDung(), a.tinhTongGioSuDung()));
+        return tramCao;
+    }
+
+    // Scanner wrapper: doc gioMin tu ban phim, goi layDSTramGioLonHon, hien thi ket qua.
+    public void thongKeGioSDLonHonX(Scanner scanner) {
         System.out.print("\nNhap so gio su dung toi thieu (h): ");
 
-        // Ngưỡng lọc do người dùng chọn, không bị ràng buộc bởi TramSac
-        double gioMin = 0;
+        double gioMin;
         try {
             gioMin = Double.parseDouble(scanner.nextLine().trim());
             if (gioMin < 0) {
@@ -849,43 +893,19 @@ public class QuanLyTramSac {
             return;
         }
 
-        // Danh sách các trạm có tổng số giờ sử dụng (tích lũy + đang sạc) vượt ngưỡng gioMin
-        List<TramSac> tramCao = new ArrayList<>();
-        for (TramSac t : danhSach) {
-            // tongGioSuDung = thoiGianHoatDong (tích lũy) + số giờ đang sạc (nếu có)
-            double tongGioSuDung = t.getThoiGianHoatDong();
-            if (!t.isSanSang() && t.getThoiGianBatDauSac() != null) {
-                tongGioSuDung += tinhThoiGianSacPhut(t.getThoiGianBatDauSac(), LocalDateTime.now()) / 60.0;
-            }
-            if (tongGioSuDung > gioMin) {
-                tramCao.add(t);
-            }
-        }
+        List<TramSac> tramCao = layDSTramGioLonHon(gioMin);
 
         System.out.println("\n" + "=".repeat(36) + " THONG KE TRAM CO SO GIO SU DUNG > X " + String.format("%.1f", gioMin) + "h" + " " + "=".repeat(36));
 
         if (tramCao.isEmpty()) {
             System.out.println("\nKhong co tram nao co so gio su dung lon hon " + gioMin + "h.");
         } else {
-            // Sap xep theo thoi gian hoat dong giam dan
-            Collections.sort(tramCao, (a, b) -> Double.compare(
-                    b.getThoiGianHoatDong() + (b.isSanSang() ? 0 : tinhThoiGianSacPhut(b.getThoiGianBatDauSac(), LocalDateTime.now()) / 60.0),
-                    a.getThoiGianHoatDong() + (a.isSanSang() ? 0 : tinhThoiGianSacPhut(a.getThoiGianBatDauSac(), LocalDateTime.now()) / 60.0)));
-
             System.out.println("\nCo " + tramCao.size() + " tram co so gio su dung > " + gioMin + "h:");
-
             DanhSachTramSac.xuatBangVoiTongGio(tramCao);
         }
     }
 
     // Hàm hỗ trợ: Thống kê khu vực có tần suất sử dụng cao nhất
-    // Thuật toán:
-    // 1. Khởi tạo 2 Map:
-    //    - demKhuVuc: đếm số trạm ở mỗi huyện.
-    //    - tongGioKhuVuc: tổng số giờ hoạt động của các trạm trong huyện đó.
-    // 2. Duyệt danh sách trạm, cộng dồn vào 2 Map trên.
-    // 3. Tìm khu vực có nhiều trạm nhất (demKhuVuc lớn nhất).
-    // 4. Sắp xếp danh sách các huyện theo số trạm giảm dần, in bảng xếp hạng kèm tỉ lệ % so với toàn hệ thống.
     public void thongKeKhuVucCaoNhat() {
         DanhSachKhuVuc.xuatBangThongKe(danhSach);
     }
@@ -901,102 +921,92 @@ public class QuanLyTramSac {
     // 4. Neu la hoa don thuc te, so sanh thoi gian da sac voi thoi gian du kien de tinh so phut qua han
     //    va nhan voi don gia phu phi (neu la tram nhanh/sieu nhanh).
     // 5. In ra bang chi tiet chi phi dien, phu phi (neu co) va tong tien.
+    private double layDonGiaPhuPhi(TramSac tram) {
+        return tram instanceof TramSacNhanh ? PHU_PHI_TRAM_NHANH
+                : tram instanceof TramSacSieuNhanh ? PHU_PHI_TRAM_SIEU_NHANH
+                        : 0.0;
+    }
+
+    private ThongTinChiPhiTram tinhThongTinChiPhi1Tram(TramSac tram, double phanTramPin) {
+        boolean isThucTe = !tram.isSanSang();
+        double dienNangCanSac = DUNG_LUONG_PIN_MAC_DINH * (phanTramPin / 100.0);
+        double chiPhiDien = dienNangCanSac * TramSac.GIA_MOI_KWH;
+        long thoiGianDuKienPhut = (long) ((dienNangCanSac / tram.getCongSuat()) * 60);
+        double donGiaPhuPhi = layDonGiaPhuPhi(tram);
+        long thoiGianDaSacPhut = isThucTe
+                ? tinhThoiGianSacPhut(tram.getThoiGianBatDauSac(), LocalDateTime.now())
+                : 0;
+        int phutQuaHan = isThucTe && donGiaPhuPhi > 0
+                ? (int) Math.max(0, thoiGianDaSacPhut - thoiGianDuKienPhut)
+                : 0;
+
+        double chiPhiQuaHan = phutQuaHan * donGiaPhuPhi;
+        return new ThongTinChiPhiTram(phanTramPin, isThucTe, chiPhiDien, thoiGianDuKienPhut,
+                thoiGianDaSacPhut, phutQuaHan, donGiaPhuPhi, chiPhiQuaHan, chiPhiDien + chiPhiQuaHan);
+    }
+
     public void tinhChiPhi1Tram(Scanner scanner) {
-        System.out.print("Nhap ID tram can xem chi phi: ");
+        System.out.print("Nhap ID / tu khoa tram can xem chi phi: ");
         String id = scanner.nextLine().trim();
 
-        TramSac found = timTramTheoId(id);
+        TramSac found = chonTramTuKetQuaTimKiem(scanner, id, "tinh chi phi");
 
         if (found == null) {
-            System.out.println("!!! Khong tim thay tram co ID: " + id);
             return;
         }
 
-        double dungLuongPin = 70.0;   // Dung lượng pin (kWh) giả định của xe
-        double phanTramPin = 80;      // Mặc định sạc lên 80% nếu người dùng không nhập
+        double phanTramPin = PHAN_TRAM_PIN_MAC_DINH;
         boolean isThucTe = !found.isSanSang();
 
         if (!isThucTe) {
-            // TRUONG HOP 1: TRAM DANG TRONG -> DU TOAN
-            System.out.print("Nhap % pin can sac (0-100) [Mac dinh: 80]: ");
+            System.out.print("Nhap % pin can sac [Mac dinh: 80]: ");
             String pinInput = scanner.nextLine().trim();
             if (!pinInput.isEmpty()) {
                 try {
                     phanTramPin = Double.parseDouble(pinInput);
-                    if (phanTramPin <= 0 || phanTramPin > 100) {
-                        System.out.println("=> % pin khong hop le, su dung mac dinh 80%.");
-                        phanTramPin = 80;
-                    }
                 } catch (NumberFormatException e) {
-                    System.out.println("=> % pin khong hop le, su dung mac dinh 80%.");
-                    phanTramPin = 80;
+                    phanTramPin = PHAN_TRAM_PIN_MAC_DINH;
                 }
             }
         } else {
-            // TRUONG HOP 2: TRAM DANG SAC -> XUAT HOA DON
             System.out.println("(!) Tram nay dang trong phien sac. He thong dang tinh toan hoa don thuc te...");
         }
 
-        double dienNangCanSac = dungLuongPin * (phanTramPin / 100.0);
-        double chiPhiDien = dienNangCanSac * TramSac.GIA_MOI_KWH;
-        double thoiGianSacGio = dienNangCanSac / found.getCongSuat();
-        long thoiGianDuKienPhut = (long) (thoiGianSacGio * 60);
-
-        int phutQuaHan = 0;
-        long thoiGianDaSacPhut = 0;
-        double donGiaPhuPhi = 0;
-
-        // Xác định đơn giá phụ phí theo loại trạm
-        if (found instanceof TramSacNhanh) {
-            donGiaPhuPhi = 1000;
-        } else if (found instanceof TramSacSieuNhanh) {
-            donGiaPhuPhi = 3000;
-        }
-
-        if (isThucTe) {
-            // Tính toán thời gian thực tế cho trạm đang sạc
-            thoiGianDaSacPhut = tinhThoiGianSacPhut(found.getThoiGianBatDauSac(), LocalDateTime.now());
-            long quaHan = thoiGianDaSacPhut - thoiGianDuKienPhut;
-            if (quaHan > 0 && donGiaPhuPhi > 0) {
-                phutQuaHan = (int) quaHan;
-            }
-        }
-
-        double chiPhiQuaHan = phutQuaHan * donGiaPhuPhi;
-        double tongChiPhi = chiPhiDien + chiPhiQuaHan;
+        ThongTinChiPhiTram thongTinChiPhi = tinhThongTinChiPhi1Tram(found, phanTramPin);
 
         System.out.println("\n" + "=".repeat(45));
-        if (isThucTe) {
+        if (thongTinChiPhi.thucTe()) {
             System.out.println("      HOA DON THANH TOAN THUC TE (" + found.getMaTram() + ")");
         } else {
             System.out.println("      DU TOAN CHI PHI SAC XE (" + found.getMaTram() + ")");
         }
         System.out.println("=".repeat(45));
         System.out.println("- Ten tram: " + found.getTenTram());
-        System.out.println("- Muc pin: " + phanTramPin + "%");
+        System.out.println("- Muc pin: " + thongTinChiPhi.phanTramPin() + "%");
 
-        if (isThucTe) {
-            System.out.println("- Thoi gian da sac: " + dinhDangThoiGian(thoiGianDaSacPhut));
-            System.out.println("- Thoi gian tieu chuan: " + dinhDangThoiGian(thoiGianDuKienPhut));
+        if (thongTinChiPhi.thucTe()) {
+            System.out.println("- Thoi gian da sac: " + dinhDangThoiGian(thongTinChiPhi.thoiGianDaSacPhut()));
+            System.out.println("- Thoi gian tieu chuan: " + dinhDangThoiGian(thongTinChiPhi.thoiGianDuKienPhut()));
         } else {
-            System.out.println("- Thoi gian sac du kien: " + dinhDangThoiGian(thoiGianDuKienPhut));
+            System.out.println("- Thoi gian sac du kien: " + dinhDangThoiGian(thongTinChiPhi.thoiGianDuKienPhut()));
         }
 
-        System.out.printf("- Chi phi dien: %,.0f VND%n", chiPhiDien);
+        System.out.printf("- Chi phi dien: %,.0f VND%n", thongTinChiPhi.chiPhiDien());
 
-        if (isThucTe && phutQuaHan > 0) {
-            System.out.printf("- Chi phi qua han (%d phut): %,.0f VND%n", phutQuaHan, chiPhiQuaHan);
-        } else if (!isThucTe && donGiaPhuPhi > 0) {
-            // Thong bao ve phu phi neu co the xay ra (cho tram nhanh/sieu nhanh)
-            System.out.printf("(!) Luu y: Phu phi qua han tai tram nay la %,.0f VND/phut.%n", donGiaPhuPhi);
+        if (thongTinChiPhi.thucTe() && thongTinChiPhi.phutQuaHan() > 0) {
+            System.out.printf("- Chi phi qua han (%d phut): %,.0f VND%n",
+                    thongTinChiPhi.phutQuaHan(), thongTinChiPhi.chiPhiQuaHan());
+        } else if (!thongTinChiPhi.thucTe() && thongTinChiPhi.donGiaPhuPhi() > 0) {
+            System.out.printf("(!) Luu y: Phu phi qua han tai tram nay la %,.0f VND/phut.%n",
+                    thongTinChiPhi.donGiaPhuPhi());
         }
 
         System.out.println("-".repeat(45));
 
-        if (isThucTe) {
-            System.out.printf("=> TONG THANH TOAN: %,.0f VND%n", tongChiPhi);
+        if (thongTinChiPhi.thucTe()) {
+            System.out.printf("=> TONG THANH TOAN: %,.0f VND%n", thongTinChiPhi.tongChiPhi());
         } else {
-            System.out.printf("=> TONG CHI PHI DU KIEN: %,.0f VND%n", tongChiPhi);
+            System.out.printf("=> TONG CHI PHI DU KIEN: %,.0f VND%n", thongTinChiPhi.tongChiPhi());
         }
         System.out.println("=".repeat(45));
     }
@@ -1011,54 +1021,22 @@ public class QuanLyTramSac {
     // 3. Gan don gia phu phi / phut neu la tram nhanh/sieu nhanh.
     // 4. In bang tom tat de nguoi dung de so sanh lua chon.
     public void tinhChiPhiDS(Scanner scanner) {
-        System.out.print("Nhap % pin can sac (0-100) [Mac dinh: 80]: ");
+        System.out.print("Nhap % pin can sac [Mac dinh: 80]: ");
         String pinInput = scanner.nextLine().trim();
-        double phanTramPin = 80;
+        double phanTramPin = PHAN_TRAM_PIN_MAC_DINH;
         if (!pinInput.isEmpty()) {
             try {
                 phanTramPin = Double.parseDouble(pinInput);
-                if (phanTramPin <= 0 || phanTramPin > 100) {
-                    System.out.println("=> % pin khong hop le, su dung mac dinh 80%.");
-                    phanTramPin = 80;
-                }
             } catch (NumberFormatException e) {
-                System.out.println("=> % pin khong hop le, su dung mac dinh 80%.");
-                phanTramPin = 80;
+                phanTramPin = PHAN_TRAM_PIN_MAC_DINH;
             }
         }
 
-        double dungLuongPin = 70.0;                        // Dung lượng pin giả định (kWh)
+        double dungLuongPin = DUNG_LUONG_PIN_MAC_DINH;     // Dung lượng pin giả định (kWh)
         double dienNangCanSac = dungLuongPin * (phanTramPin / 100.0); // Số kWh cần sạc
         double chiPhiDien = dienNangCanSac * TramSac.GIA_MOI_KWH;     // Chi phí điện thuần tuý
 
-        System.out.println("\n" + "=".repeat(33) + " GOI Y TRAM SAC " + "=".repeat(33));
-        System.out.println("- Muc pin can sac: " + phanTramPin + "%");
-        System.out.println("- Chi phi du kien thuan tuy: " + String.format("%,.0f", chiPhiDien) + " VND");
-        System.out.println("+------------------+------------+-----------+-----------------+-----------------+");
-        System.out.printf("| %-16s | %-10s | %-9s | %-15s | %-15s |%n",
-                "Loai", "ID", "Cong Suat", "Thoi gian sac", "Tien qua han/p");
-        System.out.println("+------------------+------------+-----------+-----------------+-----------------+");
-
-        for (TramSac t : danhSach) {
-            double thoiGianGio = dienNangCanSac / t.getCongSuat();
-            long thoiGianPhut = (long) (thoiGianGio * 60);
-            String thoiGianStr = dinhDangThoiGian(thoiGianPhut);
-
-            double phiQuaHan = 0;
-            if (t instanceof TramSacNhanh) {
-                phiQuaHan = 1000;
-            } else if (t instanceof TramSacSieuNhanh) {
-                phiQuaHan = 3000;
-            }
-
-            String phiQuaHanStr = (phiQuaHan > 0 && !(t instanceof TramSacCham)) ? String.format("%,.0f", phiQuaHan)
-                    : "0";
-
-            System.out.printf("| %-16s | %-10s | %6.1f kW | %-15s | %15s |%n",
-                    t.getLoaiPrefix(), t.getMaTram(), t.getCongSuat(), thoiGianStr, phiQuaHanStr);
-        }
-        System.out.println("+------------------+------------+-----------+-----------------+-----------------+");
-        System.out.println("* Lưu ý: Chi phí cuối cùng = Chi phí điện + (Tiền quá hạn/phút * Số phút quá hạn)");
+        DanhSachTramSac.xuatBangGoiYSac(danhSach, phanTramPin, chiPhiDien);
     }
 
     // ----------------------------------------------------------
@@ -1072,31 +1050,24 @@ public class QuanLyTramSac {
     // 2. Trong cùng một nhóm ưu tiên: sắp xếp theo tổng giờ hoạt động tăng dần
     //    (trạm "ít làm việc" hơn đứng trước để ưu tiên phân bổ tải).
     // 3. Nếu vẫn bằng nhau: sắp xếp theo mã trạm (maTram) để danh sách ổn định, dễ theo dõi.
-    public void sapXepDS() {
-        if (danhSach.isEmpty()) {
-            System.out.println("!!! Danh sach trong. Khong co tram nao de sap xep.");
-            return;
-        }
+    private int layMucUuTienSapXep(TramSac tram) {
+        return tram.tinhMucHaoMon() >= 100.0 ? 2 : (tram.isSanSang() ? 0 : 1);
+    }
 
+    public List<TramSac> layDanhSachDaSapXep() {
         List<TramSac> sorted = new ArrayList<>(danhSach);
-        sorted.sort((a, b) -> {
-            int pA = a.tinhMucHaoMon() >= 100.0 ? 2 : (a.isSanSang() ? 0 : 1);
-            int pB = b.tinhMucHaoMon() >= 100.0 ? 2 : (b.isSanSang() ? 0 : 1);
+        sorted.sort(Comparator
+                .comparingInt(this::layMucUuTienSapXep)
+                .thenComparingDouble(TramSac::tinhTongGioSuDung)
+                .thenComparing(TramSac::getMaTram));
+        return sorted;
+    }
 
-            if (pA != pB) {
-                return Integer.compare(pA, pB);
-            }
-
-            int byHours = Double.compare(a.getThoiGianHoatDong(), b.getThoiGianHoatDong());
-            if (byHours != 0) {
-                return byHours;
-            }
-
-            return a.getMaTram().compareTo(b.getMaTram());
-        });
-
-        System.out.println("\n" + "=".repeat(40) + " DANH SACH (DA SAP XEP) " + "=".repeat(40));
-        DanhSachTramSac.xuatBang(sorted);
+    public List<TramSac> sapXepDS() {
+        if (danhSach.isEmpty()) {
+            return new ArrayList<>();
+        }
+        return layDanhSachDaSapXep();
     }
 
     // ----------------------------------------------------------
@@ -1107,15 +1078,42 @@ public class QuanLyTramSac {
     //    (Gia dinh dung luong pin xe = 70 kWh, sac len 80%)
     // 2. Day tat ca tram vao Min Heap (PriorityQueue) so sanh theo thoi gian sac tang dan.
     // 3. Poll n lan de lay phan tu thu n nho nhat ra khoi heap.
-    // 4. In thong tin tram thu n va thoi gian sac du tinh tuong ung.
+    // 4. Tra ve doi tuong TramSac thu n (hoac null neu n khong hop le).
     // ----------------------------------------------------------
+    // Pure algorithm: tra ve tram co thoi gian sac du tinh dung thu n (theo Min Heap).
+    // Khong doc input, khong in ra man hinh — co the tai su dung o bat ky noi nao.
+    public TramSac timTramTheoThoiGianSacThuN(int n) {
+        if (danhSach.isEmpty() || n < 1 || n > danhSach.size()) {
+            return null;
+        }
+
+        final double DIEN_NANG_CAN_SAC = 70.0 * (80.0 / 100.0); // 56 kWh
+
+        PriorityQueue<TramSac> minHeap = new PriorityQueue<>((a, b) -> {
+            long tgA = (long) (DIEN_NANG_CAN_SAC / a.getCongSuat() * 60);
+            long tgB = (long) (DIEN_NANG_CAN_SAC / b.getCongSuat() * 60);
+            if (tgA != tgB) {
+                return Long.compare(tgA, tgB);
+            }
+            return a.getMaTram().compareTo(b.getMaTram());
+        });
+
+        minHeap.addAll(danhSach);
+
+        TramSac ketQua = null;
+        for (int i = 0; i < n; i++) {
+            ketQua = minHeap.poll();
+        }
+        return ketQua;
+    }
+
+    // Scanner wrapper: doc n tu ban phim, goi timTramTheoThoiGianSacThuN(int), hien thi ket qua.
     public void timTramTheoThoiGianSacThuN(Scanner scanner) {
         if (danhSach.isEmpty()) {
             System.out.println("!!! Danh sach trong. Khong co tram nao.");
             return;
         }
 
-        // Nhap n tu ban phim
         int n = 0;
         while (n < 1 || n > danhSach.size()) {
             System.out.printf("Nhap n (1 <= n <= %d): ", danhSach.size());
@@ -1129,38 +1127,18 @@ public class QuanLyTramSac {
             }
         }
 
-        // Gia dinh xe co dung luong pin 70 kWh, can sac len 80%
-        final double DUNG_LUONG_PIN = 70.0;
-        final double PHAN_TRAM_PIN = 80.0;
-        final double DIEN_NANG_CAN_SAC = DUNG_LUONG_PIN * (PHAN_TRAM_PIN / 100.0); // 56 kWh
-
-        // Xay dung Min Heap: so sanh theo thoi gian sac du tinh (phut) tang dan
-        // Neu bang nhau: sap xep theo maTram de on dinh
-        PriorityQueue<TramSac> minHeap = new PriorityQueue<>((a, b) -> {
-            long tgA = (long) (DIEN_NANG_CAN_SAC / a.getCongSuat() * 60);
-            long tgB = (long) (DIEN_NANG_CAN_SAC / b.getCongSuat() * 60);
-            if (tgA != tgB) {
-                return Long.compare(tgA, tgB);
-            }
-            return a.getMaTram().compareTo(b.getMaTram());
-        });
-
-        // Day toan bo danh sach vao Min Heap
-        minHeap.addAll(danhSach);
-
-        // Poll n lan: sau n lan poll, phan tu lay ra chinh la tram thu n
-        TramSac ketQua = null;
-        for (int i = 0; i < n; i++) {
-            ketQua = minHeap.poll();
+        TramSac ketQua = timTramTheoThoiGianSacThuN(n);
+        if (ketQua == null) {
+            return;
         }
 
-        // Tinh lai thoi gian sac du tinh de hien thi
+        final double DIEN_NANG_CAN_SAC = 70.0 * (80.0 / 100.0); // 56 kWh
         long thoiGianPhut = (long) (DIEN_NANG_CAN_SAC / ketQua.getCongSuat() * 60);
 
         System.out.println("\n" + "=".repeat(35) + " KET QUA TIM KIEM " + "=".repeat(35));
         System.out.printf("=> Tram co thoi gian sac du tinh dung thu %d (giam dan): [%s]%n", n, ketQua.getMaTram());
         System.out.printf("   Gia dinh xe 70 kWh, sac %.0f%%: %.1f kWh | Cong suat: %.1f kW%n",
-                PHAN_TRAM_PIN, DIEN_NANG_CAN_SAC, ketQua.getCongSuat());
+                80.0, DIEN_NANG_CAN_SAC, ketQua.getCongSuat());
         System.out.printf("   Thoi gian sac du tinh     : %s%n", dinhDangThoiGian(thoiGianPhut));
         System.out.println("-".repeat(88));
         DanhSachTramSac.xuatThongTin1Tram(ketQua);
