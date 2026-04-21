@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 public class Menu {
 
-    public enum MenuCT {
+    private enum MenuCT {
         Thoat,
         ThemDSTruSac,
         NhapCoDinh,
@@ -20,7 +20,7 @@ public class Menu {
 
     }
 
-    public enum MenuThongKe {
+    private enum MenuThongKe {
         Thoat,
         BaoTri,
         GioSDThap,
@@ -29,14 +29,14 @@ public class Menu {
     //prive int thong ke tru
 
     private Scanner scanner;
-    public QuanLyTramSac module;
+    private QuanLyTramSac module;
 
     public Menu(QuanLyTramSac module) {
         this.scanner = new Scanner(System.in);
         this.module = module;
     }
 
-    public static void xuatMenu() {
+    private static void xuatMenu() {
         QuanLyTramSac.inKeNgang("=", 50);
         System.out.println("|      QUAN LY TRAM SAC XE DIEN THONG MINH      |");
         QuanLyTramSac.inKeNgang("=", 50);
@@ -58,7 +58,7 @@ public class Menu {
         QuanLyTramSac.inKeNgang("=", 50);
     }
 
-    public static void xuatMenuThongKe() {
+    private static void xuatMenuThongKe() {
         QuanLyTramSac.inKeNgang("=", 50);
         System.out.println("|        MENU PHU - THONG KE TRAM SAC          |");
         QuanLyTramSac.inKeNgang("=", 50);
@@ -71,7 +71,7 @@ public class Menu {
         QuanLyTramSac.inKeNgang("=", 50);
     }
 
-    public MenuCT chonMenu() {
+    private MenuCT chonMenu() {
         int min = MenuCT.Thoat.ordinal();
         int max = MenuCT.values()[MenuCT.values().length - 1].ordinal();
         int chon;
@@ -91,7 +91,7 @@ public class Menu {
         return MenuCT.values()[chon];
     }
 
-    public MenuThongKe chonMenuThongKe() {
+    private MenuThongKe chonMenuThongKe() {
         int min = MenuThongKe.Thoat.ordinal();
         int max = MenuThongKe.values()[MenuThongKe.values().length - 1].ordinal();
         int chon;
@@ -111,7 +111,7 @@ public class Menu {
         return MenuThongKe.values()[chon];
     }
 
-    public void xuLyMenu(MenuCT chon) {
+    private void xuLyMenu(MenuCT chon) {
         switch (chon) {
             case SapXepDS:
                 System.out.println("\n--- SAP XEP DANH SACH TRAM SAC THEO DO HAO MON ---");
@@ -173,7 +173,7 @@ public class Menu {
         }
     }
 
-    public void xuLyThongKe() {
+    private void xuLyThongKe() {
         MenuThongKe chon;
 
         do {
@@ -194,7 +194,7 @@ public class Menu {
         } while (true);
     }
 
-    public void xuLyMenuThongKe(MenuThongKe chon) {
+    private void xuLyMenuThongKe(MenuThongKe chon) {
         switch (chon) {
             case Thoat:
                 System.out.println("=> Quay lai menu chinh.");
