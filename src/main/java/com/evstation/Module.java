@@ -833,7 +833,45 @@ public class Module {
     }
 
     // ----------------------------------------------------------
-    // Chuc nang 7: Tim kiem theo ID
+    // Ham phu tro: Tim kiem da truong (multi-field bloom search).
+    // Chien thuat: voi moi tram, kiem tra keyword co xuat hien trong bat ky
+    // truong nao (ID, ten, loai, khu vuc) khong — ignore case, partial match.
+    // Tra ve danh sach TẤT CA ket qua khop.
+    // ----------------------------------------------------------
+    public List<TramSac> timKiemDanhSach(String keyword) {
+        List<TramSac> ketQua = new ArrayList<>();
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return ketQua;
+        }
+
+        String kw = keyword.trim().toLowerCase();
+        // Uu tien 1: tim chinh xac theo ID truoc (bo ky tu phan cach)
+        String kwClean = kw.replaceAll("[- ]", "");
+        for (TramSac t : danhSach) {
+            String idClean = t.getMaTram().replaceAll("[- ]", "").toLowerCase();
+            if (idClean.equals(kwClean)) {
+                ketQua.add(t);
+                return ketQua; // Khop chinh xac ID -> tra ngay, khong can tim them
+            }
+        }
+
+        // Uu tien 2: khop mo (partial) tren nhieu truong cung luc
+        for (TramSac t : danhSach) {
+            boolean match
+                    = t.getMaTram().toLowerCase().contains(kw) // ID partial
+                    || t.getTenTram().toLowerCase().contains(kw) // ten tram
+                    || t.getLoaiPrefix().toLowerCase().contains(kw) // loai (Sac Cham, Nhanh, ...)
+                    || t.getViTri().getTen().toLowerCase().contains(kw) // khu vuc
+                    || t.getViTri().name().toLowerCase().replace("_", " ").contains(kw); // enum name
+            if (match) {
+                ketQua.add(t);
+            }
+        }
+        return ketQua;
+    }
+
+    // ----------------------------------------------------------
+    // Chuc nang 7: Tim kiem (multi-field bloom search + hien thi bang toString())
     // ----------------------------------------------------------
     public void timKiem(Scanner scanner) {
 
@@ -842,27 +880,26 @@ public class Module {
             return;
         }
 
-        System.out.print("Nhap ID tram can tim: ");
-        String id = scanner.nextLine().trim();
-        if (id.isEmpty()) {
-            System.out.println("!!! ID khong duoc de trong.");
+        System.out.print("Nhap tu khoa tim kiem (ID / ten / khu vuc / loai): ");
+        String keyword = scanner.nextLine().trim();
+        if (keyword.isEmpty()) {
+            System.out.println("!!! Tu khoa khong duoc de trong.");
             return;
         }
 
-        TramSac found = timTramTheoId(id);
-        if (found != null) {
-            double mucHaoMon = found.tinhMucHaoMon();
-            System.out.println("\nThong tin tram tim thay:");
-            System.out.println("- ID: " + found.getMaTram());
-            System.out.println("- Ten Tram: " + found.getTenTram());
-            System.out.println("- Vi Tri: " + found.getViTri().getTen());
-            System.out.printf("- Cong Suat: %.1f kW%n", found.getCongSuat());
-            System.out.println("- Trang Thai: " + found.getTrangThaiHoatDong());
-            System.out.printf("- Hao Mon: %.1f%%%n", mucHaoMon);
-            System.out.println("- Luu y bao tri: " + found.getTrangThaiBaoTri());
-        } else {
-            System.out.println("!!! Khong tim thay tram co ID: " + id);
+        List<TramSac> ketQua = timKiemDanhSach(keyword);
+
+        if (ketQua.isEmpty()) {
+            System.out.println("!!! Khong tim thay tram nao khop voi: \"" + keyword + "\"");
+            return;
         }
+
+        System.out.println("\n==> Tim thay " + ketQua.size() + " ket qua cho \"" + keyword + "\":");
+        for (int i = 0; i < ketQua.size(); i++) {
+            System.out.println("\n  [ Ket qua " + (i + 1) + " / " + ketQua.size() + " ]");
+            System.out.println(ketQua.get(i).toString());
+        }
+        System.out.println();
     }
 
     // ----------------------------------------------------------

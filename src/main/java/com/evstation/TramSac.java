@@ -174,4 +174,31 @@ public abstract class TramSac {
     }
 
     protected abstract String getLoaiPrefix();
+
+    // ─── OVERRIDE toString() ─────────────────────────────────────────────────
+    // Tương tự C# ToString(): đóng gói toàn bộ thông tin hiển thị của 1 trạm
+    // thành 1 chuỗi có cấu trúc. Dùng cho tìm kiếm, in danh sách kết quả.
+    @Override
+    public String toString() {
+        return String.format(
+                "  +------------------------------------------+%n"
+                + "  | ID        : %-28s |%n"
+                + "  | Ten Tram  : %-28s |%n"
+                + "  | Loai      : %-28s |%n"
+                + "  | Vi Tri    : %-28s |%n"
+                + "  | Cong Suat : %-25.1f kW |%n"
+                + "  | Trang Thai: %-28s |%n"
+                + "  | Hao Mon   : %-24.1f %% |%n"
+                + "  | Bao Tri   : %-28s |%n"
+                + "  +------------------------------------------+",
+                this.maTram,
+                this.tenTram,
+                getLoaiPrefix(),
+                (this.viTri != null ? this.viTri.getTen() : "?"),
+                this.congSuat,
+                getTrangThaiHoatDong(),
+                tinhMucHaoMon(),
+                getTrangThaiBaoTri()
+        );
+    }
 }
