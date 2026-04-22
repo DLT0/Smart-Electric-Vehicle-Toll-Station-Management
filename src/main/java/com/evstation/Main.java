@@ -89,7 +89,7 @@ public class Main {
         TramSac t = module.timTramTheoId(id);
         if (t != null) {
             t.setSanSang(ready);
-            t.setThoiGianSuDung(usageHours);
+            //t.setThoiGianSuDung(usageHours);
             t.setThoiGianHoatDong(totalHours);
             if (!ready) {
                 t.setThoiGianBatDauSac(LocalDateTime.now().minusMinutes(minAgo));

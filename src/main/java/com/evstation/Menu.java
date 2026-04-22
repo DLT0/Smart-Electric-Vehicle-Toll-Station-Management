@@ -111,7 +111,7 @@ public class Menu {
         switch (chon) {
             case SapXepDS:
                 System.out.println("\n--- SAP XEP DANH SACH TRAM SAC ---");
-                module.sapXepDS();
+                //module.sapXepDS();
                 break;
             case Thoat:
                 System.out.println("Thoat chuong trinh!");
