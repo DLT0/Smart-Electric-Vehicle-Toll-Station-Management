@@ -1,5 +1,7 @@
 package com.evstation;
 
+import java.time.LocalDateTime;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -10,29 +12,30 @@ public class Main {
 
     private static void khoiTaoMockData(Module module) {
         // 1. DA LAT
-        module.themVaoDanhSach(HuyenLamDong.DA_LAT, 7.2); // SC-DAL-001
-        module.themVaoDanhSach(HuyenLamDong.DA_LAT, 60); // SN-DAL-001
-        module.themVaoDanhSach(HuyenLamDong.DA_LAT, 250); // SS-DAL-001
-        module.themVaoDanhSach(HuyenLamDong.DA_LAT, 300); // SS-DAL-002
+        QuanLyTramSac ql = new QuanLyTramSac();
+        ql.themVaoDanhSach(HuyenLamDong.DA_LAT, 7.2); // SC-DAL-001
+        ql.themVaoDanhSach(HuyenLamDong.DA_LAT, 60); // SN-DAL-001
+        ql.themVaoDanhSach(HuyenLamDong.DA_LAT, 250); // SS-DAL-001
+        ql.themVaoDanhSach(HuyenLamDong.DA_LAT, 300); // SS-DAL-002
 
         // 2. BAO LOC
-        module.themVaoDanhSach(HuyenLamDong.BAO_LOC, 11); // SC-BAO-001
-        module.themVaoDanhSach(HuyenLamDong.BAO_LOC, 120); // SN-BAO-001
-        module.themVaoDanhSach(HuyenLamDong.BAO_LOC, 300); // SS-BAO-001
+        ql.themVaoDanhSach(HuyenLamDong.BAO_LOC, 11); // SC-BAO-001
+        ql.themVaoDanhSach(HuyenLamDong.BAO_LOC, 120); // SN-BAO-001
+        ql.themVaoDanhSach(HuyenLamDong.BAO_LOC, 300); // SS-BAO-001
 
-        // 3. DUC TRONG
-        module.themVaoDanhSach(HuyenLamDong.DUC_TRONG, 30); // SN-DUC-001
-        module.themVaoDanhSach(HuyenLamDong.DUC_TRONG, 150); // SS-DUC-001
+        //   3. DUC TRONG
+        ql.themVaoDanhSach(HuyenLamDong.DUC_TRONG, 30); // SN-DUC-001
+        ql.themVaoDanhSach(HuyenLamDong.DUC_TRONG, 150); // SS-DUC-001
 
         // 4. DI LINH
-        module.themVaoDanhSach(HuyenLamDong.DI_LINH, 60); // SN-DIL-001
-        module.themVaoDanhSach(HuyenLamDong.DI_LINH, 200); // SS-DIL-001
+        ql.themVaoDanhSach(HuyenLamDong.DI_LINH, 60); // SN-DIL-001
+        ql.themVaoDanhSach(HuyenLamDong.DI_LINH, 200); // SS-DIL-001
 
         // 5. CAC KHU VUC KHAC
-        module.themVaoDanhSach(HuyenLamDong.LAM_HA, 30); // SN-LAM-001
-        module.themVaoDanhSach(HuyenLamDong.DON_DUONG, 150); // SS-DON-001
-        module.themVaoDanhSach(HuyenLamDong.BAO_LAM, 11); // SC-BAL-001
-        module.themVaoDanhSach(HuyenLamDong.DAM_RONG, 60); // SN-DAM-001
+        ql.themVaoDanhSach(HuyenLamDong.LAM_HA, 30); // SN-LAM-001
+        ql.themVaoDanhSach(HuyenLamDong.DON_DUONG, 150); // SS-DON-001
+        ql.themVaoDanhSach(HuyenLamDong.BAO_LAM, 11); // SC-BAL-001
+        ql.themVaoDanhSach(HuyenLamDong.DAM_RONG, 60); // SN-DAM-001
 
         // --- GIA LAP CAC TRUONG HOP TEST (SCENARIOS) ---
         // Cac truong hop test cho chuc nang 10 (tinh chi phi) va 11 (sap xep)
@@ -82,7 +85,8 @@ public class Main {
     }
 
     private static void mockCase(Module module, String id, boolean ready, int minAgo, double usageHours, double totalHours) {
-        TramSac t = module.timTramTheoId(id);
+        QuanLyTramSac ql = new QuanLyTramSac();
+        TramSac t = ql.timTramTheoId(id);
         if (t != null) {
             t.setSanSang(ready);
             //t.setThoiGianSuDung(usageHours);
