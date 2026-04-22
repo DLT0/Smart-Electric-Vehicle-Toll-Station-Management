@@ -1,13 +1,9 @@
 package com.evstation;
 
-import java.time.LocalDateTime;
-
 public class Main {
 
     public static void main(String[] args) {
-        Module module = new Module();
-        khoiTaoMockData(module);
-
+        QuanLyTramSac module = new QuanLyTramSac();
         Menu menu = new Menu(module);
         menu.chayChuongTrinh();
     }
