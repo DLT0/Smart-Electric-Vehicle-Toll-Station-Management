@@ -2,9 +2,6 @@ package com.evstation;
 
 import java.time.LocalDateTime;
 
-import lombok.Getter;
-import lombok.Setter;
-
 // ============================================================
 // LỚP TRỪU TƯỢNG: TramSac
 // Mô tả: Định nghĩa cấu trúc dữ liệu và hành vi chung của
@@ -18,12 +15,9 @@ import lombok.Setter;
 //         Áp dụng Trừu tượng (Abstraction):
 //         - getLoaiPrefix() là abstract → mỗi lớp con tự định nghĩa
 // ============================================================
-@Getter
-@Setter
 public abstract class TramSac {
 
     // ─── CÁC THUỘC TÍNH (PRIVATE FIELDS) ────────────────────────────────────
-    @Setter(lombok.AccessLevel.NONE)
     private String maTram; // Mã định danh duy nhất (ví dụ: "SC-DAL-001"), chỉ gán 1 lần
     private String tenTram; // Tên hiển thị: Loại + Vị trí + STT
     private HuyenLamDong viTri; // Vị trí địa lý (Enum, type-safe, không thể sai kiểu)
@@ -38,8 +32,55 @@ public abstract class TramSac {
     protected static final double GIA_MOI_KWH = 3850; // Đơn giá điện (VND/kWh)
     protected static final double HAN_BAO_TRI_MAC_DINH = 500.0; // Ngưỡng bảo trì mặc định (giờ)
 
-    // ─── GETTER / SETTER TÙY CHỈNH (CÓ RÀNG BUỘC LOGIC) ────────────────────
+    public String getMaTram() {
+        return maTram;
+    }
 
+    public String getTenTram() {
+        return tenTram;
+    }
+
+    public void setTenTram(String tenTram) {
+        this.tenTram = tenTram;
+    }
+
+    public HuyenLamDong getViTri() {
+        return viTri;
+    }
+
+    public boolean isSanSang() {
+        return sanSang;
+    }
+
+    public void setSanSang(boolean sanSang) {
+        this.sanSang = sanSang;
+    }
+
+    public double getCongSuat() {
+        return congSuat;
+    }
+
+    public double getThoiGianSuDung() {
+        return thoiGianSuDung;
+    }
+
+    public double getThoiGianHoatDong() {
+        return thoiGianHoatDong;
+    }
+
+    public LocalDateTime getThoiGianBatDauSac() {
+        return thoiGianBatDauSac;
+    }
+
+    public void setThoiGianBatDauSac(LocalDateTime thoiGianBatDauSac) {
+        this.thoiGianBatDauSac = thoiGianBatDauSac;
+    }
+
+    public double getHanBaoTri() {
+        return hanBaoTri;
+    }
+
+    // ─── GETTER / SETTER TÙY CHỈNH (CÓ RÀNG BUỘC LOGIC) ────────────────────
     public void setViTri(HuyenLamDong value) {
         if (value == null) {
             return; // Ràng buộc: vị trí không được null (bảo vệ tính toàn vẹn)
@@ -120,15 +161,15 @@ public abstract class TramSac {
     public String toString() {
         return String.format(
                 "  +------------------------------------------+%n"
-                        + "  | ID        : %-28s |%n"
-                        + "  | Ten Tram  : %-28s |%n"
-                        + "  | Loai      : %-28s |%n"
-                        + "  | Vi Tri    : %-28s |%n"
-                        + "  | Cong Suat : %-25.1f kW |%n"
-                        + "  | Trang Thai: %-28s |%n"
-                        + "  | Hao Mon   : %-24.1f %% |%n"
-                        + "  | Bao Tri   : %-28s |%n"
-                        + "  +------------------------------------------+",
+                + "  | ID        : %-28s |%n"
+                + "  | Ten Tram  : %-28s |%n"
+                + "  | Loai      : %-28s |%n"
+                + "  | Vi Tri    : %-28s |%n"
+                + "  | Cong Suat : %-25.1f kW |%n"
+                + "  | Trang Thai: %-28s |%n"
+                + "  | Hao Mon   : %-24.1f %% |%n"
+                + "  | Bao Tri   : %-28s |%n"
+                + "  +------------------------------------------+",
                 this.maTram,
                 this.tenTram,
                 getLoaiPrefix(),

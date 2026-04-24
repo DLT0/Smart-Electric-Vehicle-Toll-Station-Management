@@ -19,9 +19,6 @@ public class DanhSachTramSac extends ArrayList<TramSac> {
     private static final int BANG_RONG = 160;
 
     // ─── STATIC UTILITIES ────────────────────────────────────────────────────
-    public static String keNgang(String kt, int n) {
-        return kt.repeat(n);
-    }
 
     public static long tinhThoiGianSacPhut(LocalDateTime batDau, LocalDateTime ketThuc) {
         if (batDau == null || ketThuc == null) {
@@ -53,13 +50,13 @@ public class DanhSachTramSac extends ArrayList<TramSac> {
     }
 
     // Xay dung chuoi header bang
-    private static String buildTieuDe() {
+    private static String buildTieuDe(String lastCol) {
         String nl = System.lineSeparator();
-        return keNgang("=", BANG_RONG) + nl
+        return "=".repeat(BANG_RONG) + nl
                 + String.format("| %-16s | %-10s | %-40s | %-9s | %-8s | %-15s | %-16s | %-20s |%n",
                         "Loai", "ID", "Ten Tram", "Cong Suat", "Hao Mon",
-                        "Luu y bao tri", "Trang Thai", "Thoi gian sac")
-                + keNgang("=", BANG_RONG) + nl;
+                        "Luu y bao tri", "Trang Thai", lastCol)
+                + "=".repeat(BANG_RONG) + nl;
     }
 
     // Xay dung chuoi 1 dong tram (thoi gian sac thuc te)
@@ -92,38 +89,31 @@ public class DanhSachTramSac extends ArrayList<TramSac> {
 
     // In bang thong tin cua DUY NHAT 1 tram
     public static void xuatThongTin1Tram(TramSac t) {
-        if (t == null) {
-            return;
+        if (t != null) {
+            System.out.print(buildTieuDe("Thoi gian sac"));
+            System.out.print(buildDongTram(t));
+            System.out.println("=".repeat(BANG_RONG));
         }
-        System.out.print(buildTieuDe());
-        System.out.print(buildDongTram(t));
-        System.out.println(keNgang("=", BANG_RONG));
     }
 
     // In bang cho bat ky List<TramSac> nao (thoi gian sac thuc te)
     public static void xuatBang(List<TramSac> list) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(buildTieuDe());
-        for (TramSac t : list) {
-            sb.append(buildDongTram(t));
-        }
-        sb.append(keNgang("=", BANG_RONG));
+        StringBuilder sb = new StringBuilder(buildTieuDe("Thoi gian sac"));
+        list.forEach(t -> sb.append(buildDongTram(t)));
+        sb.append("=".repeat(BANG_RONG));
         System.out.println(sb);
     }
 
     // In bang voi cot tong gio su dung (dung cho thong ke gio SD)
     public static void xuatBangVoiTongGio(List<TramSac> list) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(buildTieuDe());
-        for (TramSac t : list) {
-            sb.append(buildDongTramWithTotal(t));
-        }
-        sb.append(keNgang("=", BANG_RONG));
+        StringBuilder sb = new StringBuilder(buildTieuDe("Tong gio SD"));
+        list.forEach(t -> sb.append(buildDongTramWithTotal(t)));
+        sb.append("=".repeat(BANG_RONG));
         System.out.println(sb);
     }
 
     // ─── toString() ──────────────────────────────────────────────────────────
-    // Tra ve bang hien thi DAY DU TOAN BO danh sach (co sap xep) dang String.
+    // Tra ve bang hien thi DAY DU TOAN BO danh sach dang String.
     // Hieu qua: dung StringBuilder, build toan bo truoc khi in ra.
     // System.out.println(danhSach) se goi ham nay tu dong.
     @Override
@@ -132,31 +122,17 @@ public class DanhSachTramSac extends ArrayList<TramSac> {
             return "!!! Danh sach trong! Chua co tram sac nao duoc them.";
         }
 
-        // Sap xep: Dang sac truoc -> theo vi tri -> tie-break ID
-        List<TramSac> sorted = new ArrayList<>(this);
-        Collections.sort(sorted, (a, b) -> {
-            int res = Boolean.compare(a.isSanSang(), b.isSanSang());
-            if (res != 0) {
-                return res;
-            }
-            res = Integer.compare(a.getViTri().ordinal(), b.getViTri().ordinal());
-            if (res != 0) {
-                return res;
-            }
-            return a.getMaTram().compareTo(b.getMaTram());
-        });
-
         StringBuilder sb = new StringBuilder();
         sb.append("\n")
                 .append("=".repeat(50))
                 .append(" DANH SACH TRAM SAC ")
                 .append("=".repeat(50))
                 .append(System.lineSeparator());
-        sb.append(buildTieuDe());
-        for (TramSac t : sorted) {
+        sb.append(buildTieuDe("Thoi gian sac"));
+        for (TramSac t : this) {
             sb.append(buildDongTram(t));
         }
-        sb.append(keNgang("=", BANG_RONG));
+        sb.append("=".repeat(BANG_RONG));
         return sb.toString();
     }
 }

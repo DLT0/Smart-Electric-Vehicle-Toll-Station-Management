@@ -10,14 +10,9 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
 // ============================================================
 // ENUM: Danh sach cac don vi hanh chinh tinh Lam Dong 2026
 // ============================================================
-@Getter
-@AllArgsConstructor
 enum HuyenLamDong {
     DA_LAT("Da Lat"),
     BAO_LOC("Bao Loc"),
@@ -31,6 +26,10 @@ enum HuyenLamDong {
 
     private final String tenTiengViet;
 
+    HuyenLamDong(String tenTiengViet) {
+        this.tenTiengViet = tenTiengViet;
+    }
+
     // Getter de lay ten hien thi
     public String getTen() {
         return tenTiengViet;
@@ -42,13 +41,14 @@ enum HuyenLamDong {
      */
     public static void hienThiDanhSach() {
         HuyenLamDong[] dsKhuVuc = HuyenLamDong.values();
-        System.out.println("  +-----+-------------------------+");
-        System.out.printf("   | %-3s | %-23s |%n", "STT", "Ten Don Vi");
-        System.out.println("  +-----+-------------------------+");
+        String line = "  +" + "-".repeat(5) + "+" + "-".repeat(25) + "+";
+        System.out.println(line);
+        System.out.printf("  | %-3s | %-23s |%n", "STT", "Ten Don Vi");
+        System.out.println(line);
         for (int i = 0; i < dsKhuVuc.length; i++) {
             System.out.printf("  | %-3d | %-23s |%n", i + 1, dsKhuVuc[i].getTen());
         }
-        System.out.println("  +-----+-------------------------+");
+        System.out.println(line);
     }
 
     /**
@@ -70,13 +70,13 @@ enum HuyenLamDong {
 // LOP TIEN ICH: DanhSachKhuVuc
 //
 // Cung cap cac thuat toan lam viec voi danh sach khu vuc:
-//   1. Tim kiem khu vuc theo tu khoa (Stream + Predicate)
-//   2. Loc tram sac theo khu vuc (Stream + Lambda)
-//   3. Dem so tram tai moi khu vuc
-//   4. Tinh tong gio hoat dong tai moi khu vuc
-//   5. Tim khu vuc co tan xuat su dung cao nhat (Optional)
-//   6. Sap xep khu vuc theo so tram giam dan
-//   7. Xuat bang thong ke khu vuc
+// 1. Tim kiem khu vuc theo tu khoa (Stream + Predicate)
+// 2. Loc tram sac theo khu vuc (Stream + Lambda)
+// 3. Dem so tram tai moi khu vuc
+// 4. Tinh tong gio hoat dong tai moi khu vuc
+// 5. Tim khu vuc co tan xuat su dung cao nhat (Optional)
+// 6. Sap xep khu vuc theo so tram giam dan
+// 7. Xuat bang thong ke khu vuc
 // ============================================================
 public class DanhSachKhuVuc {
 
@@ -161,7 +161,7 @@ public class DanhSachKhuVuc {
     }
 
     // ----------------------------------------------------------
-    // Thuat toan 7: Xuat bang thong ke day du (goi boi Module.thongKeKhuVucCaoNhat)
+    // Thuat toan 7: Xuat bang thong ke day du
     // ----------------------------------------------------------
     public static void xuatBangThongKe(List<TramSac> danhSach) {
         if (danhSach.isEmpty()) {

@@ -37,11 +37,11 @@ public class Menu {
     }
 
     public static void xuatMenu() {
-        QuanLyTramSac.inKeNgang("=", 50);
+        System.out.println("=".repeat(50));
         System.out.println("|      QUAN LY TRAM SAC XE DIEN THONG MINH      |");
-        QuanLyTramSac.inKeNgang("=", 50);
+        System.out.println("=".repeat(50));
         System.out.println("| Phim | Chuc nang                              |");
-        QuanLyTramSac.inKeNgang("-", 50);
+        System.out.println("-".repeat(50));
         System.out.printf("|   %-2d  | %-38s |%n", MenuCT.Thoat.ordinal(), "Thoat Chuong Trinh.");
         System.out.printf("|   %-2d  | %-38s |%n", MenuCT.ThemDSTruSac.ordinal(), "Nhap danh sach tru sac.");
         System.out.printf("|   %-2d  | %-38s |%n", MenuCT.NhapCoDinh.ordinal(), "Nhap co dinh.");
@@ -55,20 +55,20 @@ public class Menu {
         System.out.printf("|   %-2d  | %-38s |%n", MenuCT.SapXepDS.ordinal(), "Sap xep danh sach tru sac");
         System.out.printf("|   %-2d  | %-38s |%n", MenuCT.TinhChiPhiDS.ordinal(), "Goi y chi phi cho tat ca cac tram.");
 
-        QuanLyTramSac.inKeNgang("=", 50);
+        System.out.println("=".repeat(50));
     }
 
     public static void xuatMenuThongKe() {
-        QuanLyTramSac.inKeNgang("=", 50);
+        System.out.println("=".repeat(50));
         System.out.println("|        MENU PHU - THONG KE TRAM SAC          |");
-        QuanLyTramSac.inKeNgang("=", 50);
+        System.out.println("=".repeat(50));
         System.out.println("| Phim | Chuc nang thong ke                    |");
-        QuanLyTramSac.inKeNgang("-", 50);
+        System.out.println("-".repeat(50));
         System.out.printf("|   %-2d  | %-37s |%n", MenuThongKe.Thoat.ordinal(), "Quay lai menu chinh.");
         System.out.printf("|   %-2d  | %-37s |%n", MenuThongKe.BaoTri.ordinal(), "Tram sac can bao tri .");
         System.out.printf("|   %-2d  | %-37s |%n", MenuThongKe.GioSDThap.ordinal(), "Tram sac co gio SD > X.");
         System.out.printf("|   %-2d  | %-37s |%n", MenuThongKe.KhuVucCao.ordinal(), "Khu vuc tan xuat cao nhat.");
-        QuanLyTramSac.inKeNgang("=", 50);
+        System.out.println("=".repeat(50));
     }
 
     public MenuCT chonMenu() {
