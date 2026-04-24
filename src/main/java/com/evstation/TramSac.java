@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 public abstract class TramSac {
 
     // ─── CÁC THUỘC TÍNH (PRIVATE FIELDS) ────────────────────────────────────
-    private String maTram; // Mã định danh duy nhất (ví dụ: "SC-DAL-001"), chỉ gán 1 lần
+    private final String maTram; // Mã định danh duy nhất (ví dụ: "SC-DAL-001"), chỉ gán 1 lần
     private String tenTram; // Tên hiển thị: Loại + Vị trí + STT
     private HuyenLamDong viTri; // Vị trí địa lý (Enum, type-safe, không thể sai kiểu)
     private boolean sanSang; // true = Sẵn sàng / Trống | false = Đang sạc
@@ -40,7 +40,7 @@ public abstract class TramSac {
         return tenTram;
     }
 
-    public void setTenTram(String tenTram) {
+    void setTenTram(String tenTram) {
         this.tenTram = tenTram;
     }
 
@@ -52,7 +52,7 @@ public abstract class TramSac {
         return sanSang;
     }
 
-    public void setSanSang(boolean sanSang) {
+    void setSanSang(boolean sanSang) {
         this.sanSang = sanSang;
     }
 
@@ -72,7 +72,7 @@ public abstract class TramSac {
         return thoiGianBatDauSac;
     }
 
-    public void setThoiGianBatDauSac(LocalDateTime thoiGianBatDauSac) {
+    void setThoiGianBatDauSac(LocalDateTime thoiGianBatDauSac) {
         this.thoiGianBatDauSac = thoiGianBatDauSac;
     }
 
@@ -81,52 +81,52 @@ public abstract class TramSac {
     }
 
     // ─── GETTER / SETTER TÙY CHỈNH (CÓ RÀNG BUỘC LOGIC) ────────────────────
-    public void setViTri(HuyenLamDong value) {
+    void setViTri(HuyenLamDong value) {
         if (value == null) {
             return; // Ràng buộc: vị trí không được null (bảo vệ tính toàn vẹn)
         }
         this.viTri = value;
     }
 
-    public void setCongSuat(double value) {
-        if (value < 7) {
-            value = 7; // Rang buoc: cong suat phai la so duong
-        } else if (value > 300) {
-            value = 300; // Rang buoc: gioi han toi da 300kW
-        }
-        this.congSuat = value;
+    void setCongSuat(double value) {
+        this.congSuat = normalizeCongSuat(value);
     }
 
-    public void setThoiGianSuDung(double value) {
-        if (value < 0) {
-            value = 0;
-        }
-        this.thoiGianSuDung = value;
+    void setThoiGianSuDung(double value) {
+        this.thoiGianSuDung = normalizeNonNegative(value);
     }
 
-    public void setThoiGianHoatDong(double value) {
-        if (value < 0) {
-            value = 0; // Rang buoc: thoi gian khong duoc am
-        }
-        this.thoiGianHoatDong = value;
+    void setThoiGianHoatDong(double value) {
+        this.thoiGianHoatDong = normalizeNonNegative(value);
     }
 
-    public void setHanBaoTri(double value) {
-        if (value <= 0) {
-            value = HAN_BAO_TRI_MAC_DINH;
-        }
-        this.hanBaoTri = value;
+    void setHanBaoTri(double value) {
+        this.hanBaoTri = (value <= 0) ? HAN_BAO_TRI_MAC_DINH : value;
     }
 
     public TramSac(String maTram, HuyenLamDong viTri, double congSuat) {
         this.maTram = maTram; // maTram duoc Module.sinhMaTram() tao ra
-        setViTri(viTri);
-        setCongSuat(congSuat);
-        setThoiGianSuDung(0.0);
-        setThoiGianHoatDong(0.0);
-        setSanSang(true);
-        setThoiGianBatDauSac(null);
-        setHanBaoTri(HAN_BAO_TRI_MAC_DINH);
+        this.viTri = viTri;
+        this.congSuat = normalizeCongSuat(congSuat);
+        this.thoiGianSuDung = 0.0;
+        this.thoiGianHoatDong = 0.0;
+        this.sanSang = true;
+        this.thoiGianBatDauSac = null;
+        this.hanBaoTri = HAN_BAO_TRI_MAC_DINH;
+    }
+
+    private static double normalizeCongSuat(double value) {
+        if (value < 7) {
+            return 7;
+        }
+        if (value > 300) {
+            return 300;
+        }
+        return value;
+    }
+
+    private static double normalizeNonNegative(double value) {
+        return value < 0 ? 0 : value;
     }
 
     public double tinhMucHaoMon() {
