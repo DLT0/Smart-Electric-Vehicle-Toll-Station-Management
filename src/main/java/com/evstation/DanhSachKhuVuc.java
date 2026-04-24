@@ -84,7 +84,7 @@ public class DanhSachKhuVuc {
     // Thuat toan 1: Tim kiem khu vuc theo tu khoa (partial match, ignore case)
     // Su dung Stream + Predicate de loc.
     // ----------------------------------------------------------
-    public static List<HuyenLamDong> timKiem(String keyword) {
+    static List<HuyenLamDong> timKiem(String keyword) {
         if (keyword == null || keyword.trim().isEmpty()) {
             return Arrays.asList(HuyenLamDong.values());
         }
@@ -100,7 +100,7 @@ public class DanhSachKhuVuc {
     // Thuat toan 2: Loc danh sach tram theo khu vuc chi dinh
     // Su dung Stream + Lambda.
     // ----------------------------------------------------------
-    public static List<TramSac> locTramTheoKhuVuc(List<TramSac> danhSach, HuyenLamDong khuVuc) {
+    static List<TramSac> locTramTheoKhuVuc(List<TramSac> danhSach, HuyenLamDong khuVuc) {
         return danhSach.stream()
                 .filter(t -> t.getViTri() == khuVuc)
                 .collect(Collectors.toList());
@@ -110,7 +110,7 @@ public class DanhSachKhuVuc {
     // Thuat toan 3: Dem so tram tai moi khu vuc
     // Tra ve Map<HuyenLamDong, Integer> (moi khu vuc co it nhat gia tri 0).
     // ----------------------------------------------------------
-    public static Map<HuyenLamDong, Integer> demTramTheoKhuVuc(List<TramSac> danhSach) {
+    static Map<HuyenLamDong, Integer> demTramTheoKhuVuc(List<TramSac> danhSach) {
         Map<HuyenLamDong, Integer> demKhuVuc = new LinkedHashMap<>();
         for (HuyenLamDong kv : HuyenLamDong.values()) {
             demKhuVuc.put(kv, 0);
@@ -125,7 +125,7 @@ public class DanhSachKhuVuc {
     // Thuat toan 4: Tinh tong gio hoat dong cua tram tai moi khu vuc
     // Tra ve Map<HuyenLamDong, Double>.
     // ----------------------------------------------------------
-    public static Map<HuyenLamDong, Double> tongGioTheoKhuVuc(List<TramSac> danhSach) {
+    static Map<HuyenLamDong, Double> tongGioTheoKhuVuc(List<TramSac> danhSach) {
         Map<HuyenLamDong, Double> tongGio = new LinkedHashMap<>();
         for (HuyenLamDong kv : HuyenLamDong.values()) {
             tongGio.put(kv, 0.0);
@@ -141,7 +141,7 @@ public class DanhSachKhuVuc {
     // Su dung Stream reduce / max voi Comparator lambda.
     // Tra ve Optional<HuyenLamDong> (trong neu danh sach rong).
     // ----------------------------------------------------------
-    public static Optional<HuyenLamDong> timKhuVucCaoNhat(List<TramSac> danhSach) {
+    static Optional<HuyenLamDong> timKhuVucCaoNhat(List<TramSac> danhSach) {
         Map<HuyenLamDong, Integer> demKhuVuc = demTramTheoKhuVuc(danhSach);
         return demKhuVuc.entrySet().stream()
                 .filter(e -> e.getValue() > 0)
@@ -153,7 +153,7 @@ public class DanhSachKhuVuc {
     // Thuat toan 6: Sap xep khu vuc theo so tram giam dan
     // Su dung Collections.sort voi Lambda Comparator.
     // ----------------------------------------------------------
-    public static List<Map.Entry<HuyenLamDong, Integer>> sapXepTheoSoTram(
+    static List<Map.Entry<HuyenLamDong, Integer>> sapXepTheoSoTram(
             Map<HuyenLamDong, Integer> demKhuVuc) {
         List<Map.Entry<HuyenLamDong, Integer>> sorted = new ArrayList<>(demKhuVuc.entrySet());
         Collections.sort(sorted, (a, b) -> Integer.compare(b.getValue(), a.getValue()));

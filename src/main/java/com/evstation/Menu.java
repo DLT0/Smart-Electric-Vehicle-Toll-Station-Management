@@ -28,7 +28,7 @@ public class Menu {
     }
     //prive int thong ke tru
 
-    private Scanner scanner;
+    private final Scanner scanner;
     public QuanLyTramSac module;
 
     public Menu(QuanLyTramSac module) {
@@ -113,31 +113,29 @@ public class Menu {
 
     public void xuLyMenu(MenuCT chon) {
         switch (chon) {
-            case SapXepDS:
+            case SapXepDS -> {
                 System.out.println("\n--- SAP XEP DANH SACH TRAM SAC THEO DO HAO MON ---");
                 module.sapXepDS();
-                break;
-            case Thoat:
+            }
+            case Thoat ->
                 System.out.println("Thoat chuong trinh!");
-                break;
-            case ThemDSTruSac:
+            case ThemDSTruSac -> {
                 System.out.println("\n--- THEM DANH SACH TRAM SAC ---");
                 module.themDSTruSac(scanner);
-                break;
-            case NhapCoDinh:
+            }
+            case NhapCoDinh -> {
                 System.out.println("\n--- NHAP CO DINH (DU LIEU MAU CO SAN) ---");
                 module.nhapCoDinh(scanner);
-                break;
-            case XuatDanhSach:
+            }
+            case XuatDanhSach ->
                 module.xuatDanhSach();
-                break;
-            case CapNhatThongTinTram:
+            case CapNhatThongTinTram -> {
                 System.out.println("\n--- CAP NHAT THONG TIN TRAM ---");
                 System.out.println("\nDanh sach tru sac hien tai:");
                 module.xuatDanhSach();
                 module.capNhatThongTinTram(scanner);
-                break;
-            case XoaTruSac:
+            }
+            case XoaTruSac -> {
                 System.out.println("\n--- XOA TRAM SAC ---");
                 System.out.println("\nDanh sach tru sac hien tai:");
                 module.xuatDanhSach();
@@ -145,31 +143,30 @@ public class Menu {
 
                 System.out.println("\nDanh sach tru sac sau khi xoa:");
                 module.xuatDanhSach();
-                break;
-            case TimKiem:
+            }
+            case TimKiem -> {
                 System.out.println("\n--- TIM KIEM THONG TIN TRAM THEO ID TRAM SAC ---");
                 module.xuatDanhSach();
                 module.timKiem(scanner);
-                break;
-            case ThongKeTruSacCanBaoTri:
+            }
+            case ThongKeTruSacCanBaoTri ->
                 xuLyThongKe();
-                break;
-            case TinhChiPhi1Tram:
+            case TinhChiPhi1Tram -> {
                 System.out.println("\n--- TINH CHI PHI DU KIEN CHO 1 TRAM ---");
                 System.out.println("\nDanh sach tru sac hien tai:");
                 module.xuatDanhSach();
                 module.tinhChiPhi1Tram(scanner);
-                break;
-            case TinhChiPhiDS:
+            }
+            case TinhChiPhiDS -> {
                 System.out.println("\n--- GOI Y CHI PHI CHO TAT CA CAC TRAM ---");
                 module.tinhChiPhiDS(scanner);
-                break;
-            case TimTramThuN:
+            }
+            case TimTramThuN -> {
                 System.out.println("\n--- TIM TRAM CO THOI GIAN SAC DU TINH DUNG THU N ---");
                 module.timTramTheoThoiGianSacThuN(scanner);
-                break;
-            default:
-                break;
+            }
+            default -> {
+            }
         }
     }
 
@@ -196,23 +193,22 @@ public class Menu {
 
     public void xuLyMenuThongKe(MenuThongKe chon) {
         switch (chon) {
-            case Thoat:
+            case Thoat ->
                 System.out.println("=> Quay lai menu chinh.");
-                break;
-            case BaoTri:
+            case BaoTri -> {
                 System.out.println("\n--- THONG KE TRAM SAC CAN BAO TRI  ---");
                 module.thongKeBaoTri();
-                break;
-            case GioSDThap:
+            }
+            case GioSDThap -> {
                 System.out.println("\n--- THONG KE TRAM SAC CO GIO SU DUNG > X ---");
                 module.thongKeGioSDThap(scanner);
-                break;
-            case KhuVucCao:
+            }
+            case KhuVucCao -> {
                 System.out.println("\n--- THONG KE KHU VUC CO TAN XUAT SU DUNG CAO NHAT ---");
                 module.thongKeKhuVucCaoNhat();
-                break;
-            default:
-                break;
+            }
+            default -> {
+            }
         }
     }
 

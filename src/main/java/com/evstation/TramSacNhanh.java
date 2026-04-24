@@ -12,7 +12,7 @@ public class TramSacNhanh extends TramSac {
     public static final double CONG_SUAT_MAX = 120.0; // kW
 
     // ─── CONSTRUCTOR ─────────────────────────────────────────────────────────
-    public TramSacNhanh(String maTram, HuyenLamDong viTri, double congSuat, int stt) {
+    TramSacNhanh(String maTram, HuyenLamDong viTri, double congSuat, int stt) {
         super(maTram, viTri, congSuat);
         setTenTram("Sac Nhanh " + viTri.getTen() + " " + stt);
     }

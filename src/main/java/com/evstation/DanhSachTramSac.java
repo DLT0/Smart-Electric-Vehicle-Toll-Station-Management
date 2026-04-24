@@ -3,7 +3,6 @@ package com.evstation;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 // ============================================================
@@ -19,7 +18,6 @@ public class DanhSachTramSac extends ArrayList<TramSac> {
     private static final int BANG_RONG = 160;
 
     // ─── STATIC UTILITIES ────────────────────────────────────────────────────
-
     public static long tinhThoiGianSacPhut(LocalDateTime batDau, LocalDateTime ketThuc) {
         if (batDau == null || ketThuc == null) {
             return 0;

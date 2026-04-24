@@ -54,7 +54,7 @@ enum LoaiThongKe {
 // ============================================================
 public class QuanLyTramSac {
 
-    private DanhSachTramSac danhSach = new DanhSachTramSac();
+    private final DanhSachTramSac danhSach = new DanhSachTramSac();
     // Dinh dang: [PREFIX]-[MA_KHU_VUC]-[STT]
     //
     // PREFIX xac dinh loai tram:
@@ -249,11 +249,11 @@ public class QuanLyTramSac {
     // sach.
     // Toi uu: chi tinh so tram hien co tai khu vuc 1 lan, su dung chung cho ma tram
     // va STT.
-    public TramSac themVaoDanhSach(HuyenLamDong khuVuc, double cs) {
+    TramSac themVaoDanhSach(HuyenLamDong khuVuc, double cs) {
         int countAtLocation = countStationsAtLocation(khuVuc);
         String id = sinhMaTram(khuVuc, cs, countAtLocation);
         int stt = countAtLocation + 1;
-        TramSac moi = null;
+        TramSac moi;
         if (cs <= 11) {
             moi = new TramSacCham(id, khuVuc, cs, stt);
             System.out.println("=> [" + id + "] Sac Cham (7-11kW) - " + khuVuc.getTen() + " da duoc them!");
@@ -453,7 +453,7 @@ public class QuanLyTramSac {
             }
 
             switch (chon) {
-                case 1: // Ten tram
+                case 1 -> { // Ten tram
                     System.out.print("Ten tram moi (Enter = giu nguyen): ");
                     String tenInp = scanner.nextLine().trim();
                     if (!tenInp.isEmpty()) {
@@ -464,9 +464,9 @@ public class QuanLyTramSac {
                             System.out.println("=> Ghi nhan: ten = \"" + newTen + "\"");
                         }
                     }
-                    break;
+                }
 
-                case 2: // Vi tri
+                case 2 -> { // Vi tri
                     HuyenLamDong.hienThiDanhSach();
                     System.out.print("Chon vi tri (1-" + HuyenLamDong.values().length + ", Enter = giu nguyen): ");
                     String vtInp = scanner.nextLine().trim();
@@ -484,52 +484,55 @@ public class QuanLyTramSac {
                             System.out.println("!!! Phai nhap so nguyen.");
                         }
                     }
-                    break;
+                }
 
-                case 3: // Cong suat
+                case 3 -> { // Cong suat
                     double csMoi = promptForDouble(scanner, "Cong suat moi kW (7-300)", 7, 300, newCongSuat);
                     if (csMoi != newCongSuat) {
                         newCongSuat = csMoi;
                         System.out.println("[!] Luu y: maTram/loai tram KHONG tu dong doi khi thay cong suat.");
                         System.out.printf("=> Ghi nhan: cong suat = %.1f kW%n", newCongSuat);
                     }
-                    break;
+                }
 
-                case 4: // Trang thai
+                case 4 -> { // Trang thai
                     System.out.println("  1. San sang (Trong)    2. Dang sac (Hoat dong)");
                     System.out.print("Chon (1/2, Enter = giu nguyen): ");
                     String ttInp = scanner.nextLine().trim();
                     if (!ttInp.isEmpty()) {
-                        if (ttInp.equals("1")) {
-                            newSanSang = true;
-                            System.out.println("=> Ghi nhan: San sang");
-                        } else if (ttInp.equals("2")) {
-                            newSanSang = false;
-                            System.out.println("=> Ghi nhan: Dang sac");
-                        } else {
-                            System.out.println("!!! Nhap 1 hoac 2.");
+                        switch (ttInp) {
+                            case "1" -> {
+                                newSanSang = true;
+                                System.out.println("=> Ghi nhan: San sang");
+                            }
+                            case "2" -> {
+                                newSanSang = false;
+                                System.out.println("=> Ghi nhan: Dang sac");
+                            }
+                            default ->
+                                System.out.println("!!! Nhap 1 hoac 2.");
                         }
                     }
-                    break;
+                }
 
-                case 5: // Thoi gian hoat dong
+                case 5 -> { // Thoi gian hoat dong
                     double tgMoi = promptForDouble(scanner, "Thoi gian hoat dong (h >= 0)", 0, Double.MAX_VALUE,
                             newThoiGianHD);
                     if (tgMoi != newThoiGianHD) {
                         newThoiGianHD = tgMoi;
                         System.out.printf("=> Ghi nhan: thoi gian HD = %.1f gio%n", newThoiGianHD);
                     }
-                    break;
+                }
 
-                case 6: // Han bao tri
+                case 6 -> { // Han bao tri
                     double hanMoi = promptForDouble(scanner, "Han bao tri (h, 1-10000)", 1, 10000, newHanBaoTri);
                     if (hanMoi != newHanBaoTri) {
                         newHanBaoTri = hanMoi;
                         System.out.printf("=> Ghi nhan: han bao tri = %.1f gio%n", newHanBaoTri);
                     }
-                    break;
+                }
 
-                default:
+                default ->
                     System.out.println("!!! Lua chon khong hop le. Nhap 0-6 hoac 9.");
             }
         }
@@ -708,7 +711,7 @@ public class QuanLyTramSac {
             LoaiThongKe.hienThiMenu();
             System.out.print("Chon loai thong ke (1-4): ");
 
-            LoaiThongKe loaiThongKe = null;
+            LoaiThongKe loaiThongKe;
             try {
                 int soChon = Integer.parseInt(scanner.nextLine().trim());
                 loaiThongKe = LoaiThongKe.layTheoSoThuTu(soChon);
@@ -722,18 +725,16 @@ public class QuanLyTramSac {
             }
 
             switch (loaiThongKe) {
-                case BAO_TRI:
+                case BAO_TRI ->
                     thongKeBaoTri();
-                    break;
-                case GIO_SD_THAP:
+                case GIO_SD_THAP ->
                     thongKeGioSDThap(scanner);
-                    break;
-                case KHU_VUC_CAO:
+                case KHU_VUC_CAO ->
                     thongKeKhuVucCaoNhat();
-                    break;
-                case QUAY_LAI:
+                case QUAY_LAI -> {
                     System.out.println("=> Quay lai menu chinh.");
                     return;
+                }
             }
 
             System.out.println();
@@ -1105,6 +1106,10 @@ public class QuanLyTramSac {
         TramSac ketQua = null;
         for (int i = 0; i < n; i++) {
             ketQua = minHeap.poll();
+        }
+        if (ketQua == null) {
+            System.out.println("!!! Khong tim duoc ket qua phu hop.");
+            return;
         }
 
         // Tinh lai thoi gian sac du tinh de hien thi

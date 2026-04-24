@@ -44,7 +44,7 @@ public abstract class TramSac {
         this.tenTram = tenTram;
     }
 
-    public HuyenLamDong getViTri() {
+    HuyenLamDong getViTri() {
         return viTri;
     }
 
@@ -104,7 +104,7 @@ public abstract class TramSac {
         this.hanBaoTri = (value <= 0) ? HAN_BAO_TRI_MAC_DINH : value;
     }
 
-    public TramSac(String maTram, HuyenLamDong viTri, double congSuat) {
+    TramSac(String maTram, HuyenLamDong viTri, double congSuat) {
         this.maTram = maTram; // maTram duoc Module.sinhMaTram() tao ra
         this.viTri = viTri;
         this.congSuat = normalizeCongSuat(congSuat);
