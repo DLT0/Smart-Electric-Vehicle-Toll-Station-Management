@@ -213,28 +213,28 @@ public class Menu {
     }
 
     public void chayChuongTrinh() {
-        MenuCT chon;
+        try (scanner) {
+            MenuCT chon;
 
-        do {
-            // Xoa man hinh
-            System.out.print("\033[H\033[2J");
-            System.out.flush();
+            do {
+                // Xoa man hinh
+                System.out.print("\033[H\033[2J");
+                System.out.flush();
 
-            xuatMenu();
-            chon = chonMenu();
+                xuatMenu();
+                chon = chonMenu();
 
-            if (chon == MenuCT.Thoat) {
-                break;
-            }
+                if (chon == MenuCT.Thoat) {
+                    break;
+                }
 
-            xuLyMenu(chon);
+                xuLyMenu(chon);
 
-            // Dung cho nguoi dung xem ket qua
-            System.out.print("\nNhan Enter de tiep tuc...");
-            scanner.nextLine();
+                // Dung cho nguoi dung xem ket qua
+                System.out.print("\nNhan Enter de tiep tuc...");
+                scanner.nextLine();
 
-        } while (true);
-
-        scanner.close();
+            } while (true);
+        }
     }
 }

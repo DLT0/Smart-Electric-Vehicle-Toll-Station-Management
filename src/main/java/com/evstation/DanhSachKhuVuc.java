@@ -1,14 +1,11 @@
 package com.evstation;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 // ============================================================
 // ENUM: Danh sach cac don vi hanh chinh tinh Lam Dong 2026
@@ -81,33 +78,7 @@ enum HuyenLamDong {
 public class DanhSachKhuVuc {
 
     // ----------------------------------------------------------
-    // Thuat toan 1: Tim kiem khu vuc theo tu khoa (partial match, ignore case)
-    // Su dung Stream + Predicate de loc.
-    // ----------------------------------------------------------
-    static List<HuyenLamDong> timKiem(String keyword) {
-        if (keyword == null || keyword.trim().isEmpty()) {
-            return Arrays.asList(HuyenLamDong.values());
-        }
-        String kw = keyword.trim().toLowerCase();
-        Predicate<HuyenLamDong> khopTen = kv -> kv.getTen().toLowerCase().contains(kw);
-        Predicate<HuyenLamDong> khopEnum = kv -> kv.name().toLowerCase().replace("_", " ").contains(kw);
-        return Arrays.stream(HuyenLamDong.values())
-                .filter(khopTen.or(khopEnum))
-                .collect(Collectors.toList());
-    }
-
-    // ----------------------------------------------------------
-    // Thuat toan 2: Loc danh sach tram theo khu vuc chi dinh
-    // Su dung Stream + Lambda.
-    // ----------------------------------------------------------
-    static List<TramSac> locTramTheoKhuVuc(List<TramSac> danhSach, HuyenLamDong khuVuc) {
-        return danhSach.stream()
-                .filter(t -> t.getViTri() == khuVuc)
-                .collect(Collectors.toList());
-    }
-
-    // ----------------------------------------------------------
-    // Thuat toan 3: Dem so tram tai moi khu vuc
+    // Thuat toan 1: Dem so tram tai moi khu vuc
     // Tra ve Map<HuyenLamDong, Integer> (moi khu vuc co it nhat gia tri 0).
     // ----------------------------------------------------------
     static Map<HuyenLamDong, Integer> demTramTheoKhuVuc(List<TramSac> danhSach) {
@@ -122,7 +93,7 @@ public class DanhSachKhuVuc {
     }
 
     // ----------------------------------------------------------
-    // Thuat toan 4: Tinh tong gio hoat dong cua tram tai moi khu vuc
+    // Thuat toan 2: Tinh tong gio hoat dong cua tram tai moi khu vuc
     // Tra ve Map<HuyenLamDong, Double>.
     // ----------------------------------------------------------
     static Map<HuyenLamDong, Double> tongGioTheoKhuVuc(List<TramSac> danhSach) {
@@ -137,7 +108,7 @@ public class DanhSachKhuVuc {
     }
 
     // ----------------------------------------------------------
-    // Thuat toan 5: Tim khu vuc co so tram nhieu nhat
+    // Thuat toan 3: Tim khu vuc co so tram nhieu nhat
     // Su dung Stream reduce / max voi Comparator lambda.
     // Tra ve Optional<HuyenLamDong> (trong neu danh sach rong).
     // ----------------------------------------------------------
@@ -150,7 +121,7 @@ public class DanhSachKhuVuc {
     }
 
     // ----------------------------------------------------------
-    // Thuat toan 6: Sap xep khu vuc theo so tram giam dan
+    // Thuat toan 4: Sap xep khu vuc theo so tram giam dan
     // Su dung Collections.sort voi Lambda Comparator.
     // ----------------------------------------------------------
     static List<Map.Entry<HuyenLamDong, Integer>> sapXepTheoSoTram(
@@ -161,7 +132,7 @@ public class DanhSachKhuVuc {
     }
 
     // ----------------------------------------------------------
-    // Thuat toan 7: Xuat bang thong ke day du
+    // Thuat toan 5: Xuat bang thong ke day du
     // ----------------------------------------------------------
     public static void xuatBangThongKe(List<TramSac> danhSach) {
         if (danhSach.isEmpty()) {
