@@ -9,10 +9,16 @@ import java.util.Optional;
 import java.util.PriorityQueue;
 import java.util.Scanner;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 // ============================================================
 // ENUM: Danh sach cac lua chon thong ke tru sac
 // ============================================================
+@Getter
+@AllArgsConstructor
 enum LoaiThongKe {
     BAO_TRI("Tru sac can bao tri (haomon > 90%)"),
     GIO_SD_THAP("Tru sac co so gio su dung > X (nhap X tu ban phim)"),
@@ -20,14 +26,6 @@ enum LoaiThongKe {
     QUAY_LAI("Quay lai menu chinh");
 
     private final String moTa;
-
-    LoaiThongKe(String moTa) {
-        this.moTa = moTa;
-    }
-
-    public String getMoTa() {
-        return moTa;
-    }
 
     public static void hienThiMenu() {
         LoaiThongKe[] options = LoaiThongKe.values();
@@ -80,8 +78,7 @@ public class QuanLyTramSac {
     private static final String MA_TRAM_STT_FORMAT = "%03d"; // Dinh dang STT: 3 chu so, zero-padding
 
     // =========================================================================
-    // CÁC HÀM CHỨC NĂNG CHÍNH (PUBLIC API)
-    // =========================================================================
+    // CÁC HÀM CHỨC NĂNG CHÍNH
     // HÀM HỖ TRỢ DÙNG CHUNG: XÁC NHẬN YES/NO
     // confirm(scanner, prompt): Chuẩn hóa toàn bộ câu hỏi Yes/No trong hệ thống.
     // - In ra: "<prompt> (y/n): "
@@ -179,21 +176,12 @@ public class QuanLyTramSac {
      * Tra ve doi tuong TramSac dua vao ID. Giup giam trung lap logic tim kiem.
      */
     public TramSac timTramTheoId(String id) {
-        if (id == null || id.trim().isEmpty()) {
-            return null;
-        }
-
-        // Loai bo ky tu phan cach (dau gach ngang hoac khoang trang) de nguoi dung tim
-        // kiem linh hoat
+        if (id == null || id.trim().isEmpty()) return null;
         String cleanId = id.replaceAll("[- ]", "").toLowerCase();
-
-        for (TramSac t : danhSach) {
-            String cleanTramId = t.getMaTram().replaceAll("[- ]", "").toLowerCase();
-            if (cleanTramId.equals(cleanId)) {
-                return t;
-            }
-        }
-        return null;
+        return danhSach.stream()
+                .filter(t -> t.getMaTram().replaceAll("[- ]", "").toLowerCase().equals(cleanId))
+                .findFirst()
+                .orElse(null);
     }
 
     // =========================================================================
@@ -258,19 +246,18 @@ public class QuanLyTramSac {
 
     // Ham phu tro: Nhap va kiem tra cong suat hop le
     private double nhapCongSuat(Scanner scanner) {
-        double cs = 0;
-        System.out.print("Nhap cong suat kW (7 <= cs <= 300): ");
-        try {
-            cs = Double.parseDouble(scanner.nextLine().trim());
-            if (cs < 7) {
-                System.out.println("!!! Cong suat toi thieu la 7kW!");
-            } else if (cs > 300) {
-                System.out.println("!!! Cong suat toi da la 300kW!");
+        while (true) {
+            System.out.print("Nhap cong suat kW (7 <= cs <= 300): ");
+            try {
+                double cs = Double.parseDouble(scanner.nextLine().trim());
+                if (cs >= 7 && cs <= 300) {
+                    return cs;
+                }
+                System.out.println("!!! Cong suat phai tu 7kW den 300kW!");
+            } catch (NumberFormatException e) {
+                System.out.println("!!! Cong suat phai la mot so!");
             }
-        } catch (NumberFormatException e) {
-            System.out.println("!!! Cong suat phai la mot so!");
         }
-        return cs;
     }
 
     // Ham phu tro (Public de tai su dung): Sinh ID, phan loai va them tram vao danh sach.
@@ -282,50 +269,42 @@ public class QuanLyTramSac {
         TramSac moi = null;
         if (cs <= 11) {
             moi = new TramSacCham(id, khuVuc, cs, stt);
-            danhSach.add(moi);
             System.out.println("=> [" + id + "] Sac Cham (7-11kW) - " + khuVuc.getTen() + " da duoc them!");
         } else if (cs <= 120) {
             moi = new TramSacNhanh(id, khuVuc, cs, stt);
-            danhSach.add(moi);
             System.out.println("=> [" + id + "] Sac Nhanh (12-120kW) - " + khuVuc.getTen() + " da duoc them!");
         } else {
             moi = new TramSacSieuNhanh(id, khuVuc, cs, stt);
-            danhSach.add(moi);
             System.out.println("=> [" + id + "] Sac Sieu Nhanh (121-300kW) - " + khuVuc.getTen() + " da duoc them!");
         }
+        danhSach.add(moi);
         return moi;
     }
 
     // Ham phu tro: Dem so tram cung khu vuc
     private int countStationsAtLocation(HuyenLamDong khuVuc) {
-        int count = 0;
-        for (TramSac t : danhSach) {
-            // So sanh Enum bang == la chinh xac va nhanh hon .equals() voi String
-            if (t.getViTri() == khuVuc) {
-                count++;
-            }
-        }
-        return count;
+        return (int) danhSach.stream()
+                .filter(t -> t.getViTri() == khuVuc)
+                .count();
     }
 
     // ----------------------------------------------------------
     // Chuc nang 1: Them danh sach tru sac (n >= 1)
     // ----------------------------------------------------------
     public void themDSTruSac(Scanner scanner) {
-        int n = 0;
-        while (n <= 0) {
+        int tongSo;
+        while (true) {
             System.out.print("Nhap so luong tram sac can them (>= 1): ");
             try {
-                n = Integer.parseInt(scanner.nextLine().trim());
-                if (n <= 0) {
-                    System.out.println("!!! So luong phai la so nguyen duong!");
+                tongSo = Integer.parseInt(scanner.nextLine().trim());
+                if (tongSo > 0) {
+                    break;
                 }
+                System.out.println("!!! So luong phai la so nguyen duong!");
             } catch (NumberFormatException e) {
                 System.out.println("!!! Phai nhap mot so nguyen!");
             }
         }
-
-        final int tongSo = n;
         for (int i = 1; i <= tongSo; i++) {
             System.out.println("\n  [ Tram " + i + " / " + tongSo + " ]");
             them1TruSac(scanner);
@@ -647,17 +626,11 @@ public class QuanLyTramSac {
             return;
         }
 
-        // Tim kiem bang Predicate + Stream: normalize ID roi so khop chinh xac
-        String cleanId = id.replaceAll("[- ]", "").toLowerCase();
-        Predicate<TramSac> matchById = t -> t.getMaTram().replaceAll("[- ]", "").toLowerCase().equals(cleanId);
-        Optional<TramSac> optFound = danhSach.stream().filter(matchById).findFirst();
-
-        if (optFound.isEmpty()) {
+        TramSac found = timTramTheoId(id);
+        if (found == null) {
             System.out.println("!!! Khong tim thay tram co ID: " + id);
             return;
         }
-
-        TramSac found = optFound.get();
         System.out.println("Thong tin tram tim thay:");
         DanhSachTramSac.xuatThongTin1Tram(found);
 
@@ -676,35 +649,23 @@ public class QuanLyTramSac {
     // Tra ve danh sach TẤT CA ket qua khop.
     // ----------------------------------------------------------
     public List<TramSac> timKiemDanhSach(String keyword) {
-        List<TramSac> ketQua = new ArrayList<>();
         if (keyword == null || keyword.trim().isEmpty()) {
-            return ketQua;
+            return Collections.emptyList();
+        }
+
+        TramSac exactMatch = timTramTheoId(keyword);
+        if (exactMatch != null) {
+            return Collections.singletonList(exactMatch);
         }
 
         String kw = keyword.trim().toLowerCase();
-        // Uu tien 1: tim chinh xac theo ID truoc (bo ky tu phan cach)
-        String kwClean = kw.replaceAll("[- ]", "");
-        for (TramSac t : danhSach) {
-            String idClean = t.getMaTram().replaceAll("[- ]", "").toLowerCase();
-            if (idClean.equals(kwClean)) {
-                ketQua.add(t);
-                return ketQua; // Khop chinh xac ID -> tra ngay, khong can tim them
-            }
-        }
-
-        // Uu tien 2: khop mo (partial) tren nhieu truong cung luc
-        for (TramSac t : danhSach) {
-            boolean match
-                    = t.getMaTram().toLowerCase().contains(kw) // ID partial
-                    || t.getTenTram().toLowerCase().contains(kw) // ten tram
-                    || t.getLoaiPrefix().toLowerCase().contains(kw) // loai (Sac Cham, Nhanh, ...)
-                    || t.getViTri().getTen().toLowerCase().contains(kw) // khu vuc
-                    || t.getViTri().name().toLowerCase().replace("_", " ").contains(kw); // enum name
-            if (match) {
-                ketQua.add(t);
-            }
-        }
-        return ketQua;
+        return danhSach.stream()
+                .filter(t -> t.getMaTram().toLowerCase().contains(kw)
+                        || t.getTenTram().toLowerCase().contains(kw)
+                        || t.getLoaiPrefix().toLowerCase().contains(kw)
+                        || t.getViTri().getTen().toLowerCase().contains(kw)
+                        || t.getViTri().name().toLowerCase().replace("_", " ").contains(kw))
+                .collect(Collectors.toList());
     }
 
     // ----------------------------------------------------------

@@ -165,7 +165,7 @@ public class Menu {
                 module.tinhChiPhiDS(scanner);
                 break;
             case TimTramThuN:
-                System.out.println("\n--- TIM TRAM CO THOI GIAN SAC DU TINH DUNG THU N (MIN HEAP) ---");
+                System.out.println("\n--- TIM TRAM CO THOI GIAN SAC DU TINH DUNG THU N ---");
                 module.timTramTheoThoiGianSacThuN(scanner);
                 break;
             default:

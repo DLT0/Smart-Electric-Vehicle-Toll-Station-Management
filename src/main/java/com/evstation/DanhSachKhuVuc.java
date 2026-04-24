@@ -10,9 +10,14 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 // ============================================================
 // ENUM: Danh sach cac don vi hanh chinh tinh Lam Dong 2026
 // ============================================================
+@Getter
+@AllArgsConstructor
 enum HuyenLamDong {
     DA_LAT("Da Lat"),
     BAO_LOC("Bao Loc"),
@@ -25,11 +30,6 @@ enum HuyenLamDong {
     DAM_RONG("Dam Rong");
 
     private final String tenTiengViet;
-
-    // Constructor cua Enum: chay 1 lan khi JVM load class nay
-    HuyenLamDong(String ten) {
-        this.tenTiengViet = ten;
-    }
 
     // Getter de lay ten hien thi
     public String getTen() {
