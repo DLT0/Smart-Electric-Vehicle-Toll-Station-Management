@@ -5,10 +5,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.PriorityQueue;
 import java.util.Scanner;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
@@ -119,7 +117,8 @@ public class QuanLyTramSac {
 
     // ----------------------------------------------------------
     // Ham phu tro: Nhap double co validate (Enter = giu nguyen currentVal).
-    // min/max: gioi han hop le. Neu nhap Enter hoac gia tri ngoai [min,max] -> giu nguyen.
+    // min/max: gioi han hop le. Neu nhap Enter hoac gia tri ngoai [min,max] -> giu
+    // nguyen.
     // ----------------------------------------------------------
     private double promptForDouble(Scanner sc, String prompt, double min, double max, double currentVal) {
         System.out.printf("%s [hien tai: %.1f]: ", prompt, currentVal);
@@ -176,7 +175,8 @@ public class QuanLyTramSac {
      * Tra ve doi tuong TramSac dua vao ID. Giup giam trung lap logic tim kiem.
      */
     public TramSac timTramTheoId(String id) {
-        if (id == null || id.trim().isEmpty()) return null;
+        if (id == null || id.trim().isEmpty())
+            return null;
         String cleanId = id.replaceAll("[- ]", "").toLowerCase();
         return danhSach.stream()
                 .filter(t -> t.getMaTram().replaceAll("[- ]", "").toLowerCase().equals(cleanId))
@@ -260,8 +260,10 @@ public class QuanLyTramSac {
         }
     }
 
-    // Ham phu tro (Public de tai su dung): Sinh ID, phan loai va them tram vao danh sach.
-    // Toi uu: chi tinh so tram hien co tai khu vuc 1 lan, su dung chung cho ma tram va STT.
+    // Ham phu tro (Public de tai su dung): Sinh ID, phan loai va them tram vao danh
+    // sach.
+    // Toi uu: chi tinh so tram hien co tai khu vuc 1 lan, su dung chung cho ma tram
+    // va STT.
     public TramSac themVaoDanhSach(HuyenLamDong khuVuc, double cs) {
         int countAtLocation = countStationsAtLocation(khuVuc);
         String id = sinhMaTram(khuVuc, cs, countAtLocation);
@@ -318,39 +320,31 @@ public class QuanLyTramSac {
     // Chuc nang 2: Nhap co dinh (Du lieu mau co san)
     // ----------------------------------------------------------
     public void nhapCoDinh(Scanner scanner) {
-        if (!danhSach.isEmpty()) {
-            boolean overwrite = confirm(scanner,
-                    "He thong dang co " + danhSach.size() + " tram. Ghi de bang du lieu co dinh?");
-            if (!overwrite) {
-                System.out.println("=> Huy thao tac.");
-                return;
-            }
-        }
         danhSach.clear();
         // 1. DA LAT
-        themVaoDanhSach(HuyenLamDong.DA_LAT, 7.2);    // SC-DAL-001
-        themVaoDanhSach(HuyenLamDong.DA_LAT, 60);      // SN-DAL-001
-        themVaoDanhSach(HuyenLamDong.DA_LAT, 250);     // SS-DAL-001
-        themVaoDanhSach(HuyenLamDong.DA_LAT, 300);     // SS-DAL-002
+        themVaoDanhSach(HuyenLamDong.DA_LAT, 7.2); // SC-DAL-001
+        themVaoDanhSach(HuyenLamDong.DA_LAT, 60); // SN-DAL-001
+        themVaoDanhSach(HuyenLamDong.DA_LAT, 250); // SS-DAL-001
+        themVaoDanhSach(HuyenLamDong.DA_LAT, 300); // SS-DAL-002
 
         // 2. BAO LOC
-        themVaoDanhSach(HuyenLamDong.BAO_LOC, 11);     // SC-BAO-001
-        themVaoDanhSach(HuyenLamDong.BAO_LOC, 120);    // SN-BAO-001
-        themVaoDanhSach(HuyenLamDong.BAO_LOC, 300);    // SS-BAO-001
+        themVaoDanhSach(HuyenLamDong.BAO_LOC, 11); // SC-BAO-001
+        themVaoDanhSach(HuyenLamDong.BAO_LOC, 120); // SN-BAO-001
+        themVaoDanhSach(HuyenLamDong.BAO_LOC, 300); // SS-BAO-001
 
         // 3. DUC TRONG
-        themVaoDanhSach(HuyenLamDong.DUC_TRONG, 30);   // SN-DUC-001
-        themVaoDanhSach(HuyenLamDong.DUC_TRONG, 150);  // SS-DUC-001
+        themVaoDanhSach(HuyenLamDong.DUC_TRONG, 30); // SN-DUC-001
+        themVaoDanhSach(HuyenLamDong.DUC_TRONG, 150); // SS-DUC-001
 
         // 4. DI LINH
-        themVaoDanhSach(HuyenLamDong.DI_LINH, 60);     // SN-DIL-001
-        themVaoDanhSach(HuyenLamDong.DI_LINH, 200);    // SS-DIL-001
+        themVaoDanhSach(HuyenLamDong.DI_LINH, 60); // SN-DIL-001
+        themVaoDanhSach(HuyenLamDong.DI_LINH, 200); // SS-DIL-001
 
         // 5. CAC KHU VUC KHAC
-        themVaoDanhSach(HuyenLamDong.LAM_HA, 30);      // SN-LAM-001
-        themVaoDanhSach(HuyenLamDong.DON_DUONG, 150);  // SS-DON-001
-        themVaoDanhSach(HuyenLamDong.BAO_LAM, 11);     // SC-BAL-001
-        themVaoDanhSach(HuyenLamDong.DAM_RONG, 60);    // SN-DAM-001
+        themVaoDanhSach(HuyenLamDong.LAM_HA, 30); // SN-LAM-001
+        themVaoDanhSach(HuyenLamDong.DON_DUONG, 150); // SS-DON-001
+        themVaoDanhSach(HuyenLamDong.BAO_LAM, 11); // SC-BAL-001
+        themVaoDanhSach(HuyenLamDong.DAM_RONG, 60); // SN-DAM-001
 
         // --- AP DUNG TRANG THAI TEST ---
         apDungTrangThaiTest("SS-DAL-001", false, 120, 2.0, 480.0);
@@ -402,7 +396,8 @@ public class QuanLyTramSac {
 
     // ----------------------------------------------------------
     // Chuc nang 4: Cap nhat thong tin tram
-    // - Cho phep chinh sua: TenTram, ViTri, CongSuat, TrangThai, ThoiGianHD, HanBaoTri
+    // - Cho phep chinh sua: TenTram, ViTri, CongSuat, TrangThai, ThoiGianHD,
+    // HanBaoTri
     // - Thay doi duoc luu tam vao bien cuc bo, chi ap dung khi nguoi dung xac nhan.
     // - Nhap Enter de giu nguyen gia tri hien tai cua bat ky truong nao.
     // ----------------------------------------------------------
@@ -433,14 +428,18 @@ public class QuanLyTramSac {
         while (true) {
             System.out.println("\n--- CHINH SUA TRAM [" + found.getMaTram() + "] (* = da thay doi) ---");
             System.out.println("  1. Ten tram    : " + newTen + (newTen.equals(found.getTenTram()) ? "" : " (*)"));
-            System.out.println("  2. Vi tri      : " + newViTri.getTen() + (newViTri == found.getViTri() ? "" : " (*)"));
-            System.out.printf("  3. Cong suat   : %.1f kW%s%n", newCongSuat, newCongSuat == found.getCongSuat() ? "" : " (*)");
+            System.out
+                    .println("  2. Vi tri      : " + newViTri.getTen() + (newViTri == found.getViTri() ? "" : " (*)"));
+            System.out.printf("  3. Cong suat   : %.1f kW%s%n", newCongSuat,
+                    newCongSuat == found.getCongSuat() ? "" : " (*)");
             String ttHienThi = newSanSang == null
                     ? found.getTrangThaiHoatDong()
                     : (newSanSang ? "San sang" : "Dang sac") + " (*)";
             System.out.println("  4. Trang thai  : " + ttHienThi);
-            System.out.printf("  5. Thoi gian HD: %.1f gio%s%n", newThoiGianHD, newThoiGianHD == found.getThoiGianHoatDong() ? "" : " (*)");
-            System.out.printf("  6. Han bao tri : %.1f gio%s%n", newHanBaoTri, newHanBaoTri == found.getHanBaoTri() ? "" : " (*)");
+            System.out.printf("  5. Thoi gian HD: %.1f gio%s%n", newThoiGianHD,
+                    newThoiGianHD == found.getThoiGianHoatDong() ? "" : " (*)");
+            System.out.printf("  6. Han bao tri : %.1f gio%s%n", newHanBaoTri,
+                    newHanBaoTri == found.getHanBaoTri() ? "" : " (*)");
             System.out.println("  0. Luu thay doi");
             System.out.println("  9. Huy bo (khong luu)");
             System.out.print("Chon: ");
@@ -522,7 +521,8 @@ public class QuanLyTramSac {
                     break;
 
                 case 5: // Thoi gian hoat dong
-                    double tgMoi = promptForDouble(scanner, "Thoi gian hoat dong (h >= 0)", 0, Double.MAX_VALUE, newThoiGianHD);
+                    double tgMoi = promptForDouble(scanner, "Thoi gian hoat dong (h >= 0)", 0, Double.MAX_VALUE,
+                            newThoiGianHD);
                     if (tgMoi != newThoiGianHD) {
                         newThoiGianHD = tgMoi;
                         System.out.printf("=> Ghi nhan: thoi gian HD = %.1f gio%n", newThoiGianHD);
@@ -567,7 +567,8 @@ public class QuanLyTramSac {
             System.out.printf("  Cong suat   : %.1f -> %.1f kW%n", found.getCongSuat(), newCongSuat);
         }
         if (newSanSang != null) {
-            System.out.println("  Trang thai  : " + found.getTrangThaiHoatDong() + " -> " + (newSanSang ? "San sang" : "Dang sac"));
+            System.out.println("  Trang thai  : " + found.getTrangThaiHoatDong() + " -> "
+                    + (newSanSang ? "San sang" : "Dang sac"));
         }
         if (newThoiGianHD != found.getThoiGianHoatDong()) {
             System.out.printf("  Thoi gian HD: %.1f -> %.1f gio%n", found.getThoiGianHoatDong(), newThoiGianHD);
@@ -581,7 +582,8 @@ public class QuanLyTramSac {
             return;
         }
 
-        // 7. Ap dung thay doi (trang thai truoc, sau do ghi de thoiGianHD theo y nguoi dung)
+        // 7. Ap dung thay doi (trang thai truoc, sau do ghi de thoiGianHD theo y nguoi
+        // dung)
         found.setTenTram(newTen);
         found.setViTri(newViTri);
         found.setCongSuat(newCongSuat);
@@ -600,7 +602,8 @@ public class QuanLyTramSac {
             found.setSanSang(newSanSang);
         }
 
-        // Neu nguoi dung chinh sua truong ThoiGianHD, gia tri do ghi de moi tinh toan tu dong
+        // Neu nguoi dung chinh sua truong ThoiGianHD, gia tri do ghi de moi tinh toan
+        // tu dong
         if (newThoiGianHD != found.getThoiGianHoatDong()) {
             found.setThoiGianHoatDong(newThoiGianHD);
         }
@@ -703,7 +706,8 @@ public class QuanLyTramSac {
     // ----------------------------------------------------------
     // Chuc nang 7: Thong ke he thong tru sac
     // - Hien thi menu cac loai thong ke (bao tri, gio su dung, khu vuc nhieu tram).
-    // - Lap cho den khi nguoi dung chon quay lai hoac tra loi "n" khi duoc hoi tiep tuc.
+    // - Lap cho den khi nguoi dung chon quay lai hoac tra loi "n" khi duoc hoi tiep
+    // tuc.
     // ----------------------------------------------------------
     public void thongKeTruSac(Scanner scanner) {
         if (danhSach.isEmpty()) {
@@ -752,9 +756,11 @@ public class QuanLyTramSac {
 
     // Hàm hỗ trợ: Thống kê các trạm cần bảo trì (mức hao mòn > 90% ngưỡng 500h)
     // Thuật toán:
-    // 1. Duyệt toàn bộ danh sách trạm, tính mức hao mòn bằng TramSac.tinhMucHaoMon().
+    // 1. Duyệt toàn bộ danh sách trạm, tính mức hao mòn bằng
+    // TramSac.tinhMucHaoMon().
     // 2. Nếu > 90% thì đưa vào danh sách cảnh báo.
-    // 3. In bảng chi tiết các trạm này, kèm thêm dòng giải thích mức hao mòn / 500h.
+    // 3. In bảng chi tiết các trạm này, kèm thêm dòng giải thích mức hao mòn /
+    // 500h.
     public void thongKeBaoTri() {
         List<TramSac> tramBaoTri = new ArrayList<>();
 
@@ -784,16 +790,19 @@ public class QuanLyTramSac {
         }
     }
 
-    // Hàm hỗ trợ: Thống kê các trạm có tổng số giờ sử dụng > ngưỡng nhập từ bàn phím.
+    // Hàm hỗ trợ: Thống kê các trạm có tổng số giờ sử dụng > ngưỡng nhập từ bàn
+    // phím.
     //
     // Tham số:
     // - scanner: nguồn đọc dữ liệu từ bàn phím.
     //
     // Ý nghĩa biến trong hàm:
-    // - gioMin: ngưỡng số giờ tối thiểu mà người dùng muốn lọc (không liên quan tới ràng buộc nội bộ của TramSac),
-    //           chỉ dùng làm tiêu chí lọc danh sách hiện tại.
+    // - gioMin: ngưỡng số giờ tối thiểu mà người dùng muốn lọc (không liên quan tới
+    // ràng buộc nội bộ của TramSac),
+    // chỉ dùng làm tiêu chí lọc danh sách hiện tại.
     // - tramCao: danh sách các trạm có tổng số giờ sử dụng vượt qua gioMin.
-    // - tongGioSuDung: tổng giờ sử dụng thực tế của từng trạm (bao gồm cả thời gian đang sạc nếu có).
+    // - tongGioSuDung: tổng giờ sử dụng thực tế của từng trạm (bao gồm cả thời gian
+    // đang sạc nếu có).
     public void thongKeGioSDThap(Scanner scanner) {
         System.out.print("\nNhap so gio su dung toi thieu (h): ");
 
@@ -810,7 +819,8 @@ public class QuanLyTramSac {
             return;
         }
 
-        // Danh sách các trạm có tổng số giờ sử dụng (tích lũy + đang sạc) vượt ngưỡng gioMin
+        // Danh sách các trạm có tổng số giờ sử dụng (tích lũy + đang sạc) vượt ngưỡng
+        // gioMin
         List<TramSac> tramCao = new ArrayList<>();
         for (TramSac t : danhSach) {
             // tongGioSuDung = thoiGianHoatDong (tích lũy) + số giờ đang sạc (nếu có)
@@ -823,15 +833,18 @@ public class QuanLyTramSac {
             }
         }
 
-        System.out.println("\n" + "=".repeat(36) + " THONG KE TRAM CO SO GIO SU DUNG > X " + String.format("%.1f", gioMin) + "h" + " " + "=".repeat(36));
+        System.out.println("\n" + "=".repeat(36) + " THONG KE TRAM CO SO GIO SU DUNG > X "
+                + String.format("%.1f", gioMin) + "h" + " " + "=".repeat(36));
 
         if (tramCao.isEmpty()) {
             System.out.println("\nKhong co tram nao co so gio su dung lon hon " + gioMin + "h.");
         } else {
             // Sap xep theo thoi gian hoat dong giam dan
             Collections.sort(tramCao, (a, b) -> Double.compare(
-                    b.getThoiGianHoatDong() + (b.isSanSang() ? 0 : tinhThoiGianSacPhut(b.getThoiGianBatDauSac(), LocalDateTime.now()) / 60.0),
-                    a.getThoiGianHoatDong() + (a.isSanSang() ? 0 : tinhThoiGianSacPhut(a.getThoiGianBatDauSac(), LocalDateTime.now()) / 60.0)));
+                    b.getThoiGianHoatDong() + (b.isSanSang() ? 0
+                            : tinhThoiGianSacPhut(b.getThoiGianBatDauSac(), LocalDateTime.now()) / 60.0),
+                    a.getThoiGianHoatDong() + (a.isSanSang() ? 0
+                            : tinhThoiGianSacPhut(a.getThoiGianBatDauSac(), LocalDateTime.now()) / 60.0)));
 
             System.out.println("\nCo " + tramCao.size() + " tram co so gio su dung > " + gioMin + "h:");
 
@@ -842,11 +855,12 @@ public class QuanLyTramSac {
     // Hàm hỗ trợ: Thống kê khu vực có tần suất sử dụng cao nhất
     // Thuật toán:
     // 1. Khởi tạo 2 Map:
-    //    - demKhuVuc: đếm số trạm ở mỗi huyện.
-    //    - tongGioKhuVuc: tổng số giờ hoạt động của các trạm trong huyện đó.
+    // - demKhuVuc: đếm số trạm ở mỗi huyện.
+    // - tongGioKhuVuc: tổng số giờ hoạt động của các trạm trong huyện đó.
     // 2. Duyệt danh sách trạm, cộng dồn vào 2 Map trên.
     // 3. Tìm khu vực có nhiều trạm nhất (demKhuVuc lớn nhất).
-    // 4. Sắp xếp danh sách các huyện theo số trạm giảm dần, in bảng xếp hạng kèm tỉ lệ % so với toàn hệ thống.
+    // 4. Sắp xếp danh sách các huyện theo số trạm giảm dần, in bảng xếp hạng kèm tỉ
+    // lệ % so với toàn hệ thống.
     public void thongKeKhuVucCaoNhat() {
         DanhSachKhuVuc.xuatBangThongKe(danhSach);
     }
@@ -856,11 +870,13 @@ public class QuanLyTramSac {
     // - Truong hop tram dang trong: tinh du toan chi phi cho muc % pin mong muon.
     // - Truong hop tram dang sac: tinh hoa don thuc te dua tren thoi gian da sac.
     // Thuat toan (tong quat):
-    // 1. Xac dinh dung luong nang luong can sac (kWh) tu dung luong pin va % can sac.
+    // 1. Xac dinh dung luong nang luong can sac (kWh) tu dung luong pin va % can
+    // sac.
     // 2. Tinh chi phi dien = dien nang can sac * don gia/kWh.
     // 3. Tinh thoi gian sac du kien theo cong suat tru.
-    // 4. Neu la hoa don thuc te, so sanh thoi gian da sac voi thoi gian du kien de tinh so phut qua han
-    //    va nhan voi don gia phu phi (neu la tram nhanh/sieu nhanh).
+    // 4. Neu la hoa don thuc te, so sanh thoi gian da sac voi thoi gian du kien de
+    // tinh so phut qua han
+    // va nhan voi don gia phu phi (neu la tram nhanh/sieu nhanh).
     // 5. In ra bang chi tiet chi phi dien, phu phi (neu co) va tong tien.
     public void tinhChiPhi1Tram(Scanner scanner) {
         System.out.print("Nhap ID tram can xem chi phi: ");
@@ -873,8 +889,8 @@ public class QuanLyTramSac {
             return;
         }
 
-        double dungLuongPin = 70.0;   // Dung lượng pin (kWh) giả định của xe
-        double phanTramPin = 80;      // Mặc định sạc lên 80% nếu người dùng không nhập
+        double dungLuongPin = 70.0; // Dung lượng pin (kWh) giả định của xe
+        double phanTramPin = 80; // Mặc định sạc lên 80% nếu người dùng không nhập
         boolean isThucTe = !found.isSanSang();
 
         if (!isThucTe) {
@@ -965,7 +981,8 @@ public class QuanLyTramSac {
     // ----------------------------------------------------------
     // Chuc nang 10: Tinh chi phi va goi y lua chon tram cho ca danh sach
     // - Khong phu thuoc trang thai hien tai cua tram (chi dung cong suat).
-    // - Muc tieu la so sanh thoi gian sac du kien va phu phi qua han / phut giua cac loai tram.
+    // - Muc tieu la so sanh thoi gian sac du kien va phu phi qua han / phut giua
+    // cac loai tram.
     // Thuat toan:
     // 1. Xac dinh dien nang can sac (dua tren % pin nguoi dung nhap).
     // 2. Voi moi tram, tinh thoi gian sac du kien.
@@ -988,9 +1005,9 @@ public class QuanLyTramSac {
             }
         }
 
-        double dungLuongPin = 70.0;                        // Dung lượng pin giả định (kWh)
+        double dungLuongPin = 70.0; // Dung lượng pin giả định (kWh)
         double dienNangCanSac = dungLuongPin * (phanTramPin / 100.0); // Số kWh cần sạc
-        double chiPhiDien = dienNangCanSac * TramSac.GIA_MOI_KWH;     // Chi phí điện thuần tuý
+        double chiPhiDien = dienNangCanSac * TramSac.GIA_MOI_KWH; // Chi phí điện thuần tuý
 
         System.out.println("\n" + "=".repeat(33) + " GOI Y TRAM SAC " + "=".repeat(33));
         System.out.println("- Muc pin can sac: " + phanTramPin + "%");
@@ -1027,12 +1044,13 @@ public class QuanLyTramSac {
     // ----------------------------------------------------------
     // Tiêu chí sắp xếp:
     // 1. Nhóm ưu tiên theo trạng thái + hao mòn:
-    //    - Ưu tiên 0: Trạm sẵn sàng và mức hao mòn < 100%.
-    //    - Ưu tiên 1: Trạm đang sạc (nhưng chưa vượt 100% hao mòn).
-    //    - Ưu tiên 2: Trạm cần bảo trì / ngừng hoạt động (hao mòn >= 100%).
+    // - Ưu tiên 0: Trạm sẵn sàng và mức hao mòn < 100%.
+    // - Ưu tiên 1: Trạm đang sạc (nhưng chưa vượt 100% hao mòn).
+    // - Ưu tiên 2: Trạm cần bảo trì / ngừng hoạt động (hao mòn >= 100%).
     // 2. Trong cùng một nhóm ưu tiên: sắp xếp theo tổng giờ hoạt động tăng dần
-    //    (trạm "ít làm việc" hơn đứng trước để ưu tiên phân bổ tải).
-    // 3. Nếu vẫn bằng nhau: sắp xếp theo mã trạm (maTram) để danh sách ổn định, dễ theo dõi.
+    // (trạm "ít làm việc" hơn đứng trước để ưu tiên phân bổ tải).
+    // 3. Nếu vẫn bằng nhau: sắp xếp theo mã trạm (maTram) để danh sách ổn định, dễ
+    // theo dõi.
     public void sapXepDS() {
         if (danhSach.isEmpty()) {
             System.out.println("!!! Danh sach trong. Khong co tram nao de sap xep.");
@@ -1064,9 +1082,10 @@ public class QuanLyTramSac {
     // Chuc nang 11: Tim tram co thoi gian sac du tinh dung thu n
     // Thuat toan Min Heap:
     // 1. Tinh thoi gian sac du tinh cho moi tram:
-    //    thoiGianPhut = (dungLuongPin * phanTramPin / congSuat) * 60
-    //    (Gia dinh dung luong pin xe = 70 kWh, sac len 80%)
-    // 2. Day tat ca tram vao Min Heap (PriorityQueue) so sanh theo thoi gian sac tang dan.
+    // thoiGianPhut = (dungLuongPin * phanTramPin / congSuat) * 60
+    // (Gia dinh dung luong pin xe = 70 kWh, sac len 80%)
+    // 2. Day tat ca tram vao Min Heap (PriorityQueue) so sanh theo thoi gian sac
+    // tang dan.
     // 3. Poll n lan de lay phan tu thu n nho nhat ra khoi heap.
     // 4. In thong tin tram thu n va thoi gian sac du tinh tuong ung.
     // ----------------------------------------------------------
