@@ -26,10 +26,9 @@ public class Menu {
         GioSDThap,
         KhuVucCao
     }
-    //prive int thong ke tru
 
     private final Scanner scanner;
-    public QuanLyTramSac module;
+    private QuanLyTramSac module;
 
     public Menu(QuanLyTramSac module) {
         this.scanner = new Scanner(System.in);
@@ -58,7 +57,7 @@ public class Menu {
         System.out.println("=".repeat(50));
     }
 
-    public static void xuatMenuThongKe() {
+    private static void xuatMenuThongKe() {
         System.out.println("=".repeat(50));
         System.out.println("|        MENU PHU - THONG KE TRAM SAC          |");
         System.out.println("=".repeat(50));
@@ -91,7 +90,7 @@ public class Menu {
         return MenuCT.values()[chon];
     }
 
-    public MenuThongKe chonMenuThongKe() {
+    private MenuThongKe chonMenuThongKe() {
         int min = MenuThongKe.Thoat.ordinal();
         int max = MenuThongKe.values()[MenuThongKe.values().length - 1].ordinal();
         int chon;
@@ -125,7 +124,7 @@ public class Menu {
             }
             case NhapCoDinh -> {
                 System.out.println("\n--- NHAP CO DINH (DU LIEU MAU CO SAN) ---");
-                module.nhapCoDinh(scanner);
+                module.nhapCoDinh();
             }
             case XuatDanhSach ->
                 module.xuatDanhSach();
@@ -170,7 +169,7 @@ public class Menu {
         }
     }
 
-    public void xuLyThongKe() {
+    private void xuLyThongKe() {
         MenuThongKe chon;
 
         do {
@@ -191,7 +190,7 @@ public class Menu {
         } while (true);
     }
 
-    public void xuLyMenuThongKe(MenuThongKe chon) {
+    private void xuLyMenuThongKe(MenuThongKe chon) {
         switch (chon) {
             case Thoat ->
                 System.out.println("=> Quay lai menu chinh.");
