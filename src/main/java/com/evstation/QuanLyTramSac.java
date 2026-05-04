@@ -514,7 +514,7 @@ public class QuanLyTramSac {
         if (keyword == null || keyword.trim().isEmpty()) {
             return Collections.emptyList();
         }
-
+              
         TramSac exactMatch = timTramTheoId(keyword);
         if (exactMatch != null) {
             return Collections.singletonList(exactMatch);
@@ -537,7 +537,7 @@ public class QuanLyTramSac {
             return;
         }
 
-        System.out.print("Nhap tu khoa tim kiem (ID / ten / khu vuc / loai): ");
+        System.out.print("Nhap tu khoa tim kiem (ID / ten / khu vuc / loai): "); 
         String keyword = scanner.nextLine().trim();
         if (keyword.isEmpty()) {
             System.out.println("!!! Tu khoa khong duoc de trong.");

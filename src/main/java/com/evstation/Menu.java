@@ -192,8 +192,6 @@ public class Menu {
 
     private void xuLyMenuThongKe(MenuThongKe chon) {
         switch (chon) {
-            case Thoat ->
-                System.out.println("=> Quay lai menu chinh.");
             case BaoTri -> {
                 System.out.println("\n--- THONG KE TRAM SAC CAN BAO TRI  ---");
                 module.thongKeBaoTri();

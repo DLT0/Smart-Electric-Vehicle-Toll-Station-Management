@@ -84,8 +84,7 @@ src/main/java/com/evstation/
 
 ### 1. Clone dự án
 ```bash
-git clone <repository-url>
-cd Smart-Electric-Vehicle-Toll-Station-Management
+git clone <https://github.com/DLT0/Smart-Electric-Vehicle-Toll-Station-Management>
 cd Smart-Electric-Vehicle-Toll-Station-Management
 ```
 

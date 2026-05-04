@@ -140,10 +140,10 @@ public abstract class TramSac {
     public String getTrangThaiBaoTri() {
         double mucHaoMon = tinhMucHaoMon();
         if (mucHaoMon >= 100.0) {
-            return "Bao tri";
+            return "Bao tri"; //must
         }
         if (mucHaoMon > 90.0) {
-            return "Can bao tri";
+            return "Can bao tri"; 
         }
         return "On dinh";
     }
